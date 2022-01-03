@@ -1,0 +1,358 @@
+
+    <!DOCTYPE html>
+    <html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+
+        <title>CodePen - Flat Login Form</title>
+        <link th:href="@{/styles.css}" href='../static/styles.css' type="text/css" rel="stylesheet">
+        <link th:href="@{/modal.css}" href="../static/modal.css" type="text/css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+        <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900'>
+        <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Montserrat:400,700'>
+        <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    </head>
+    <body class="body">
+
+    <div class="form">
+        <div class="thumbnail"><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/169963/hat.svg"/></div>
+
+        <form class="form register-form" > <!-- th:action="@{/auth/register}" th:object="${registerObject}" method="post" -->
+            <div class="form-control">
+                <input id="firstName"  placeholder="name"/>
+                <small></small>
+            </div>
+            <div class="form-control">
+                <input id="lastName"  placeholder="lastname">
+                <small></small>
+            </div>
+            <div class="form-control">
+                <input class="password-register"  placeholder="password"/>
+                <small></small>
+            </div>
+            <div class="form-control">
+                <input  class="password-confirm-register"  placeholder="confirm password" >
+                <small></small>
+            </div>
+            <div class="form-control">
+                <input  class="emailAddress"  placeholder="email address"/>
+                <small></small>
+            </div>
+            <button type="button">create</button>
+            <p class="message">Already registered? <a href="#">Sign In</a></p>
+        </form>
+
+        <form class="form login-form active-form" > <!-- th:action="@{/auth/login}" method="post" -->
+            <div class="form-control">
+                <input name="username" class="username-login" type="text" placeholder="username"/> <!-- id="username"-->
+                <small></small>
+            </div>
+
+            <div class="form-control">
+                <input name="password" class="password-login"  type="password" placeholder="password"/> <!-- id="password" -->
+                <small></small>
+            </div>
+
+            <button type="button">login</button>
+            <p class="message">Not registered? <a href="#">Create an account</a></p>
+        </form>
+
+    </div>
+
+
+    <div id="open-modal" class="modal-window">
+        <div>
+            <a href="#" title="Close" class="modal-close">Close</a>
+            <h1>Registration Successful ✔</h1>
+            <div>login</div>
+            <div><small>Login in to continue</small></div>
+        </div>
+    </div>
+
+
+
+
+    <!-- partial -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script >
+        $('.message a').click(function() {
+            $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
+
+            changeActiveForm();
+        });
+
+
+        function changeActiveForm() {
+
+            const loginForm = document.querySelector(".login-form")
+            const registerForm = document.querySelector(".register-form")
+
+            const loginIsActive = function (){
+                return loginForm.classList.contains("active-form")
+            }
+
+            if (loginIsActive()) {
+                loginForm.classList.remove("active-form");
+                registerForm.classList.add("active-form");
+            } else {
+                registerForm.classList.remove("active-form")
+                loginForm.classList.add("active-form")
+            }
+            console.log(registerForm.classList)
+            console.log(loginForm.classList)
+        }
+    </script>
+
+    <script>
+
+        const activeForm = document.querySelector(".active-form")
+        const buttonChild = activeForm.querySelector("button")
+
+        const loginForm = document.querySelector(".login-form")
+        const registerForm = document.querySelector(".register-form")
+        const loginButton = loginForm.querySelector("button")
+        const registerButton = registerForm.querySelector("button")
+
+        const firstNameSelector = document.querySelector("#firstName")
+        const lastNameSelector = document.querySelector("#lastName")
+        const passwordRegisterSelector = document.querySelector(".password-register")
+        const passwordConfirmRegisterSelector = document.querySelector(".password-confirm-register")
+        const emailSelector = document.querySelector(".emailAddress")
+
+        const usernameSelector = document.querySelector(".username-login")
+        const passwordSelector = document.querySelector(".password-login")
+
+        const modal = document.querySelector('#open-modal')
+        const closeModal = document.querySelector('.modal-close')
+
+        let inputInvalidEntries = []
+
+        registerButton.addEventListener("click", evt => {
+
+            inputInvalidEntries.length = 0;
+
+            checkForEmptyInput(firstNameSelector,firstNameSelector.value, 'first name')
+            checkForEmptyInput(lastNameSelector,lastNameSelector.value, 'last name')
+            checkPassword(passwordRegisterSelector.value)
+            checkPasswordConfirm(passwordConfirmRegisterSelector.value, passwordRegisterSelector.value);
+            checkEmail(emailSelector.value, 'register')
+
+            if (!inputInvalidEntries.includes(true)) {
+
+                const registerUserModel = {
+                    firstName: firstNameSelector.value,
+                    lastName: lastNameSelector.value,
+                    password: passwordRegisterSelector.value,
+                    passwordConfirm: passwordConfirmRegisterSelector.value,
+                    email: emailSelector.value
+                }
+
+               register(registerUserModel)
+                showModal()
+            }
+
+            closeModal.addEventListener('click', function() {
+                modal.classList.remove('open')
+            })
+
+            function showModal() {
+                modal.classList.add('open')
+            }
+
+
+
+            function checkPassword(password) {
+
+                const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+
+                if (checkForEmptyInput(passwordRegisterSelector, passwordRegisterSelector.value, 'password')) {
+                    return
+                }
+
+                if (!regex.test(password)){
+                    setErrorFor(passwordRegisterSelector, "password must contain one upper and lower case letter, a number and a special character")
+                } else {
+                    setSuccessFor(passwordRegisterSelector)
+                }
+            }
+
+            function checkPasswordConfirm(passwordConfirm, password){
+
+                if (checkForEmptyInput(passwordConfirmRegisterSelector, passwordConfirmRegisterSelector.value, 'password confirm')) {
+                    return
+                }
+
+                if (passwordConfirm !== password) {
+                    setErrorFor(passwordConfirmRegisterSelector, 'passwords must be identical')
+                } else {
+                    setSuccessFor(passwordConfirmRegisterSelector)
+                }
+            }
+        })
+
+        function checkForEmptyInput(selector, value, fieldName) {
+            if (value === '') {
+                setErrorFor(selector,`${fieldName} is empty`)
+                return true;
+            } else {
+                setSuccessFor(selector)
+            }
+        }
+
+        function checkEmail(email, formType) {
+
+            let selector;
+
+            if (formType === 'login') {
+                selector = usernameSelector
+            } else {
+                selector = emailSelector
+            }
+
+
+           if (selector.value !== '') {
+               verifyUsernameExists(email, formType)
+           } else {
+               setErrorFor(selector, 'email is empty')
+           }
+        }
+
+
+        loginButton.addEventListener("click", evt => {
+
+            inputInvalidEntries.length = 0
+
+            const username = usernameSelector.value
+            const password = passwordSelector.value
+
+            checkEmail(username, 'login')
+
+            if (!inputInvalidEntries.includes(true)) {
+                verifyLoginInfo(username,password)
+            }
+            checkForEmptyInput(passwordSelector, password, 'password')
+        })
+
+
+        function verifyUsernameExists(username, formType) {
+
+            $.ajax({
+                type: 'GET',
+                url: '/api/users/search',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: {keyword: username},
+
+
+                success: function (data){
+
+                    if (formType === (`login`)) {
+                        setSuccessFor(usernameSelector)
+                    } else {
+                        setErrorFor(emailSelector,`email is already in use`)
+                    }
+
+                },
+
+                error: function (data) {
+
+                    if (formType === 'login'){
+                        setErrorFor(usernameSelector, `${username} does not exist`)
+                    } else {
+                        setSuccessFor(emailSelector)
+                    }
+
+                }
+            })
+
+        }
+
+        function verifyLoginInfo(username, password) {
+
+            $.ajax({
+                type:'GET',
+                url: '/api/users/login',
+                dataType: 'json',
+                contentType: 'application/json',
+                mimeType: 'application/json',
+                data: {keyword: username, password: password},
+
+                success: function(data) {
+                    login(username, password)
+                },
+
+                error: function(error) {
+                   setErrorFor(passwordSelector,'username or password incorrect')
+                }
+
+            })
+
+        }
+
+        function register(RegisterUserModel) {
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/users/register',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(RegisterUserModel),
+
+                success: function (data){
+                    alert('whoooo')
+
+                    //todo -> tomorrow make when register successfull make a modal that pops up and says registration succesfull, then
+                    //proceeds to dissapear and opern the login form , so the user can login -> if u do this !! NEXT LEVEL Cabro
+
+                },
+
+                error: function () {
+                    alert('booo')
+                }
+
+            })
+        }
+
+        function login(username, password) {
+
+            $.ajax({
+                type: 'POST',
+                url: '/auth/login',
+                data: {
+                    username: username,
+                    password: password
+                },
+
+                success: function() {
+                    alert("login successful")
+                },
+
+                error: function() {
+                    alert('login failed')
+                }
+
+            })
+
+        }
+
+         function setErrorFor(input, message) {
+            const formControl = input.parentElement;
+            const small = formControl.querySelector('small')
+            formControl.className = "form-control error"
+            small.innerText = message // maybe with .innerText works
+             inputInvalidEntries.push(true)
+        }
+
+        function setSuccessFor(input) {
+            const formControl = input.parentElement
+            const small = formControl.querySelector('small')
+            formControl.className = 'form-control success'
+            small.innerText = ''
+            inputInvalidEntries.push(false)
+        }
+
+    </script>
+
+    </body>
+    </html>
+
