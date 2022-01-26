@@ -24,13 +24,8 @@ public class UserUpdateModel extends MessageBuilder {
     public static final String PASSWORD_CONFIRM_INVALID_SIZE_MSG = "Password confirm must be between 5 and 25 characters";
     public static final String INVALID_PASSWORD_MSG = "Password must contain at least, 1 digit, 1 upper and lower case letter and a special character";
 
-    @NotBlank
-    @Size(min = 2, max = 20, message = FIRSTNAME_INVALID_SIZE_MSG )
-    private String firstname;
 
-    @NotBlank
-    @Size(min = 2, max = 20, message = LASTNAME_INVALID_SIZE_MSG)
-    private String lastname;
+    //fixme: firstName, lastName and Email will not be permited to be changed, a user can only modify its passwords
 
     @NotBlank
     @Email(message = INVALID_EMAIL_MSG)
@@ -39,12 +34,10 @@ public class UserUpdateModel extends MessageBuilder {
 
     @NotBlank
     @Size(min = 5, max = 25, message =  PASSWORD_INVALID_SIZE_MSG)
-    @Pattern(regexp = "^?:(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).*$", message = INVALID_PASSWORD_MSG)
     private String password;
 
     @NotBlank
     @Size(min = 5, max = 25, message = PASSWORD_CONFIRM_INVALID_SIZE_MSG)
-    @Pattern(regexp = "^?:(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).*$", message = INVALID_PASSWORD_MSG)
     private String passwordConfirm;
 
 

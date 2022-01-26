@@ -95,6 +95,10 @@ public class UserServiceTests {
         RegisterUserModel mockRegister = Helpers.createUserRegisterModel();
 
         userService.create(mockRegister);
+
+        Mockito.verify(userRepository, Mockito.times(1))
+                .save(Helpers.createMockUser());
+        //fix
     }
 
     @Test
@@ -109,5 +113,21 @@ public class UserServiceTests {
 
     //todo: getByEmailTest
     // create, delete, update tests
+
+    @Test
+    public void getByEmail_should_callRepository_when_emailFound() {
+
+        User user = Helpers.createMockUser();
+
+        Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(user));
+        userService.getByEmail(user.getEmail());
+
+        Mockito.verify(userRepository, Mockito.times(1))
+                .findByEmail(user.getEmail());
+    }
+
+
+
+
 
 }

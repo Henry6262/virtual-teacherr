@@ -1,13 +1,17 @@
 package com.henrique.virtualteacher.controllers.rest;
 
+import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.models.RegisterUserModel;
 import com.henrique.virtualteacher.models.SearchDto;
+import com.henrique.virtualteacher.models.UserModel;
+import com.henrique.virtualteacher.models.UserUpdateModel;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +24,8 @@ import java.security.Principal;
 public class UserRestController {
 
     private final UserService userService;
+    private final ModelMapper mapper;
+    private final Logger logger;
 
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "User successfully Retrieved"),
@@ -28,10 +34,20 @@ public class UserRestController {
 
 //    @PreAuthorize("@userSecurity.hasUserId(authentication,#id)")
     @GetMapping("/{id}")
-    public User getById(@PathVariable int id, Principal principal) {
+    public User getById(@PathVariable int id,
+                          Principal principal,
+                          Model model) {
 
-        User logged = userService.getByEmail(principal.getName());
-        return userService.getById(id, logged);
+
+        User loggedUser = userService.getByEmail(principal.getName());
+
+        User userToGet = userService.getById(id, loggedUser);
+        UserModel userModel = new UserModel();
+
+        mapper.map(userToGet, userModel);
+
+        model.addAttribute("User", userModel);
+        return userToGet;
     }
 
     @GetMapping("/search")
@@ -39,7 +55,6 @@ public class UserRestController {
                                  Model model){
 
         model.addAttribute("name",searchDto);
-        System.out.println("searchinnggg");
         return userService.getByEmail(searchDto.getKeyword());
     }
 
@@ -55,6 +70,29 @@ public class UserRestController {
     @PostMapping("/register")
     public User create(@RequestBody @Valid RegisterUserModel registerUserModel) {
         return userService.create(registerUserModel);
+    }
+
+    @PutMapping()
+    public void update(@RequestBody @Valid UserUpdateModel updateModel,
+                       Principal principal) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+
+        userService.update(updateModel, loggedUser);
+        logger.info(String.format("User with email: {%s}, has been updated",updateModel.getEmail()));
+    }
+
+    @DeleteMapping()
+    public String delete(Principal principal) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+
+        userService.delete(loggedUser, loggedUser);
+        logger.info(String.format("User with email: {%s}, has been deleted",principal.getName()));
+
+        return "redirect:/auth/logout";
+        //todo: needs testing , not tested yet, need to delete all the info related to the user in the
+        // foreign key tables
     }
 
 }

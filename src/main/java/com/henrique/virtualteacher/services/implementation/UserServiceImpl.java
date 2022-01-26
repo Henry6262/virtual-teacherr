@@ -1,5 +1,6 @@
 package com.henrique.virtualteacher.services.implementation;
 
+import com.henrique.virtualteacher.entities.Lecture;
 import com.henrique.virtualteacher.entities.Role;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.DuplicateEntityException;
@@ -8,6 +9,7 @@ import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.EnumRoles;
 import com.henrique.virtualteacher.models.RegisterUserModel;
+import com.henrique.virtualteacher.models.UserUpdateModel;
 import com.henrique.virtualteacher.repositories.UserRepository;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import org.modelmapper.ModelMapper;
@@ -19,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,23 +48,14 @@ public class UserServiceImpl implements UserService {
         this.encoder = encoder;
     }
 
-    private boolean userIsAdmin(User user) {
-        return  (user.getRoles().stream()
-                .anyMatch(role -> role.getRole().equals(EnumRoles.ADMIN)));
-    }
-
-    private boolean userIsTeacher(User user) {
-        return (user.getRoles().stream()
-                .anyMatch(role -> role.getRole().equals(EnumRoles.TEACHER)));
-    }
 
     @Override
     public User getById(int id, User loggedUser) {
 
 
-//        if (logged.getId() != id && !userIsAdmin(logged) && !userIsTeacher(logged)){
-//            throw new UnauthorizedOperationException("User", "id", logged.getId(), "User", id);
-//        }
+        if (id != loggedUser.getId() && (loggedUser.isTeacher() ||loggedUser.isAdmin())){
+            throw new UnauthorizedOperationException("");
+        }
 
          return userRepository.findById(id)
                  .orElseThrow(() -> new EntityNotFoundException("User", "Id", String.valueOf(id)));
@@ -75,11 +69,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllByVerification(boolean verification, User loggedUser) {
-        if (userIsTeacher(loggedUser) || userIsAdmin(loggedUser)) {
+        if (loggedUser.isAdmin() || loggedUser.isTeacher()) {
             return userRepository.findAllByEnabled(verification);
         }
-        throw new UnauthorizedOperationException("User","Id", loggedUser.getId(),"Users", "enabled");
+        throw new UnauthorizedOperationException("User","Id", loggedUser.getId(),"get","Users", "enabled");
     }
+
+
 
     @Override
     public User create(RegisterUserModel register) {
@@ -141,24 +137,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(User toUpdate, User loggedUser) {
+    public void update(UserUpdateModel updateModel, User loggedUser) {
 
-        verifyUserIsAllowed(toUpdate, loggedUser);
-        checkEmailIsUnique(toUpdate.getEmail(), Optional.of(loggedUser.getEmail()));
-        checkPasswordMeetsRequirements(toUpdate.getPassword());
+        User userBeingUpdated = getByEmail(updateModel.getEmail());
 
-        userRepository.save(toUpdate);
+        verifyUserIsAllowed(userBeingUpdated, loggedUser);
+        checkPasswordMeetsRequirements(updateModel.getPassword());
+        checkPasswordsAreEqual(updateModel.getPassword(), updateModel.getPasswordConfirm());
+
+        mapFromUserUpdateModel(updateModel, userBeingUpdated);
+
+        userRepository.save(userBeingUpdated);
+    }
+
+    private void mapFromUserUpdateModel(UserUpdateModel updateModel, User user) {
+
+        user.setPassword(encoder.encode(updateModel.getPassword()));
     }
 
     private void verifyUserIsAllowed(User userBeingAccessed, User loggedUser) {
         if (!userBeingAccessed.getEmail().equals(loggedUser.getEmail())
-                && !userIsAdmin(loggedUser)
-                && !userIsTeacher(loggedUser)) {
-            throw new UnauthorizedOperationException("User","email", loggedUser.getEmail(), "User","email", userBeingAccessed.getEmail());
+                && (!loggedUser.isAdmin() || !loggedUser.isTeacher())) {
+            throw new UnauthorizedOperationException("User","email", loggedUser.getEmail(),"get", "User","email", userBeingAccessed.getEmail());
         }
     }
 
+
     @Override
+    @Transactional
     public void delete(User toDelete, User loggedUser) {
         verifyUserIsAllowed(toDelete, loggedUser);
 

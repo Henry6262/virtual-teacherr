@@ -38,7 +38,7 @@ public class Helpers {
     private static User createTeacher() {
         User teacher = new User();
         addBasicInfo(teacher);
-        teacher.setRoles(List.of(new Role(2, EnumRoles.TEACHER), new Role(1, EnumRoles.USER)));
+        teacher.setRoles(List.of(new Role(2, EnumRoles.TEACHER), new Role(1, EnumRoles.STUDENT)));
 
         return teacher;
     }
@@ -46,7 +46,7 @@ public class Helpers {
     private static User createAdmin() {
         User admin = new User();
         addBasicInfo(admin);
-        admin.setRoles(List.of(new Role(2,EnumRoles.TEACHER), new Role(3, EnumRoles.ADMIN), new Role(1, EnumRoles.USER)));
+        admin.setRoles(List.of(new Role(2,EnumRoles.TEACHER), new Role(3, EnumRoles.ADMIN), new Role(1, EnumRoles.STUDENT)));
 
         return admin;
     }
@@ -54,7 +54,7 @@ public class Helpers {
     private static User createUser() {
         User user = new User();
         addBasicInfo(user);
-        user.setRoles(List.of(new Role(1,EnumRoles.USER)));
+        user.setRoles(List.of(new Role(1,EnumRoles.STUDENT)));
 
         return user;
     }

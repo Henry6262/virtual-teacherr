@@ -1,20 +1,28 @@
 package com.henrique.virtualteacher.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.henrique.virtualteacher.exceptions.DuplicateEntityException;
 import com.henrique.virtualteacher.models.EnumTopics;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+
+import static org.hibernate.annotations.CascadeType.DELETE;
+import static org.hibernate.annotations.CascadeType.REMOVE;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
-
+@Transactional
 @Table(name = "courses")
 public class Course {
 
@@ -37,13 +45,32 @@ public class Course {
     private int difficulty;
 
     @Column(name = "starting_date")
-    @DateTimeFormat(pattern = "dd.mm.yyyy")
-    private Date startingDate;
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    private LocalDate startingDate;
 
     @Column(name = "enabled")
     private boolean enabled;
 
-    @OneToMany
+    @OneToMany()
+    @JoinTable(name = "users_enrolled_courses",
+    inverseJoinColumns = @JoinColumn(name = "course_id"))
+    private List<User> enrolledUsers;
+
+    @ManyToMany()
+    @JsonIgnore
+    @JoinTable(name = "users_completed_courses",
+    joinColumns = @JoinColumn(name = "course_id"),
+    inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> usersCompletedCourse;
+
+    @Cascade(value = DELETE)
+    @OneToMany()
+    @JoinTable(name = "lectures",
+    joinColumns = @JoinColumn(name = "course_id"),
+    inverseJoinColumns = @JoinColumn(name = "lecture_id"))
+    private List<Lecture> courseLectures;
+
+    @ManyToMany()
     @JoinTable(name = "course_ratings",
     joinColumns = @JoinColumn(name = "course_id"),
     inverseJoinColumns = @JoinColumn(name = "user_id"))
@@ -54,5 +81,32 @@ public class Course {
     joinColumns = @JoinColumn(name = "course_id"),
     inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<Comment> comments;
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void addRating(CourseRating rating) {
+        if (this.ratings.stream()
+        .anyMatch(rating1 -> rating.getUser().getId() == rating.getUser().getId())) {
+            throw new DuplicateEntityException(String.format("User with id: {%d}, has already left a rating to the course with id: {%d}", rating.getUser().getId(), rating.getId()));
+        }
+
+    }
+
+    public void addLecture(Lecture lecture) {
+        if (courseLectures.contains(lecture)) {
+            throw new DuplicateEntityException(String.format("lecture with id: {%d} is already part of the course with id: {%d}",lecture.getId(), this.getId()));
+        }
+
+//        addLectureInfo(lecture);
+        courseLectures.add(lecture);
+    }
+
+//    private void addLectureInfo(Lecture lecture) {
+//        lecture.setEntryId(this.getCourseLectures().size() + 1);
+//        lecture.setCourse(this);
+//    }
+
 
 }

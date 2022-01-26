@@ -1,7 +1,9 @@
 package com.henrique.virtualteacher.services.interfaces;
 
+import com.henrique.virtualteacher.entities.Lecture;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.models.RegisterUserModel;
+import com.henrique.virtualteacher.models.UserUpdateModel;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,7 +22,7 @@ public interface UserService extends UserDetailsService {
 
     boolean verifyLoginInfo(String email, String password);
 
-    void update(User user, User loggedUser);
+    void update(UserUpdateModel updateModel, User loggedUser);
 
     void delete(User toDelete,User loggedUser );
 

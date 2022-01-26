@@ -1,0 +1,126 @@
+package com.henrique.virtualteacher.services.implementation;
+
+import com.henrique.virtualteacher.entities.Course;
+import com.henrique.virtualteacher.entities.Lecture;
+import com.henrique.virtualteacher.entities.User;
+import com.henrique.virtualteacher.exceptions.DuplicateEntityException;
+import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
+import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
+import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
+import com.henrique.virtualteacher.models.LectureModel;
+import com.henrique.virtualteacher.repositories.LectureRepository;
+import com.henrique.virtualteacher.repositories.UserRepository;
+import com.henrique.virtualteacher.services.interfaces.LectureService;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+
+import java.util.List;
+
+@Service
+@AllArgsConstructor
+public class LectureServiceImpl implements LectureService {
+
+    private final LectureRepository lectureRepository;
+    private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
+
+
+
+    @Override
+    public Lecture getById(int id) {
+        return lectureRepository.getById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Lecture", "id", String.valueOf(id)));
+    }
+
+    @Override
+    public Lecture getByEntryIdAndCourseId(int entryId, int courseId) {
+        return lectureRepository.findByEntryIdAndCourseId(entryId, courseId)
+                .orElseThrow(() -> new EntityNotFoundException("Lecture", "courseId and entryId", String.format("%d, %d",courseId, entryId)));
+    }
+
+    @Override
+    public Lecture getByTitle(String title) {
+        return lectureRepository.getByTitle(title)
+                .orElseThrow(() -> new EntityNotFoundException("Lecture", "Title", title));
+    }
+
+
+
+    @Override
+    public List<Lecture> getAll() {
+        return lectureRepository.findAll();
+    }
+
+    @Override
+    public List<Lecture> getAllByCourseId(int id) {
+        return lectureRepository.getAllByCourseId(id);
+    }
+
+    @Override
+    public List<Lecture> getAllByEnabled(boolean enabled) {
+        return lectureRepository.getAllByEnabled(enabled);
+    }
+
+
+    @Override
+    public void completeLectureForUser(User loggedUser, Lecture lecture) {
+
+        if (!loggedUser.getEnrolledCourses().contains(lecture.getCourse())) {
+            throw new ImpossibleOperationException(String.format("User with id: %d, is not enrolled into course with id %d", loggedUser.getId(), lecture.getCourse().getId()));
+        }
+
+        loggedUser.completeLecture(lecture);
+        userRepository.save(loggedUser);
+    }
+
+    @Override
+    public Lecture create(Lecture lecture, User loggedUser) {
+
+        checkIfTitleIsUnique(lecture.getTitle());
+
+        lectureRepository.save(lecture);
+        return lecture;
+    }
+
+    public Lecture mapModelToEntity(LectureModel lectureModel, Course course) {
+        Lecture lecture = new Lecture();
+        modelMapper.map(lectureModel,lecture);
+        lecture.setEntryId(course.getCourseLectures().size() +1);
+        lecture.setCourse(course);
+        lecture.setEnabled(false);
+        return lecture;
+    }
+
+    private void checkIfTitleIsUnique(String title) {
+
+        try {
+            Lecture lecture = lectureRepository.getByTitle(title)
+                    .orElseThrow(() -> new EntityNotFoundException("Lecture","Title", title));
+        } catch (EntityNotFoundException e) {
+            return;
+        }
+        throw new DuplicateEntityException("Lecture","Title", title);
+    }
+
+    @Override
+    public void update(Lecture lecture, User loggedUser) {
+
+    }
+
+    @Override
+    public void delete(Lecture lecture, User loggedUser) {
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllByCourseId(int courseId, User loggedUser) {
+        if (loggedUser.isNotTeacherOrAdmin()) {
+            throw new UnauthorizedOperationException("User", "id", String.valueOf(loggedUser.getId()), "delete", "Lectures", "courseId", String.valueOf(courseId));
+        }
+        lectureRepository.deleteAllByCourseId(courseId);
+    }
+}

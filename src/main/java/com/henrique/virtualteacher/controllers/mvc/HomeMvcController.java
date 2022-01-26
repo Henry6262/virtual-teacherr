@@ -1,5 +1,6 @@
 package com.henrique.virtualteacher.controllers.mvc;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -11,20 +12,12 @@ import javax.security.auth.Subject;
 import java.security.Principal;
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/")
 public class HomeMvcController {
 
-
-    @Autowired
-    public HomeMvcController() {
-
-    }
-
     @GetMapping
     public String showHomePage() {
-
-        String hello = "hello";
-
         return "index";
     }
 

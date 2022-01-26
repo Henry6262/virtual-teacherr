@@ -75,6 +75,7 @@
     <!-- partial -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script >
+
         $('.message a').click(function() {
             $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
 
@@ -289,6 +290,10 @@
 
         }
 
+        function changeActiveFormView() {
+            $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
+        }
+
         function register(RegisterUserModel) {
 
             $.ajax({
@@ -299,15 +304,11 @@
                 data: JSON.stringify(RegisterUserModel),
 
                 success: function (data){
-                    alert('whoooo')
-
-                    //todo -> tomorrow make when register successfull make a modal that pops up and says registration succesfull, then
-                    //proceeds to dissapear and opern the login form , so the user can login -> if u do this !! NEXT LEVEL Cabro
-
+                    changeActiveFormView()
                 },
 
                 error: function () {
-                    alert('booo')
+
                 }
 
             })
