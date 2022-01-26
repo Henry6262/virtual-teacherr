@@ -9,8 +9,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserService extends UserDetailsService {
+
+    List<User> getAll(User loggedUser);
 
     User getById(int id, User loggedUser);
 

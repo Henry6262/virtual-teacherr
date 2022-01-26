@@ -1,6 +1,7 @@
 package com.henrique.virtualteacher.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.models.EnumRoles;
@@ -12,6 +13,7 @@ import org.hibernate.annotations.Cascade;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -52,23 +54,24 @@ public class User {
     @Column(name = "enabled")
     private boolean enabled;
 
-    @ManyToMany()
+    @OneToMany()
     @JoinTable(name = "users_completed_lectures",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "lecture_id"))
-    private List<Lecture> completedLectures;
+    private Set<Lecture> completedLectures;
 
     @OneToMany()
     @JoinTable(name = "users_completed_courses",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "course_id")) //fixme -> this fixed my problem when adding
-    private List<Course> completedCourses;
+    private Set<Course> completedCourses;
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    @ManyToMany()
     @JoinTable(name = "users_enrolled_courses",
         joinColumns = @JoinColumn(name = "user_id") ,
         inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private List<Course> enrolledCourses;
+    private Set<Course> enrolledCourses;
+
 
     public void enrollToCourse(Course course) {
         if (enrolledCourses.contains(course)){
@@ -102,6 +105,11 @@ public class User {
     public boolean hasCompletedCourse(Course course) {
         return getCompletedCourses().stream()
                 .anyMatch(course1 -> course.getId() == course.getId());
+    }
+
+    public boolean isEnrolledInCourse(Course course) {
+        return getEnrolledCourses().stream()
+                .anyMatch(c -> c.getId() == course.getId());
     }
 
     public boolean isTeacher() {

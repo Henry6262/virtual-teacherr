@@ -98,6 +98,7 @@ public class CourseServiceImpl implements CourseService {
         if (loggedUser.isNotTeacherOrAdmin()) {
             throw new UnauthorizedOperationException("User", "username", loggedUser.getEmail(), "delete", "Course", "title", course.getTitle());
         }
+        course.getEnrolledUsers().clear();
         courseRepository.delete(course);
     }
 
@@ -163,15 +164,12 @@ public class CourseServiceImpl implements CourseService {
         if (userCompletedCourseLectures.size() < courseLectures.size()) {
             throw new ImpossibleOperationException(String.format("User with id: %d has not completed all the lectures of Course with id: %d", user.getId(), course.getId()));
         }
-
     }
 
     @Override
     public void verifyUserIsEnrolledToCourse(User loggedUser, Course course) {
 
-        if (loggedUser.getEnrolledCourses()
-                .stream()
-                .noneMatch(c -> c.getId() == course.getId()))
+        if (loggedUser.isEnrolledInCourse(course))
         {
             throw new ImpossibleOperationException(String.format("User with id: %d, is not enrolled into Course with id %d", loggedUser.getId(), course.getId()));
         }

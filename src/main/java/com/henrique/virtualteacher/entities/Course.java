@@ -98,15 +98,10 @@ public class Course {
         if (courseLectures.contains(lecture)) {
             throw new DuplicateEntityException(String.format("lecture with id: {%d} is already part of the course with id: {%d}",lecture.getId(), this.getId()));
         }
-
-//        addLectureInfo(lecture);
         courseLectures.add(lecture);
     }
 
-//    private void addLectureInfo(Lecture lecture) {
-//        lecture.setEntryId(this.getCourseLectures().size() + 1);
-//        lecture.setCourse(this);
-//    }
+
 
 
 }

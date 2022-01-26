@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -30,7 +31,7 @@ public class UserModel {
     private List<Role> rolesList;
 
     @NotBlank
-    private List<Lecture> completedLectures;
+    private Set<Lecture> completedLectures;
 
     @NotBlank
     private List<Course> completedCourses;

@@ -68,7 +68,7 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public void completeLectureForUser(User loggedUser, Lecture lecture) {
 
-        if (!loggedUser.getEnrolledCourses().contains(lecture.getCourse())) {
+        if (!loggedUser.isEnrolledInCourse(lecture.getCourse())) {
             throw new ImpossibleOperationException(String.format("User with id: %d, is not enrolled into course with id %d", loggedUser.getId(), lecture.getCourse().getId()));
         }
 
@@ -113,6 +113,12 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public void delete(Lecture lecture, User loggedUser) {
 
+        if (loggedUser.isNotTeacherOrAdmin()) {
+            throw new UnauthorizedOperationException(String.format("User with the id: {%d}, does not have permission to delete Lecture with id: {%d}", loggedUser.getId(), lecture.getId()));
+        }
+
+        lecture.getUsersCompleted().clear();
+        lectureRepository.delete(lecture);
     }
 
     @Override

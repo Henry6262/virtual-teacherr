@@ -129,10 +129,19 @@ private final ModelMapper mapper;
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/lecture/{entryId}")
+    public ResponseEntity<LectureModel> getCourseLecture(@PathVariable int id,
+                                                         @PathVariable int entryId,
+                                                         Principal principal) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping("/{id}/lecture/{entryId}")
-    public ResponseEntity<Boolean> completeLecture(@PathVariable int id,
-                                                   @PathVariable int entryId,
-                                                   Principal principal) {
+    public ResponseEntity<Boolean> completeCourseLecture(@PathVariable int id,
+                                                         @PathVariable int entryId,
+                                                         Principal principal) {
 
 
         User loggedUser = userService.getByEmail(principal.getName());

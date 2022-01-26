@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,9 +46,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/resources/**","/static/**", "/css/**", "/js/**", "**/.js").permitAll()
-                .antMatchers("/admins")
-                .authenticated()// change
+                .antMatchers("/resources/**","/static/**", "/css/**", "/js/**", "**/.js")
+                .permitAll()
+                .antMatchers(HttpMethod.GET,"/api/users/{id}", "api/users")
+                .authenticated()
+                .antMatchers(HttpMethod.GET, "/auth/login")
+                .permitAll()
                 .and()
 
                 .formLogin(login ->  login.permitAll()

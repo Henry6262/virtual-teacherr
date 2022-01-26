@@ -11,12 +11,16 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -32,30 +36,41 @@ public class UserRestController {
             @ApiResponse(code = 400, message = "The resource you were trying to retrieve, was not found")
     })
 
-//    @PreAuthorize("@userSecurity.hasUserId(authentication,#id)")
+    @GetMapping
+    public ResponseEntity<Model> getAll(Principal principal,
+                                            Model model) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+        List<UserModel> dtoList = mapper.map(userService.getAll(loggedUser), new TypeToken<List<UserModel>>() {}.getType());
+
+        model.addAttribute("allUsers", dtoList);
+        return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
-    public User getById(@PathVariable int id,
+    public UserModel getById(@PathVariable int id,
                           Principal principal,
                           Model model) {
-
 
         User loggedUser = userService.getByEmail(principal.getName());
 
         User userToGet = userService.getById(id, loggedUser);
-        UserModel userModel = new UserModel();
 
+        UserModel userModel = new UserModel();
         mapper.map(userToGet, userModel);
 
-        model.addAttribute("User", userModel);
-        return userToGet;
+        return userModel;
     }
 
     @GetMapping("/search")
-    public User searchByUsername(@RequestParam("keyword") SearchDto searchDto,
-                                 Model model){
+    public UserModel searchByUsername(@RequestParam("keyword") SearchDto searchDto,
+                                      Model model,
+                                      Principal principal){
 
         model.addAttribute("name",searchDto);
-        return userService.getByEmail(searchDto.getKeyword());
+
+        User toFind = userService.getByEmail(searchDto.getKeyword());
+        return mapper.map(toFind, new TypeToken<UserModel>() {}.getType());
     }
 
     @GetMapping("/login")
@@ -68,8 +83,8 @@ public class UserRestController {
 
 
     @PostMapping("/register")
-    public User create(@RequestBody @Valid RegisterUserModel registerUserModel) {
-        return userService.create(registerUserModel);
+    public void create(@RequestBody @Valid RegisterUserModel registerUserModel) {
+        userService.create(registerUserModel);
     }
 
     @PutMapping()

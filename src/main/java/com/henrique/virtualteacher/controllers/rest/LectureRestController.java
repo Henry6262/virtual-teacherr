@@ -9,17 +9,21 @@ import com.henrique.virtualteacher.models.LectureModel;
 import com.henrique.virtualteacher.models.SearchDto;
 import com.henrique.virtualteacher.services.interfaces.LectureService;
 import com.henrique.virtualteacher.services.interfaces.UserService;
+
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/lectures")
@@ -30,10 +34,19 @@ public class LectureRestController {
     private final UserService userService;
     private final ModelMapper mapper;
 
+    @GetMapping()
+    public ResponseEntity<Model> getAll(Principal principal, Model model){
+
+        User loggedUser = userService.getByEmail(principal.getName());
+        List<LectureModel> dtoList = mapper.map(lectureService.getAll(), new TypeToken<List<LectureModel>>() {}.getType());
+
+        model.addAttribute("allLectures", dtoList);
+        return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
+    }
+
     @GetMapping("/course/{id}")
     public List<LectureModel> getAllByCourseId(@PathVariable int id,
                                           Principal principal) {
-
 
         User loggedUser = userService.getByEmail(principal.getName());
 
@@ -42,10 +55,7 @@ public class LectureRestController {
         }
 
         List<LectureModel> dtoList = mapper.map(lectureService.getAllByCourseId(id), new TypeToken<List<LectureModel>>() {}.getType());
-
-
         return dtoList;
-        //return lectureService.getAllByCourseId(id).stream();
     }
 
     @GetMapping("/{id}")

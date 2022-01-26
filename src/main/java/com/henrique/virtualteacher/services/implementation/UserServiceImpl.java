@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -48,12 +49,20 @@ public class UserServiceImpl implements UserService {
         this.encoder = encoder;
     }
 
+    @Override
+    public List<User> getAll(User loggedUser) {
+
+        if (loggedUser.isNotTeacherOrAdmin()){
+            throw new UnauthorizedOperationException(String.format("User with id: {%d} does not have permissions to get all Users", loggedUser.getId()));
+        }
+
+        return userRepository.findAll();
+    }
 
     @Override
     public User getById(int id, User loggedUser) {
 
-
-        if (id != loggedUser.getId() && (loggedUser.isTeacher() ||loggedUser.isAdmin())){
+        if (id != loggedUser.getId() && (loggedUser.isNotTeacherOrAdmin())){
             throw new UnauthorizedOperationException("");
         }
 
@@ -74,7 +83,6 @@ public class UserServiceImpl implements UserService {
         }
         throw new UnauthorizedOperationException("User","Id", loggedUser.getId(),"get","Users", "enabled");
     }
-
 
 
     @Override
@@ -164,9 +172,14 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    @Transactional
     public void delete(User toDelete, User loggedUser) {
         verifyUserIsAllowed(toDelete, loggedUser);
+
+        toDelete.getCompletedLectures().clear();
+        toDelete.getEnrolledCourses().clear();
+        toDelete.getCompletedCourses().clear();
+
+        //fixme -> will need to delete also the comments and the ratings
 
         userRepository.delete(toDelete);
     }
