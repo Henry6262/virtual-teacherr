@@ -5,6 +5,7 @@ import com.henrique.virtualteacher.entities.CourseRating;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
+import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.repositories.RatingRepository;
 import com.henrique.virtualteacher.services.interfaces.CourseService;
 import com.henrique.virtualteacher.services.interfaces.RatingService;
@@ -70,6 +71,22 @@ public class RatingServiceImpl implements RatingService {
         }
 
         ratingRepository.save(courseRating);
+    }
+
+    public void update(CourseRating courseRating, int newRating, User loggedUser) {
+
+        User ratingCreator = courseRating.getUser();
+
+        if (ratingCreator.getId() != loggedUser.getId()){
+            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not the creator of the Rating with id: {%d}", loggedUser.getId(), courseRating.getId()));
+        }
+
+        courseRating.setRating(newRating);
+        ratingRepository.save(courseRating);
+    }
+
+    public void delete(CourseRating courseRating, User loggedUser) {
+
     }
 
 }

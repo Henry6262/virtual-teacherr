@@ -16,5 +16,7 @@ public interface RatingService {
 
     void create(Course course, User user, int rating);
 
+    void update(CourseRating courseRating,int newRating, User loggedUser);
+
     double getAverageRatingForCourse(Course course);
 }
