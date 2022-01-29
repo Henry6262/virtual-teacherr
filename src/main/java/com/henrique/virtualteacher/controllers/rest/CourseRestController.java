@@ -44,12 +44,19 @@ private final ModelMapper mapper;
 
 
     @GetMapping("/{id}")
-    public CourseModel getById(@PathVariable int id) {
+    public ResponseEntity<Model> getById(@PathVariable int id,
+                                         Model model) {
 
         Course course = courseService.getById(id);
         CourseModel courseModel = new CourseModel();
+        double averageRating = ratingService.getAverageRatingForCourse(course);
+
         mapper.map(course, courseModel);
-        return courseModel;
+
+        model.addAttribute("course", courseModel);
+        model.addAttribute("courseAverageRating", averageRating);
+
+        return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
     }
 
     @GetMapping()

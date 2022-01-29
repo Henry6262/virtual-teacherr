@@ -1,5 +1,6 @@
 package com.henrique.virtualteacher.controllers.rest;
 
+import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.CourseRating;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.services.interfaces.RatingService;
@@ -22,10 +23,10 @@ import java.security.Principal;
 @AllArgsConstructor
 public class RatingRestController {
 
-    private RatingService ratingService;
-    private UserService userService;
-    private ModelMapper modelMapper;
-    private Logger logger;
+    private final RatingService ratingService;
+    private final UserService userService;
+    private final ModelMapper modelMapper;
+    private final Logger logger;
 
 
     @GetMapping("/{id}")
@@ -43,13 +44,16 @@ public class RatingRestController {
     @PutMapping("/{id}")
     public ResponseEntity<Model> update(@PathVariable int id,
                                         @RequestParam("newRating") int newRating,
-                                        Principal principal) {
+                                        Principal principal,
+                                        Model model) {
 
         User loggedUser = userService.getByEmail(principal.getName());
         CourseRating courseRating = ratingService.getById(id);
-
         ratingService.update(courseRating, newRating, loggedUser);
 
+        CourseRating updatedRating = ratingService.getById(id);
+
+        model.addAttribute("updatedRating");
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
@@ -60,7 +64,9 @@ public class RatingRestController {
         User loggedUser = userService.getByEmail(principal.getName());
         CourseRating courseRating = ratingService.getById(id);
 
-        ratingService.
+        ratingService.delete(courseRating, loggedUser);
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
 

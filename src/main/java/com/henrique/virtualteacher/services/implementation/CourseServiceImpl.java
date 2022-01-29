@@ -99,6 +99,7 @@ public class CourseServiceImpl implements CourseService {
             throw new UnauthorizedOperationException("User", "username", loggedUser.getEmail(), "delete", "Course", "title", course.getTitle());
         }
         course.getEnrolledUsers().clear();
+        course.getRatings().clear();
         courseRepository.delete(course);
     }
 

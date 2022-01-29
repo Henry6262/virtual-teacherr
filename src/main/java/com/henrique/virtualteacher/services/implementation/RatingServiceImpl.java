@@ -87,6 +87,10 @@ public class RatingServiceImpl implements RatingService {
 
     public void delete(CourseRating courseRating, User loggedUser) {
 
+        if (courseRating.getUser().getId() != loggedUser.getId()) {
+            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not the creator of the rating with id: {%d}",loggedUser.getId(),courseRating.getId()));
+        }
+        ratingRepository.delete(courseRating);
     }
 
 }

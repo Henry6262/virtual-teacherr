@@ -18,5 +18,7 @@ public interface RatingService {
 
     void update(CourseRating courseRating,int newRating, User loggedUser);
 
+    void delete(CourseRating courseRating, User loggedUser);
+
     double getAverageRatingForCourse(Course course);
 }

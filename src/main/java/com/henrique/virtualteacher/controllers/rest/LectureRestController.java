@@ -58,6 +58,7 @@ public class LectureRestController {
         return dtoList;
     }
 
+
     @GetMapping("/{id}")
     public LectureModel getById(@PathVariable int id,
                            Principal principal) {
