@@ -151,6 +151,19 @@ public class CourseServiceImpl implements CourseService {
         userRepository.save(loggedUser);
     }
 
+    public int getPercentageOfCompletedCourseLectures(User loggedUser, Course course) {
+
+        int completedCourseLectures = (int) loggedUser.getCompletedLectures()
+                .stream()
+                .filter(lecture -> lecture.getCourse().getId() == course.getId())
+                .count();
+
+        int totalCourseLectures = course.getCourseLectures().size();
+
+        int percentage = (int) Math.round(completedCourseLectures * 100.0 / totalCourseLectures);
+        return percentage;
+    }
+
     @Override
     public void verifyUserHasCompletedAllCourseLectures(User user, Course course) {
 

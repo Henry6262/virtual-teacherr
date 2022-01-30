@@ -1,0 +1,144 @@
+package com.henrique.virtualteacher.services.implementation;
+
+import com.henrique.virtualteacher.entities.Assignment;
+import com.henrique.virtualteacher.entities.Course;
+import com.henrique.virtualteacher.entities.User;
+import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
+import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
+import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
+import com.henrique.virtualteacher.models.Status;
+import com.henrique.virtualteacher.repositories.AssignmentRepository;
+import com.henrique.virtualteacher.services.interfaces.AssignmentService;
+import com.henrique.virtualteacher.services.interfaces.CourseService;
+import com.henrique.virtualteacher.services.interfaces.UserService;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@AllArgsConstructor
+public class AssignmentServiceImpl implements AssignmentService {
+
+    private final AssignmentRepository assignmentRepository;
+    private final UserService userService;
+    private final CourseService courseService;
+    private final ModelMapper modelMapper;
+    private final Logger logger;
+
+    @Override
+    public Assignment getById(int id, User loggedUser) {
+
+        Assignment assignment = assignmentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Grade", "id", String.valueOf(id)));
+
+        checkUserIsAuthorized(loggedUser, assignment);
+
+        return assignment;
+    }
+
+    private void checkUserIsAuthorized(User loggedUser, Assignment assignment) {
+        if (loggedUser.isNotTeacherOrAdmin() && assignment.getUser().getId() != loggedUser.getId()) {
+            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not allowed to access assignment with id: {%d}", loggedUser.getId(), assignment.getId()));
+        }
+    }
+
+    @Override
+    public Assignment getByUserIdAndLectureId(int userId, int lectureId, User loggedUser) {
+
+        Assignment assignment = assignmentRepository.getByUserIdAndLectureId(userId, lectureId)
+                .orElseThrow(() -> new EntityNotFoundException("Grade", "id", String.valueOf(lectureId)));
+
+        checkUserIsAuthorized(loggedUser, assignment);
+
+        return assignment;
+    }
+
+    @Override
+    public List<Assignment> getAllByUserIdAndCourseId(int userId, int courseId, User loggedUser) {
+
+        List<Assignment> grades = assignmentRepository.getAllByUserIdAndLectureCourseId(userId, courseId);
+
+        if (grades.isEmpty()) {
+            throw new EntityNotFoundException(String.format("Grade with User with id: {%d}, and Course with id: {%d}, has not been found", userId, courseId));
+        }
+        checkUserIsAuthorized(loggedUser, grades.get(0));
+
+        return grades;
+    }
+
+    @Override
+    public List<Assignment> getAllUserGradedAssignmentsForCourse(int userId, int courseId, User loggedUser) {
+
+        if (loggedUser.getId() != userId && !loggedUser.isTeacher()) {
+            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not authorized to access the Assignments of the User with id: {%d}", loggedUser.getId(), userId));
+        }
+
+        return assignmentRepository.getAllByUserIdAndLectureCourseIdAndStatus(userId, courseId, Status.GRADED);
+        //fixme: maybe need to check if list is empty, and throw exception
+    }
+
+    @Override
+    public List<Assignment> getAllGradedForCourse(int courseId, User loggedUser) {
+
+        if (!loggedUser.isTeacher()) {
+            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not authorized to get all graded Assignments for course with id: {%d}", loggedUser.getId(), courseId));
+        }
+        return assignmentRepository.getAllByLectureCourseIdAndStatus(courseId, Status.GRADED);
+    }
+
+    @Override
+    public double getUserAverageGradeForCourse(int userId, int courseId, User loggedUser) {
+
+        List<Assignment> userGradedAssignmentsForCourse = getAllUserGradedAssignmentsForCourse(userId, courseId, loggedUser);
+
+        Course course = courseService.getById(courseId);
+
+        return userGradedAssignmentsForCourse.stream()
+                .mapToDouble(Assignment::getGrade)
+                .sum();
+    }
+
+    @Override
+    public void grade(Assignment assignment, User loggedUser, int grade) {
+
+        if (!loggedUser.isTeacher()){
+            throw new UnauthorizedOperationException("User with id: {%d}, is not authorized to grade Assignments");
+        }
+
+        assignment.grade(grade);
+    }
+
+
+    @Override
+    public void create(Assignment assignment, User loggedUser) {
+
+        checkUserIsAuthorized(loggedUser, assignment);
+
+        if (loggedUser.hasAssignment(assignment)){
+            throw new ImpossibleOperationException(String.format("User with id: {%d}, already has a grade for the lecture with id: {%d}", loggedUser.getId(), assignment.getLecture().getId()));
+        }
+
+        if (!loggedUser.isTeacher()) {
+            throw new UnauthorizedOperationException(String.format("User with id: {%d} is not authorized to create a Grade", loggedUser.getId()));
+        }
+
+        loggedUser.addAssignment(assignment);
+    }
+
+    @Override
+    public void update(int newGrade, Assignment assignmentToUpdate, User loggedUser) {
+
+        checkUserIsAuthorized(loggedUser, assignmentToUpdate);
+
+        if ()
+
+    }
+
+    @Override
+    public void delete(Assignment assignment, User loggedUser) {
+
+    }
+}

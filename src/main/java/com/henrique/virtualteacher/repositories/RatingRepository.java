@@ -14,4 +14,6 @@ public interface RatingRepository extends JpaRepository<CourseRating, Integer> {
 
     List<CourseRating> getAllByUserId(int id);
 
+
+
 }

@@ -1,14 +1,11 @@
 package com.henrique.virtualteacher.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.models.EnumRoles;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -72,6 +69,12 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Set<Course> enrolledCourses;
 
+    @OneToMany
+    @JoinTable(name = "assignments",
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "lecture_id"))
+    private Set<Assignment> assignments;
+
 
     public void enrollToCourse(Course course) {
         if (enrolledCourses.contains(course)){
@@ -100,6 +103,17 @@ public class User {
         }
 
         completedCourses.add(course);
+    }
+
+    public void addAssignment(Assignment assignment) {
+        if (hasAssignment(assignment)) {
+            throw new ImpossibleOperationException(String.format("User with id: {%d}, already has a grade for lecture with id: {%d}", this.getId(), assignment.getLecture().getId()));
+        }
+    }
+
+    public boolean hasAssignment(Assignment assignment) {
+        return getAssignments().stream()
+                .anyMatch(grade -> grade.getLecture().getId() == assignment.getLecture().getId());
     }
 
     public boolean hasCompletedCourse(Course course) {
