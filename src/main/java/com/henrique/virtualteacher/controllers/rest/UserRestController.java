@@ -63,7 +63,6 @@ public class UserRestController {
     }
 
 
-
     @GetMapping("/search")
     public UserModel searchByUsername(@RequestParam("keyword") SearchDto searchDto,
                                       Model model,

@@ -106,8 +106,14 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    public void update(Lecture lecture, User loggedUser) {
+    public void update(LectureModel lectureModel, Lecture lecture, User loggedUser) {
 
+        if (!lectureModel.getTitle().equals(lecture.getTitle())){
+            checkIfTitleIsUnique(lectureModel.getTitle());
+        }
+
+        modelMapper.map(lectureModel, lecture);
+        lectureRepository.save(lecture);
     }
 
     @Override
@@ -117,8 +123,23 @@ public class LectureServiceImpl implements LectureService {
             throw new UnauthorizedOperationException(String.format("User with the id: {%d}, does not have permission to delete Lecture with id: {%d}", loggedUser.getId(), lecture.getId()));
         }
 
+        orderCourseLectures(lecture);
+
         lecture.getUsersCompleted().clear();
         lectureRepository.delete(lecture);
+    }
+
+    private void orderCourseLectures(Lecture lecture) {
+
+        int entryId = lecture.getEntryId();
+        List<Lecture> courseLectures = lecture.getCourse().getCourseLectures();
+
+        for (int index = entryId +1 ; index <= courseLectures.size() ; index++) {
+
+            Lecture currentLecture = getByEntryIdAndCourseId(index, lecture.getCourse().getId());
+            currentLecture.setEntryId(currentLecture.getEntryId() -1);
+        }
+
     }
 
     @Override

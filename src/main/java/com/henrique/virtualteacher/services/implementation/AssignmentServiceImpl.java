@@ -8,6 +8,7 @@ import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.Status;
 import com.henrique.virtualteacher.repositories.AssignmentRepository;
+import com.henrique.virtualteacher.repositories.UserRepository;
 import com.henrique.virtualteacher.services.interfaces.AssignmentService;
 import com.henrique.virtualteacher.services.interfaces.CourseService;
 import com.henrique.virtualteacher.services.interfaces.UserService;
@@ -23,6 +24,7 @@ import java.util.List;
 public class AssignmentServiceImpl implements AssignmentService {
 
     private final AssignmentRepository assignmentRepository;
+    private final UserRepository userRepository;
     private final UserService userService;
     private final CourseService courseService;
     private final ModelMapper modelMapper;
@@ -90,6 +92,15 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
+    public List<Assignment> getAllPending(User loggedUser) {
+        if (!loggedUser.isTeacher()) {
+            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not authorized to get all pending Assignments", loggedUser.getId()));
+        }
+
+        return assignmentRepository.getAllByStatus(Status.PENDING);
+    }
+
+    @Override
     public double getUserAverageGradeForCourse(int userId, int courseId, User loggedUser) {
 
         List<Assignment> userGradedAssignmentsForCourse = getAllUserGradedAssignmentsForCourse(userId, courseId, loggedUser);
@@ -109,6 +120,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         }
 
         assignment.grade(grade);
+        assignmentRepository.save(assignment);
     }
 
 
@@ -126,15 +138,20 @@ public class AssignmentServiceImpl implements AssignmentService {
         }
 
         loggedUser.addAssignment(assignment);
+        userRepository.save(loggedUser);
     }
 
     @Override
-    public void update(int newGrade, Assignment assignmentToUpdate, User loggedUser) {
+    public void update(String newContent, Assignment assignmentToUpdate, User loggedUser) {
 
         checkUserIsAuthorized(loggedUser, assignmentToUpdate);
 
-        if ()
-
+        if (assignmentToUpdate.getStatus().equals(Status.GRADED)) {
+            assignmentToUpdate.setStatus(Status.PENDING);
+            assignmentToUpdate.setGrade(0);
+        }
+        assignmentToUpdate.setContent(newContent);
+        assignmentRepository.save(assignmentToUpdate);
     }
 
     @Override

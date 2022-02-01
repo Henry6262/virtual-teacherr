@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/api/rating")
+@RequestMapping("/api/ratings")
 @AllArgsConstructor
 public class RatingRestController {
 
@@ -41,7 +41,7 @@ public class RatingRestController {
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/update")
     public ResponseEntity<Model> update(@PathVariable int id,
                                         @RequestParam("newRating") int newRating,
                                         Principal principal,
@@ -57,7 +57,7 @@ public class RatingRestController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/delete")
     public ResponseEntity<Model> delete(@PathVariable int id,
                                         Principal principal){
 

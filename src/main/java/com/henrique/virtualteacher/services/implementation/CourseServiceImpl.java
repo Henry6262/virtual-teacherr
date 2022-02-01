@@ -183,8 +183,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void verifyUserIsEnrolledToCourse(User loggedUser, Course course) {
 
-        if (loggedUser.isEnrolledInCourse(course))
-        {
+        if (!loggedUser.isEnrolledInCourse(course)) {
             throw new ImpossibleOperationException(String.format("User with id: %d, is not enrolled into Course with id %d", loggedUser.getId(), course.getId()));
         }
 

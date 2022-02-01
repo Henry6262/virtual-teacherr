@@ -1,18 +1,13 @@
 package com.henrique.virtualteacher.controllers.rest;
 
-import com.henrique.virtualteacher.entities.Course;
-import com.henrique.virtualteacher.entities.CourseRating;
-import com.henrique.virtualteacher.entities.Lecture;
-import com.henrique.virtualteacher.entities.User;
+import com.henrique.virtualteacher.entities.*;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.CourseModel;
 import com.henrique.virtualteacher.models.EnumTopics;
 import com.henrique.virtualteacher.models.LectureModel;
-import com.henrique.virtualteacher.services.interfaces.CourseService;
-import com.henrique.virtualteacher.services.interfaces.LectureService;
-import com.henrique.virtualteacher.services.interfaces.RatingService;
-import com.henrique.virtualteacher.services.interfaces.UserService;
+import com.henrique.virtualteacher.models.Status;
+import com.henrique.virtualteacher.services.interfaces.*;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -39,6 +34,7 @@ private final CourseService courseService;
 private final UserService userService;
 private final LectureService lectureService;
 private final RatingService ratingService;
+private final AssignmentService assignmentService;
 private final Logger logger;
 private final ModelMapper mapper;
 
@@ -59,7 +55,30 @@ private final ModelMapper mapper;
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping()
+    @GetMapping("/enabled")
+    public ResponseEntity<Model> getAllEnabled(Principal principal,
+                                               Model model) {
+        User loggedUser = userService.getByEmail(principal.getName());
+
+        List<Course> enabledCourses = courseService.getByEnabled(true);
+        model.addAttribute("enabledCourses", enabledCourses);
+
+        return new ResponseEntity<>(model,HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/disabled")
+    ResponseEntity<Model> getAllDisabled(Principal principal,
+                                                     Model model) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+
+        List<Course> disabledCourses = courseService.getByEnabled(false);
+        model.addAttribute("disabledCourses", disabledCourses);
+
+        return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/all")
     public ResponseEntity<Model> getAll(Model model) {
 
         List<CourseModel> dtoList = mapper.map(courseService.getAll(), new TypeToken<List<CourseModel>>() {}.getType());
@@ -143,6 +162,28 @@ private final ModelMapper mapper;
 
         User loggedUser = userService.getByEmail(principal.getName());
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/lecture/{entryId}/submit")
+    public ResponseEntity<Model> submitAssignment(@PathVariable("id") int courseId,
+                                                  @PathVariable int entryId,
+                                                  @RequestParam String content,
+                                                  Principal principal,
+                                                  Model model) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+        Course course = courseService.getById(courseId);
+        Lecture lecture = lectureService.getByEntryIdAndCourseId(courseId, entryId);
+
+        Assignment assignment = new Assignment();
+        assignment.setUser(loggedUser);
+        assignment.setLecture(lecture);
+        assignment.setContent(content);
+        assignment.setStatus(Status.PENDING);
+
+        assignmentService.create(assignment, loggedUser);
+
+        return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/{id}/lecture/{entryId}")

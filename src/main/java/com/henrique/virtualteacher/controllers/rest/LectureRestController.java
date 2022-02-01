@@ -72,40 +72,28 @@ public class LectureRestController {
         return lectureModel;
     }
 
-    @DeleteMapping("/{id}")
+    @PutMapping("/{id}/update")
+    public void update(@PathVariable int id,
+                       @RequestBody LectureModel lectureModel,
+                       Principal principal) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+        Lecture lecture = lectureService.getById(id);
+
+        lectureService.update(lectureModel, lecture, loggedUser);
+
+        //todo: test
+    }
+
+    @DeleteMapping("/{id}/delete")
     public void delete(@PathVariable int id,
                        Principal principal) {
 
         User loggedUser = userService.getByEmail(principal.getName());
         Lecture lectureToDelete = lectureService.getById(id);
         lectureService.delete(lectureToDelete, loggedUser);
+
+        //todo: test
     }
-
-
-
-
-
-
-
-
-//    @PostMapping()
-//    public SearchDto create(@RequestBody LectureModel lectureModel,
-//                            Principal principal) {
-//
-//        User loggedUser = userService.getByEmail(principal.getName());
-//
-////        if (loggedUser.isNotTeacherOrAdmin()) {
-////            throw new UnauthorizedOperationException("User", "id", String.valueOf(loggedUser.getId()), "create", "Lecture", "Title", lectureModel.getTitle());
-////        }
-//
-//        lectureService.create(lectureModel, loggedUser);
-//        return new SearchDto(lectureModel.getTitle());
-//
-//
-//    }
-
-
-
-
 
 }

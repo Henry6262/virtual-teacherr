@@ -17,13 +17,15 @@ public interface AssignmentService {
 
     List<Assignment> getAllGradedForCourse(int courseId, User loggedUser);
 
+    List<Assignment> getAllPending(User loggedUser);
+
     double getUserAverageGradeForCourse(int userId, int courseId, User LoggedUser);
 
     void grade(Assignment assignment, User loggedUser, int grade);
 
     void create(Assignment assignment, User loggedUser); //fixme: needs to have teacher role to approve
 
-    void update(int newGrade, Assignment gradeToUpdate, User loggedUser);
+    void update(String newContent, Assignment gradeToUpdate, User loggedUser);
 
     void delete(Assignment assignment, User loggedUser);
 

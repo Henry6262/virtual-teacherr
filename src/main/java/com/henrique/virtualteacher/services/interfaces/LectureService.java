@@ -27,7 +27,7 @@ public interface LectureService {
 
     Lecture create(Lecture lecture, User loggedUser);
 
-    void update(Lecture lecture, User loggedUser);
+    void update(LectureModel lectureModel, Lecture lecture, User loggedUser);
 
     void delete(Lecture lecture, User loggedUser);
 
