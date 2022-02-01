@@ -3,6 +3,7 @@ package com.henrique.virtualteacher.services.interfaces;
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.CourseRating;
 import com.henrique.virtualteacher.entities.User;
+import com.henrique.virtualteacher.models.CourseModel;
 
 import java.util.List;
 
@@ -21,4 +22,5 @@ public interface RatingService {
     void delete(CourseRating courseRating, User loggedUser);
 
     double getAverageRatingForCourse(Course course);
+
 }

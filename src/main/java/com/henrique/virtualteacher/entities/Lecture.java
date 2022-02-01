@@ -56,4 +56,11 @@ public class Lecture {
     inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> usersCompleted;
 
+    @OneToMany
+    @JsonIgnore
+    @JoinTable(name = "assignments",
+    joinColumns = @JoinColumn(name = "lecture_id"),
+    inverseJoinColumns = @JoinColumn(name = "assignment_id"))
+    private List<Assignment> submittedAssignments;
+
 }

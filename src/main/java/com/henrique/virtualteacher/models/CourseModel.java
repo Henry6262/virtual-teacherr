@@ -31,5 +31,8 @@ public class CourseModel {
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate startingDate;
 
-    //enabled not necessary
+    @NotBlank
+    private double averageRating;
+
+    private int courseCompletionPercentage;
 }

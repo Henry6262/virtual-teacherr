@@ -13,10 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
@@ -44,6 +41,20 @@ public class AssignmentRestController {
         model.addAttribute("assignment", assignment);
 
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("{id}/grade")
+    public ResponseEntity<Model> gradeAssignment(@PathVariable int id,
+                                                 @RequestParam int grade,
+                                                 Principal principal,
+                                                 Model model) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+        Assignment toGrade = assignmentService.getById(id, loggedUser);
+
+        assignmentService.grade(toGrade, loggedUser, grade);
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/pending")                       //todo: this controller will be used by teachers to review all the assignments

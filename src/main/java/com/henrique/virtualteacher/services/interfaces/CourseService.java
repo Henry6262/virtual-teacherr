@@ -25,6 +25,8 @@ public interface CourseService {
 
     List<Course> getByDifficulty(int difficultyLevel);
 
+    int getPercentageOfCompletedCourseLectures(User loggedUser, Course course);
+
     void create(CourseModel course, User loggedUser);
 
     void update(CourseModel courseModel ,Course course , User loggedUser) throws ParseException;

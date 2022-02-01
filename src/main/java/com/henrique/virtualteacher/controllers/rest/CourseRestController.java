@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -39,6 +40,18 @@ private final Logger logger;
 private final ModelMapper mapper;
 
 
+    @GetMapping("/enrolled")
+    public ResponseEntity<Model> getUserEnrolledCourses(Principal principal,
+                                                        Model model) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+        List<CourseModel> courseModels = mapAllToModel(loggedUser.getEnrolledCourses(), loggedUser, true);
+
+        model.addAttribute("enrolledCourses", courseModels);
+
+
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Model> getById(@PathVariable int id,
                                          Model model) {
@@ -49,7 +62,7 @@ private final ModelMapper mapper;
 
         mapper.map(course, courseModel);
 
-        model.addAttribute("course", courseModel);
+        model.addAttribute("course", course);
         model.addAttribute("courseAverageRating", averageRating);
 
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
@@ -79,12 +92,31 @@ private final ModelMapper mapper;
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Model> getAll(Model model) {
+    public ResponseEntity<Model> getAll(Principal principal,
+                                        Model model) {
 
-        List<CourseModel> dtoList = mapper.map(courseService.getAll(), new TypeToken<List<CourseModel>>() {}.getType());
+        User loggedUser = userService.getByEmail(principal.getName());
+
+        List<Course> courses = courseService.getAll();
+        List<CourseModel> dtoList = mapAllToModel(courses, loggedUser, false);
 
         model.addAttribute("allCourses", dtoList);
         return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    private List<CourseModel> mapAllToModel(List<Course> courses, User loggedUser, boolean includeCompletionPercentage) {
+        List<CourseModel> dtoList = new ArrayList<>();
+
+        for (Course current : courses) {
+            CourseModel courseModel = mapper.map(current, new TypeToken<CourseModel>() {}.getType());
+            courseModel.setAverageRating(ratingService.getAverageRatingForCourse(current));
+
+            if (includeCompletionPercentage) {
+                courseModel.setCourseCompletionPercentage(courseService.getPercentageOfCompletedCourseLectures(loggedUser, current));
+            }
+            dtoList.add(courseModel);
+        }
+        return dtoList;
     }
 
     @PostMapping("/{id}/enable")
@@ -156,12 +188,18 @@ private final ModelMapper mapper;
     }
 
     @GetMapping("/{id}/lecture/{entryId}")
-    public ResponseEntity<LectureModel> getCourseLecture(@PathVariable int id,
+    public ResponseEntity<Model> getCourseLecture(@PathVariable int id,
                                                          @PathVariable int entryId,
-                                                         Principal principal) {
+                                                         Principal principal,
+                                                         Model model) {
 
         User loggedUser = userService.getByEmail(principal.getName());
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        Lecture lecture = lectureService.getByEntryIdAndCourseId(entryId, id);
+        LectureModel lectureModel = mapper.map(lecture, new TypeToken<LectureModel>() {}.getType());
+
+        model.addAttribute("courseLecture", lectureModel);
+        return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @PostMapping("/{id}/lecture/{entryId}/submit")
@@ -173,7 +211,7 @@ private final ModelMapper mapper;
 
         User loggedUser = userService.getByEmail(principal.getName());
         Course course = courseService.getById(courseId);
-        Lecture lecture = lectureService.getByEntryIdAndCourseId(courseId, entryId);
+        Lecture lecture = lectureService.getByEntryIdAndCourseId(entryId, courseId);
 
         Assignment assignment = new Assignment();
         assignment.setUser(loggedUser);
@@ -197,6 +235,8 @@ private final ModelMapper mapper;
         Lecture lecture = lectureService.getByEntryIdAndCourseId(entryId, id);
 
         courseService.verifyUserIsEnrolledToCourse(loggedUser, course);
+        //Todo: check if user has submitted assignment before completing the lecture
+        // dont do now as this makes testing way slower
         lectureService.completeLectureForUser(loggedUser, lecture);
 
         logger.info(String.format("User with id: %d has completed the lecture with entryId: %d for the Course with id %d", loggedUser.getId(), lecture.getEntryId(), course.getId()));

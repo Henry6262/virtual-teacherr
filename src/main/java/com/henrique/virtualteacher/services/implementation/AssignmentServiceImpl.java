@@ -6,17 +6,21 @@ import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
+import com.henrique.virtualteacher.models.CourseModel;
 import com.henrique.virtualteacher.models.Status;
 import com.henrique.virtualteacher.repositories.AssignmentRepository;
 import com.henrique.virtualteacher.repositories.UserRepository;
 import com.henrique.virtualteacher.services.interfaces.AssignmentService;
 import com.henrique.virtualteacher.services.interfaces.CourseService;
+import com.henrique.virtualteacher.services.interfaces.RatingService;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +33,9 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final CourseService courseService;
     private final ModelMapper modelMapper;
     private final Logger logger;
+    private final RatingService ratingService;
+
+
 
     @Override
     public Assignment getById(int id, User loggedUser) {
@@ -137,8 +144,7 @@ public class AssignmentServiceImpl implements AssignmentService {
             throw new UnauthorizedOperationException(String.format("User with id: {%d} is not authorized to create a Grade", loggedUser.getId()));
         }
 
-        loggedUser.addAssignment(assignment);
-        userRepository.save(loggedUser);
+        assignmentRepository.save(assignment);
     }
 
     @Override

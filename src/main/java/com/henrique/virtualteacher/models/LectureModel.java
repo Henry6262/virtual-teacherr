@@ -22,4 +22,6 @@ public class LectureModel {
     @NotNull
     private String assignmentText;
 
+    //todo: add lists
+
 }

@@ -6,6 +6,7 @@ import com.henrique.virtualteacher.models.EnumRoles;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -67,14 +68,13 @@ public class User {
     @JoinTable(name = "users_enrolled_courses",
         joinColumns = @JoinColumn(name = "user_id") ,
         inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private Set<Course> enrolledCourses;
+    private List<Course> enrolledCourses;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "assignments",
     joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "lecture_id"))
-    private Set<Assignment> assignments;
-
+    inverseJoinColumns = @JoinColumn(name = "assignment_id"))
+    private List<Assignment> assignments;
 
     public void enrollToCourse(Course course) {
         if (enrolledCourses.contains(course)){
@@ -107,8 +107,9 @@ public class User {
 
     public void addAssignment(Assignment assignment) {
         if (hasAssignment(assignment)) {
-            throw new ImpossibleOperationException(String.format("User with id: {%d}, already has a grade for lecture with id: {%d}", this.getId(), assignment.getLecture().getId()));
+            throw new ImpossibleOperationException(String.format("User with id: {%d}, has already submitted and assignment for lecture with id: {%d}", this.getId(), assignment.getLecture().getId()));
         }
+        assignments.add(assignment);
     }
 
     public boolean hasAssignment(Assignment assignment) {

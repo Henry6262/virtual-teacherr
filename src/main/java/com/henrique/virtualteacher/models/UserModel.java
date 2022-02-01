@@ -1,5 +1,6 @@
 package com.henrique.virtualteacher.models;
 
+import com.henrique.virtualteacher.entities.Assignment;
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.Lecture;
 import com.henrique.virtualteacher.entities.Role;
@@ -38,5 +39,8 @@ public class UserModel {
 
     @NotBlank
     private List<Course> enrolledCourses;
+
+    @NotBlank
+    private List<Assignment> assignments;
 
 }

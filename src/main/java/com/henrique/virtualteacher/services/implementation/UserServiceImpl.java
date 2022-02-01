@@ -179,8 +179,7 @@ public class UserServiceImpl implements UserService {
         toDelete.getEnrolledCourses().clear();
         toDelete.getCompletedCourses().clear();
 
-        //fixme -> will need to delete also the comments and the ratings
-
+        //fixme -> will need to delete also the comments, ratings and assignments
         userRepository.delete(toDelete);
     }
 

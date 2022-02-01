@@ -16,14 +16,12 @@ import com.henrique.virtualteacher.services.interfaces.LectureService;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +38,7 @@ public class CourseServiceImpl implements CourseService {
     private final ModelMapper mapper;
     private final Logger logger;
     private final LectureService lectureService;
+
 
 
     @Override

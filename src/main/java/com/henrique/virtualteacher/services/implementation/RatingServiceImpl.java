@@ -6,13 +6,17 @@ import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
+import com.henrique.virtualteacher.models.CourseModel;
 import com.henrique.virtualteacher.repositories.RatingRepository;
 import com.henrique.virtualteacher.services.interfaces.CourseService;
 import com.henrique.virtualteacher.services.interfaces.RatingService;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,6 +26,7 @@ public class RatingServiceImpl implements RatingService {
     private final RatingRepository ratingRepository;
     private final UserService userService;
     private final CourseService courseService;
+    private final ModelMapper modelMapper;
 
 
     @Override
@@ -42,13 +47,13 @@ public class RatingServiceImpl implements RatingService {
 
     public double getAverageRatingForCourse(Course course) {
 
-        int numberOfRatings = getAllByCourseId(course.getId()).size();
+        double numberOfRatings = getAllByCourseId(course.getId()).size();
 
-        int allRatingsSum = getAllByCourseId(course.getId())
+        double allRatingsSum = getAllByCourseId(course.getId())
                 .stream().mapToInt(CourseRating::getRating)
                 .sum();
 
-        return 1.0 * allRatingsSum / numberOfRatings;
+        return  allRatingsSum / numberOfRatings;
     }
 
     public void create(Course course, User loggedUser, int rating) {

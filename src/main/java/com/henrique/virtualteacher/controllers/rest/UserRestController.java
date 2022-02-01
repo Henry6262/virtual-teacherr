@@ -108,7 +108,7 @@ public class UserRestController {
 
         return "redirect:/auth/logout";
         //todo: needs testing , not tested yet, need to delete all the info related to the user in the
-        // foreign key tables
+        // foreign key tables, and also all assignments realated to the user
     }
 
 }
