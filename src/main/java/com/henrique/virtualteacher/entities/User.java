@@ -62,7 +62,7 @@ public class User {
     @JoinTable(name = "users_completed_courses",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "course_id")) //fixme -> this fixed my problem when adding
-    private Set<Course> completedCourses;
+    private List<Course> completedCourses;
 
     @ManyToMany()
     @JoinTable(name = "users_enrolled_courses",

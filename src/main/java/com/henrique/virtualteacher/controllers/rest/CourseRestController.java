@@ -40,8 +40,23 @@ private final Logger logger;
 private final ModelMapper mapper;
 
 
+    private List<CourseModel> mapAllToModel(List<Course> courses, User loggedUser, boolean includeCompletionPercentage) {
+        List<CourseModel> dtoList = new ArrayList<>();
+
+        for (Course current : courses) {
+            CourseModel courseModel = mapper.map(current, new TypeToken<CourseModel>() {}.getType());
+            courseModel.setAverageRating(ratingService.getAverageRatingForCourse(current));
+
+            if (includeCompletionPercentage) {
+                courseModel.setCourseCompletionPercentage(courseService.getPercentageOfCompletedCourseLectures(loggedUser, current));
+            }
+            dtoList.add(courseModel);
+        }
+        return dtoList;
+    }
+
     @GetMapping("/enrolled")
-    public ResponseEntity<Model> getUserEnrolledCourses(Principal principal,
+    public ResponseEntity<Model> enrolledCourses(Principal principal,
                                                         Model model) {
 
         User loggedUser = userService.getByEmail(principal.getName());
@@ -49,7 +64,19 @@ private final ModelMapper mapper;
 
         model.addAttribute("enrolledCourses", courseModels);
 
+        return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
+    }
 
+    @GetMapping("/completed")
+    public ResponseEntity<Model> completedCourses(Principal principal,
+                                                  Model model) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+
+        List<CourseModel> courseModels = mapAllToModel(loggedUser.getCompletedCourses(), loggedUser, true);
+        model.addAttribute("completedCourses", courseModels);
+
+        return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/{id}")
@@ -102,21 +129,6 @@ private final ModelMapper mapper;
 
         model.addAttribute("allCourses", dtoList);
         return new ResponseEntity<>(model, HttpStatus.OK);
-    }
-
-    private List<CourseModel> mapAllToModel(List<Course> courses, User loggedUser, boolean includeCompletionPercentage) {
-        List<CourseModel> dtoList = new ArrayList<>();
-
-        for (Course current : courses) {
-            CourseModel courseModel = mapper.map(current, new TypeToken<CourseModel>() {}.getType());
-            courseModel.setAverageRating(ratingService.getAverageRatingForCourse(current));
-
-            if (includeCompletionPercentage) {
-                courseModel.setCourseCompletionPercentage(courseService.getPercentageOfCompletedCourseLectures(loggedUser, current));
-            }
-            dtoList.add(courseModel);
-        }
-        return dtoList;
     }
 
     @PostMapping("/{id}/enable")
