@@ -39,8 +39,6 @@ public class CourseServiceImpl implements CourseService {
     private final Logger logger;
     private final LectureService lectureService;
 
-
-
     @Override
     public void create(CourseModel course, User loggedUser) {
 

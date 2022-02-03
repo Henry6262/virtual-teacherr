@@ -35,8 +35,6 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final Logger logger;
     private final RatingService ratingService;
 
-
-
     @Override
     public Assignment getById(int id, User loggedUser) {
 
@@ -63,6 +61,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         checkUserIsAuthorized(loggedUser, assignment);
 
         return assignment;
+
     }
 
     @Override

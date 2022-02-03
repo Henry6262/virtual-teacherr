@@ -97,9 +97,11 @@ public class UserServiceImpl implements UserService {
        return user;
     }
 
-    public boolean verifyLoginInfo(String email, String password) {
+    public void verifyLoginInfo(String email, String password) {
         User existingUser = getByEmail(email);
-        return encoder.matches(password, existingUser.getPassword());
+        if (!encoder.matches(password, existingUser.getPassword())) {
+            throw new ImpossibleOperationException("Password is incorrect");
+        }
     }
 
     private User mapFromRegisterModel(RegisterUserModel register) {

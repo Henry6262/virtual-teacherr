@@ -24,7 +24,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 2em;
-    background: white;
+    background: darkred;
 }
 .modal-window header {
     font-weight: bold;
@@ -73,6 +73,7 @@ a {
 
 .modal-window > div {
     border-radius: 1rem;
+    color: antiquewhite;
 }
 
 .modal-window div:not(:last-of-type) {

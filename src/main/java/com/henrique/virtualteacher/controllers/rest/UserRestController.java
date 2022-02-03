@@ -2,6 +2,7 @@ package com.henrique.virtualteacher.controllers.rest;
 
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.User;
+import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.models.RegisterUserModel;
 import com.henrique.virtualteacher.models.SearchDto;
 import com.henrique.virtualteacher.models.UserModel;
@@ -65,27 +66,35 @@ public class UserRestController {
 
     @GetMapping("/search")
     public UserModel searchByUsername(@RequestParam("keyword") SearchDto searchDto,
-                                      Model model,
-                                      Principal principal){
+                                      Model model){
 
         model.addAttribute("name",searchDto);
 
         User toFind = userService.getByEmail(searchDto.getKeyword());
+
         return mapper.map(toFind, new TypeToken<UserModel>() {}.getType());
     }
 
     @GetMapping("/login")
-    public boolean verifyLoginInfo(@RequestParam("keyword")SearchDto email,
+    public ResponseEntity<Model> verifyLoginInfo(@RequestParam("keyword")SearchDto email,
                                    @RequestParam("password") SearchDto password,
                                    Model model) {
 
-        return userService.verifyLoginInfo(email.getKeyword(), password.getKeyword());
+        model.addAttribute("success", "success");
+
+         userService.verifyLoginInfo(email.getKeyword(), password.getKeyword());
+         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
     }
 
 
     @PostMapping("/register")
-    public void create(@RequestBody @Valid RegisterUserModel registerUserModel) {
+    public ResponseEntity<Model> create(@RequestBody RegisterUserModel registerUserModel,
+                                        Model model) {
+
         userService.create(registerUserModel);
+
+        model.addAttribute("success", "success");
+        return new ResponseEntity<>(model,HttpStatus.OK);
     }
 
     @PutMapping()

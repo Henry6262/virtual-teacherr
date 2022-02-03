@@ -23,7 +23,7 @@ public interface UserService extends UserDetailsService {
 
     User create(RegisterUserModel register);
 
-    boolean verifyLoginInfo(String email, String password);
+    void verifyLoginInfo(String email, String password);
 
     void update(UserUpdateModel updateModel, User loggedUser);
 

@@ -46,8 +46,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/resources/**","/static/**", "/css/**", "/js/**", "**/.js")
+                .antMatchers("/resources/**","/static/**", "/css/**", "**/js/", "/js/**", "**/.js")
                 .permitAll()
+                .antMatchers("/admins")
+                .authenticated()
                 .antMatchers(HttpMethod.POST, "/api/courses", "/api/courses/{id}")
                 .hasAnyAuthority("ADMIN", "TEACHER")
                 .antMatchers(HttpMethod.POST, "/api/courses/{id}/rate", "/api/courses/{id}/complete", "/api/courses/{id}/enroll",
@@ -64,15 +66,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/courses/enable", "/api/courses/disable")
                 .hasAnyAuthority("ADMIN", "TEACHER")
 
-                .antMatchers(HttpMethod.GET,"/api/users/{id}", "/api/users/search")
+                .antMatchers(HttpMethod.GET, "/api/users/search", "/api/users/login")
+                .permitAll()
+                .antMatchers(HttpMethod.GET,"/api/users/{id}")
                 .authenticated()
-                .antMatchers(HttpMethod.GET, "/api/users/")
+                .antMatchers(HttpMethod.GET, "/api/users")
                 .hasAnyAuthority("TEACHER")
                 .antMatchers(HttpMethod.POST, "/api/users/register")
                 .permitAll()
                 .antMatchers(HttpMethod.PUT, "/api/users/")
                 .authenticated()
-                .antMatchers(HttpMethod.DELETE, "/api/users/")
+                .antMatchers(HttpMethod.DELETE, "/api/users")
                 .authenticated()
 
                 .antMatchers(HttpMethod.GET, "/api/lectures")
@@ -94,6 +98,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "api/assignments/{id}/grade")
                 .hasAnyAuthority("TEACHER", "ADMIN")
 
+                .antMatchers(HttpMethod.POST, "/auth/login")
+                .permitAll()
                 .antMatchers(HttpMethod.GET, "/auth/login")
                 .permitAll()
                 .and()
@@ -108,6 +114,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //todo: in the future make pop up that shows when logout is completed saying logout successful
                 .permitAll();
 
+
+
         http.httpBasic();
 
     }
@@ -115,7 +123,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers( "/resources/**","/static/**", "/css/**", "/js/**", "**/.js/");
+        web.ignoring().antMatchers( "/resources/**","/static/**", "/static/js/**", "/css/**", "/js/**", "**/.js/");
     }
 
     // "/resources/static/css/**/*", "/resources/static/**/*",
