@@ -1,10 +1,15 @@
 package com.henrique.virtualteacher;
 
-import com.henrique.virtualteacher.entities.Role;
-import com.henrique.virtualteacher.entities.User;
+import com.henrique.virtualteacher.entities.*;
 import com.henrique.virtualteacher.models.EnumRoles;
+import com.henrique.virtualteacher.models.EnumTopics;
 import com.henrique.virtualteacher.models.RegisterUserModel;
+import com.henrique.virtualteacher.models.Status;
+import org.springframework.expression.spel.ast.Assign;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class Helpers {
@@ -19,6 +24,92 @@ public class Helpers {
 
     public static User createMockTeacher() {
         return createTeacher();
+    }
+
+    public static Course createMockCourse() {
+        return createCourse();
+    }
+
+    public static Lecture createMockLecture(Course course) {
+        return createLecture(course);
+    }
+
+    public static Assignment createMockPendingAssignment() {
+        return createAssignment(Status.PENDING);
+    }
+
+    public static Assignment createMockGradedAssignment() {
+        return createAssignment(Status.GRADED);
+    }
+
+    public static List<Course> createMockCourseList() {
+        List<Course> mockCourseList = new ArrayList<>();
+        for (int i = 0; i < 5 ; i++) {
+            mockCourseList.add(createCourse());
+        }
+        return mockCourseList;
+    }
+
+    public static List<Lecture> createMockLectureList(Course course){
+        List<Lecture> mockLectureList = new ArrayList<>();
+        int entryId = 1;
+        for (int i = 0; i < 4 ; i++) {
+            Lecture current = createLecture(course);
+            current.setEntryId(entryId++);
+            mockLectureList.add(current);;
+        }
+        return mockLectureList;
+    }
+
+    private static Assignment createAssignment(Status status) {
+        Assignment assignment = new Assignment();
+        assignment.setId(1);
+        assignment.setContent("content");
+        assignment.setStatus(status);
+        assignment.setLecture(createLecture());
+        int grade = status == Status.GRADED ? 100 : 0;
+        assignment.setGrade(grade);
+        assignment.setUser(createUser());
+        return assignment;
+    }
+
+    private static Lecture createLecture(Course course) {
+        Lecture lecture =  new Lecture();
+        lecture.setId(1);
+        lecture.setCourse(course);
+        lecture.setTitle("title");
+        lecture.setDescription("description");
+        lecture.setAssignmentText("do a megatask");
+        lecture.setEntryId(1);
+        lecture.setEnabled(true);
+        lecture.setVideoLink("http//goHome.com");
+        return lecture;
+    }
+
+    private static Lecture createLecture() {
+        Lecture lecture =  new Lecture();
+        lecture.setId(1);
+        lecture.setCourse(createCourse());
+        lecture.setTitle("title");
+        lecture.setDescription("description");
+        lecture.setAssignmentText("do a megatask");
+        lecture.setEntryId(1);
+        lecture.setEnabled(true);
+        lecture.setVideoLink("http//goHome.com");
+        return lecture;
+    }
+
+    private static Course createCourse() {
+        Course course = new Course();
+        course.setId(1);
+        course.setTitle("info");
+        course.setDescription("description");
+        course.setDifficulty(5);
+        course.setTopic(EnumTopics.JAVA);
+        course.setEnabled(true);
+        course.setCourseLectures(new ArrayList<>());
+        course.setStartingDate(LocalDate.now());
+        return course;
     }
 
     public static RegisterUserModel createUserRegisterModel() {
@@ -54,6 +145,10 @@ public class Helpers {
     private static User createUser() {
         User user = new User();
         addBasicInfo(user);
+        user.setEnrolledCourses(new ArrayList<>());
+        user.setAssignments(new ArrayList<>());
+        user.setCompletedCourses(new ArrayList<>());
+        user.setCompletedLectures(new HashSet<>());
         user.setRoles(List.of(new Role(1,EnumRoles.STUDENT)));
 
         return user;

@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,11 +28,13 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+
 public class CourseServiceImpl implements CourseService {
 
     private static final String ALREADY_ENROLLED_MSG = "User with id: %d is already enrolled in course with id: %d";
     private static final String USER_UNAUTHORIZED_ERROR_MSG = "You are not authorized to perform this operation";
 
+    @Autowired
     private final CourseRepository courseRepository;
     private final UserService userService;
     private final UserRepository userRepository;
@@ -52,7 +55,6 @@ public class CourseServiceImpl implements CourseService {
         mapCourse(course, newCourse);
 
         courseRepository.save(newCourse);
-
     }
 
     private void mapCourse(CourseModel dto, Course newCourse) {
@@ -103,7 +105,7 @@ public class CourseServiceImpl implements CourseService {
     public void enableCourse(Course course, User loggedUser) {
 
         if (loggedUser.isNotTeacherOrAdmin()) {
-            throw new EntityNotFoundException("");
+            throw new UnauthorizedOperationException("");
         }
 
         if (course.isEnabled()) {
@@ -117,7 +119,7 @@ public class CourseServiceImpl implements CourseService {
     public void disableCourse(Course course, User loggedUser) {
 
         if (loggedUser.isNotTeacherOrAdmin()) {
-            throw new EntityNotFoundException("");
+            throw new UnauthorizedOperationException("");
         }
 
         if (!course.isEnabled()) {
@@ -166,7 +168,7 @@ public class CourseServiceImpl implements CourseService {
 
         verifyUserIsEnrolledToCourse(user, course);
 
-        List<Lecture> courseLectures = lectureService.getAllByCourseId(course.getId());
+        List<Lecture> courseLectures = course.getCourseLectures();
 
         List<Lecture> userCompletedCourseLectures =  user.getCompletedLectures().stream()
                 .filter(lecture -> lecture.getCourse().getId() == course.getId())
@@ -207,24 +209,20 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> getAll() {
         return courseRepository.findAll();
-        //bug if there are no courses
     }
 
     @Override
-    public List<Course> getByTopic(EnumTopics topic) {
-        return courseRepository.findByTopic(topic)
-                .orElseThrow(() -> new EntityNotFoundException("course", "topic", topic.name()));
+    public List<Course> getAllByTopic(EnumTopics topic) {
+        return courseRepository.findByTopic(topic);
     }
 
     @Override
-    public List<Course> getByEnabled(boolean isEnabled) {
-        return courseRepository.findByEnabled(isEnabled)
-                .orElseThrow(() -> new EntityNotFoundException("course", "enabled", String.valueOf(isEnabled)));
+    public List<Course> getAllByEnabled(boolean isEnabled) {
+        return courseRepository.findByEnabled(isEnabled);
     }
 
     @Override
-    public List<Course> getByDifficulty(int difficultyLevel) {
-        return courseRepository.findByDifficulty(difficultyLevel)
-                .orElseThrow(() -> new EntityNotFoundException("course", "difficulty", String.valueOf(difficultyLevel)));
+    public List<Course> getAllByDifficulty(int difficultyLevel) {
+        return courseRepository.findByDifficulty(difficultyLevel);
     }
 }

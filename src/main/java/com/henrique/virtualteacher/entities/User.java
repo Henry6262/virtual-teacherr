@@ -77,16 +77,19 @@ public class User {
     private List<Assignment> assignments;
 
     public void enrollToCourse(Course course) {
-        if (enrolledCourses.contains(course)){
+        if (isEnrolledInCourse(course)){
             throw new ImpossibleOperationException(String.format("User with id: {%d}, Is already enrolled in course with id: {%d}", this.getId(), course.getId()));
-        } else if (completedCourses.contains(course)) {
+        } else if (hasCompletedCourse(course)) {
             throw new ImpossibleOperationException(String.format("User with id {%d}, has already completed Course with id {%d}", this.getId(), course.getId()));
         }
         enrolledCourses.add(course);
     }
 
     public void completeLecture(Lecture lecture) {
-        if (completedLectures.contains(lecture)) {
+        if (!isEnrolledInCourse(lecture.getCourse())) {
+            throw new ImpossibleOperationException(String.format("User with id: {%d}, is not enrolled in Course with id: {%d}", this.getId(), lecture.getCourse().getId()));
+        }
+        if (hasCompletedLecture(lecture)) {
             throw new ImpossibleOperationException(String.format("Lecture with id:{%d}, has already been completed", lecture.getId()));
         }
         completedLectures.add(lecture);
@@ -94,11 +97,11 @@ public class User {
 
     public void completeCourse(Course course) {
 
-        if (!enrolledCourses.contains(course)) {
+        if (!isEnrolledInCourse(course)) {
             throw new ImpossibleOperationException(String.format("User with id: {%d},cannot complete Course with id: {%d}, because he is not enrolled", this.getId(), course.getId()));
         }
 
-        if (completedCourses.contains(course)) {
+        if (hasCompletedCourse(course)) {
             throw new ImpossibleOperationException(String.format("User with id: {%d}, has already completed Course with id: {%d}", this.getId(), course.getId()));
         }
 
@@ -122,6 +125,11 @@ public class User {
                 .anyMatch(course1 -> course.getId() == course.getId());
     }
 
+    public boolean hasCompletedLecture(Lecture lecture) {
+        return getCompletedLectures().stream()
+                .anyMatch(l -> l.getId() == lecture.getId());
+    }
+
     public boolean isEnrolledInCourse(Course course) {
         return getEnrolledCourses().stream()
                 .anyMatch(c -> c.getId() == course.getId());
@@ -143,10 +151,7 @@ public class User {
     }
 
     public boolean isNotTeacherOrAdmin() {
-        if (!this.isTeacher() && !this.isAdmin()) {
-            return true;
-        }
-        return false;
+        return !this.isTeacher() && !this.isAdmin();
     }
 
 }

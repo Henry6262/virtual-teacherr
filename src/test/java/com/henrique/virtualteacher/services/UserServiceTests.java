@@ -1,7 +1,8 @@
 package com.henrique.virtualteacher.services;
 
 import com.henrique.virtualteacher.Helpers;
-import com.henrique.virtualteacher.configurations.BeansConfig;
+import com.henrique.virtualteacher.entities.Course;
+import com.henrique.virtualteacher.entities.Lecture;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
@@ -31,7 +32,25 @@ public class UserServiceTests {
     @InjectMocks
     UserServiceImpl userService;
 
+    @Test
+    void completeLecture_should_throwException_when_userIsNotEnrolledInCourse() {
+        User mockUser = Helpers.createMockUser();
+        Course mockCourse = Helpers.createMockCourse();
+        Lecture mockLecture = Helpers.createMockLecture(mockCourse);
 
+        Assertions.assertThrows(ImpossibleOperationException.class, () -> mockUser.completeLecture(mockLecture));
+    }
+
+    @Test
+    void completeLecture_shouldThrowException_when_userHasCompletedLecture() {
+        User mockUser = Helpers.createMockUser();
+        Course mockCourse = Helpers.createMockCourse();
+        Lecture mockLecture = Helpers.createMockLecture(mockCourse);
+        mockUser.enrollToCourse(mockCourse);
+        mockUser.completeLecture(mockLecture);
+
+        Assertions.assertThrows(ImpossibleOperationException.class,() -> mockUser.completeLecture(mockLecture));
+    }
 
     @Test
     public void getById_shouldThrowException_when_UserIsNotOwner_nor_admin_or_teacher() {
@@ -50,6 +69,24 @@ public class UserServiceTests {
         User initiator = Helpers.createMockUser();
 
         Assertions.assertThrows(EntityNotFoundException.class, () -> userService.getById(user.getId(), initiator));
+    }
+
+    @Test
+    public void getById_should_returnUser_when_userExists() {
+        User mockUser = Helpers.createMockUser();
+        User mockTeacher = Helpers.createMockTeacher();
+
+        Mockito.when(userRepository.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
+
+        User result = userService.getById(mockUser.getId(), mockTeacher);
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(mockUser.getId(), result.getId()),
+                () -> Assertions.assertEquals(mockUser.getEmail(), result.getEmail()),
+                () -> Assertions.assertEquals(mockUser.getPassword(), result.getPassword()),
+                () -> Assertions.assertEquals(mockUser.getFirstName(), result.getFirstName()),
+                () -> Assertions.assertEquals(mockUser.getLastName(), result.getLastName())
+        );
     }
 
     @Test
@@ -81,7 +118,7 @@ public class UserServiceTests {
         User result = userService.getById(user.getId(), teacher);
 
         Assertions.assertAll(
-                () ->Assertions.assertEquals(user.getId() , result.getId()),
+                () ->Assertions.assertEquals(user.getId(), result.getId()),
                 () -> Assertions.assertEquals(user.getFirstName(), result.getFirstName()),
                 () -> Assertions.assertEquals(user.getLastName(), result.getLastName()),
                 () -> Assertions.assertEquals(user.getEmail(), result.getEmail()),

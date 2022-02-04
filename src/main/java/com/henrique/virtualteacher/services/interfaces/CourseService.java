@@ -19,11 +19,11 @@ public interface CourseService {
 
     List<Course> getAll ();
 
-    List<Course> getByTopic(EnumTopics topic);
+    List<Course> getAllByTopic(EnumTopics topic);
 
-    List<Course> getByEnabled(boolean isEnabled);
+    List<Course> getAllByEnabled(boolean isEnabled);
 
-    List<Course> getByDifficulty(int difficultyLevel);
+    List<Course> getAllByDifficulty(int difficultyLevel);
 
     int getPercentageOfCompletedCourseLectures(User loggedUser, Course course);
 

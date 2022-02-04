@@ -16,9 +16,9 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     Optional<Course> findByTitle(String title);
 
-    Optional<List<Course>> findByEnabled(boolean isEnabled);
+    List<Course> findByEnabled(boolean isEnabled);
 
-    Optional<List<Course>> findByTopic(EnumTopics topic);
+    List<Course> findByTopic(EnumTopics topic);
 
-    Optional<List<Course>> findByDifficulty(int difficultyLevel);
+    List<Course> findByDifficulty(int difficultyLevel);
 }

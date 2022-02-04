@@ -1,10 +1,8 @@
 package com.henrique.virtualteacher.controllers.rest;
 
 import com.henrique.virtualteacher.entities.*;
-import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.CourseModel;
-import com.henrique.virtualteacher.models.EnumTopics;
 import com.henrique.virtualteacher.models.LectureModel;
 import com.henrique.virtualteacher.models.Status;
 import com.henrique.virtualteacher.services.interfaces.*;
@@ -12,13 +10,10 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -100,7 +95,7 @@ private final ModelMapper mapper;
                                                Model model) {
         User loggedUser = userService.getByEmail(principal.getName());
 
-        List<Course> enabledCourses = courseService.getByEnabled(true);
+        List<Course> enabledCourses = courseService.getAllByEnabled(true);
         model.addAttribute("enabledCourses", enabledCourses);
 
         return new ResponseEntity<>(model,HttpStatus.ACCEPTED);
@@ -112,7 +107,7 @@ private final ModelMapper mapper;
 
         User loggedUser = userService.getByEmail(principal.getName());
 
-        List<Course> disabledCourses = courseService.getByEnabled(false);
+        List<Course> disabledCourses = courseService.getAllByEnabled(false);
         model.addAttribute("disabledCourses", disabledCourses);
 
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
