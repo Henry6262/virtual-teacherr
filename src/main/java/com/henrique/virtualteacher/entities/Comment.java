@@ -1,6 +1,7 @@
 package com.henrique.virtualteacher.entities;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +12,6 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-
 @Table(name = "comments")
 public class Comment {
 
@@ -20,15 +20,20 @@ public class Comment {
     @Column(name = "id")
     private int id;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @OneToOne
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @OneToOne
-    @JoinColumn(name = "lecture_id")
-    private Lecture lecture;
-
     @Column(name = "content")
     private String content;
 
+    public Comment(User creator, Course course, String comment) {
+        this.user = creator;
+        this.course = course;
+        this.content = comment;
+    }
 }

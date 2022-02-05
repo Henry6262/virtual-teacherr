@@ -1,18 +1,19 @@
 package com.henrique.virtualteacher;
 
 import com.henrique.virtualteacher.entities.*;
-import com.henrique.virtualteacher.models.EnumRoles;
-import com.henrique.virtualteacher.models.EnumTopics;
-import com.henrique.virtualteacher.models.RegisterUserModel;
-import com.henrique.virtualteacher.models.Status;
+import com.henrique.virtualteacher.models.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.expression.spel.ast.Assign;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Helpers {
+
+    private final static ModelMapper mapper = new ModelMapper();
 
     public static User createMockUser() {
         return createUser();
@@ -42,6 +43,43 @@ public class Helpers {
         return createAssignment(Status.GRADED);
     }
 
+    public static Comment createMockComment () {
+        return createComment();
+    }
+
+    public static CommentModel createMockCommentModel() {
+        CommentModel commentModel = new CommentModel();
+        mapper.map(createComment(), commentModel);
+        return commentModel;
+    }
+
+    private static Comment createComment() {
+        Comment comment = new Comment();
+        comment.setCourse(createMockCourse());
+        comment.setUser(createUser());
+        comment.setContent("content");
+        comment.setId(1);
+        return comment;
+    }
+
+
+
+    public static CourseModel createMockCourseModel(String courseTitle) {
+        Course course = createCourse();
+        CourseModel courseModel = new CourseModel();
+        mapper.map(course, courseModel);
+        courseModel.setTitle(courseTitle);
+        return courseModel;
+    }
+
+    public static Set<Comment> createMockCommentModelList() {
+        Set<Comment> commentModels = new HashSet<>();
+        for (int i = 0; i < 4 ; i++) {
+            commentModels.add(createMockComment());
+        }
+        return commentModels;
+    }
+
     public static List<Course> createMockCourseList() {
         List<Course> mockCourseList = new ArrayList<>();
         for (int i = 0; i < 5 ; i++) {
@@ -59,6 +97,12 @@ public class Helpers {
             mockLectureList.add(current);;
         }
         return mockLectureList;
+    }
+
+    public static User createUserFromRegisterModel(RegisterUserModel registerUserModel) {
+        User user = new User();
+        mapper.map(registerUserModel, user);
+        return user;
     }
 
     private static Assignment createAssignment(Status status) {
@@ -125,6 +169,7 @@ public class Helpers {
     registerModel.setEmail("test123@gmai.com");
     return registerModel;
     }
+
 
     private static User createTeacher() {
         User teacher = new User();

@@ -81,6 +81,7 @@ public class UserRestController {
                                    Model model) {
 
         model.addAttribute("success", "success");
+        model.addAttribute("wow", userService.getByEmail("henri@gmail.com"));
 
          userService.verifyLoginInfo(email.getKeyword(), password.getKeyword());
          return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
@@ -88,13 +89,19 @@ public class UserRestController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<Model> create(@RequestBody RegisterUserModel registerUserModel,
+    public ResponseEntity<Boolean> create(@RequestBody RegisterUserModel registerUserModel,
                                         Model model) {
 
         userService.create(registerUserModel);
 
-        model.addAttribute("success", "success");
-        return new ResponseEntity<>(model,HttpStatus.OK);
+
+        return new ResponseEntity<>(true,HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Boolean> login(@RequestParam("keyword") SearchDto keyword,
+                                         @RequestParam("password") SearchDto password) {
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
     }
 
     @PutMapping()

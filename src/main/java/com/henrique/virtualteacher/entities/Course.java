@@ -77,9 +77,10 @@ public class Course {
     private List<CourseRating> ratings;
 
     @OneToMany
+    @JsonIgnore
     @JoinTable(name = "comments",
     joinColumns = @JoinColumn(name = "course_id"),
-    inverseJoinColumns = @JoinColumn(name = "user_id"))
+    inverseJoinColumns = @JoinColumn(name = "id"))
     private List<Comment> comments;
 
     public boolean isEnabled() {

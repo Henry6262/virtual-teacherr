@@ -16,7 +16,7 @@ import java.security.Principal;
 @RequestMapping("/")
 public class HomeMvcController {
 
-    @GetMapping
+    @GetMapping("/")
     public String showHomePage() {
         return "index";
     }

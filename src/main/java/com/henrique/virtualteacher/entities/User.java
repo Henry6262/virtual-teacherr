@@ -76,6 +76,16 @@ public class User {
     inverseJoinColumns = @JoinColumn(name = "assignment_id"))
     private List<Assignment> assignments;
 
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinTable(name = "comments",
+            joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<Comment> comments;
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+    }
+
     public void enrollToCourse(Course course) {
         if (isEnrolledInCourse(course)){
             throw new ImpossibleOperationException(String.format("User with id: {%d}, Is already enrolled in course with id: {%d}", this.getId(), course.getId()));

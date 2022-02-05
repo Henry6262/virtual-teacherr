@@ -35,7 +35,6 @@
 
 .form {
     position: relative;
-    z-index: 1;
     background: #FFFFFF;
     max-width: 300px;
     margin: 0 auto 70px;

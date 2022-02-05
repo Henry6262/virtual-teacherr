@@ -5,9 +5,11 @@ import com.henrique.virtualteacher.VirtualTeacherApplication;
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.Lecture;
 import com.henrique.virtualteacher.entities.User;
+import com.henrique.virtualteacher.exceptions.DuplicateEntityException;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
+import com.henrique.virtualteacher.models.CourseModel;
 import com.henrique.virtualteacher.models.EnumTopics;
 import com.henrique.virtualteacher.repositories.CourseRepository;
 import com.henrique.virtualteacher.repositories.LectureRepository;
@@ -25,25 +27,28 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = VirtualTeacherApplication.class)
-
 public class CourseServiceTests {
 
+
     @Mock
-    private CourseRepository courseRepository;
+    CourseRepository courseRepository;
     @Mock
-    private LectureRepository lectureRepository;
+    LectureRepository lectureRepository;
     @Mock
     LectureServiceImpl lectureService;
+    @Mock
+    ModelMapper modelMapper;
 
     @InjectMocks
     CourseServiceImpl courseService;
@@ -93,9 +98,9 @@ public class CourseServiceTests {
         List<Course> mockCourses = Helpers.createMockCourseList();
 
         Mockito.when(courseRepository.findByTopic(EnumTopics.JAVA)).thenReturn(mockCourses);
-        courseService.getAllByTopic(EnumTopics.JAVA);
-        Mockito.verify(courseRepository, Mockito.times(1))
-                .findByTopic(EnumTopics.JAVA);
+        List<Course> result = courseService.getAllByTopic(EnumTopics.JAVA);
+
+        Assertions.assertEquals(mockCourses.size(), result.size());
     }
 
     @Test
@@ -218,6 +223,30 @@ public class CourseServiceTests {
         Course mockCourse = Helpers.createMockCourse();
 
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> courseService.delete(mockCourse, mockUser));
+    }
+
+    @Test
+    public void update_shouldThrowException_when_TitleAlreadyExists() {
+        User mockTeacher = Helpers.createMockTeacher();
+        Course mockToUpdate = Helpers.createMockCourse();
+        Course existingCourse =Helpers.createMockCourse();
+        existingCourse.setTitle("javaTron");
+        CourseModel courseModel = Helpers.createMockCourseModel("javaTron");
+
+        Mockito.when(courseRepository.findByTitle(courseModel.getTitle())).thenReturn(Optional.of(existingCourse));
+        Assertions.assertThrows(DuplicateEntityException.class, () -> courseService.update(courseModel,mockToUpdate,mockTeacher));
+    }
+
+    @Test
+    public void create_should_throwException_when_titleAlreadyExists() {
+        User mockUser = Helpers.createMockTeacher();
+        CourseModel mockCourseModel =  Helpers.createMockCourseModel("Eloquent js");
+        Course mockExistingCourse = Helpers.createMockCourse();
+        mockExistingCourse.setTitle("Eloquent js");
+
+        Mockito.when(courseRepository.findByTitle(mockCourseModel.getTitle())).thenReturn(Optional.of(mockExistingCourse));
+
+        Assertions.assertThrows(DuplicateEntityException.class, () -> courseService.create(mockCourseModel, mockUser));
     }
 
 

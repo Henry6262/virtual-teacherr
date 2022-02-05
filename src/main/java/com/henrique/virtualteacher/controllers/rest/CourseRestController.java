@@ -2,6 +2,7 @@ package com.henrique.virtualteacher.controllers.rest;
 
 import com.henrique.virtualteacher.entities.*;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
+import com.henrique.virtualteacher.models.CommentModel;
 import com.henrique.virtualteacher.models.CourseModel;
 import com.henrique.virtualteacher.models.LectureModel;
 import com.henrique.virtualteacher.models.Status;
@@ -12,14 +13,18 @@ import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.StreamingHttpOutputMessage;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -31,6 +36,7 @@ private final UserService userService;
 private final LectureService lectureService;
 private final RatingService ratingService;
 private final AssignmentService assignmentService;
+private final CommentService commentService;
 private final Logger logger;
 private final ModelMapper mapper;
 
@@ -75,8 +81,8 @@ private final ModelMapper mapper;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Model> getById(@PathVariable int id,
-                                         Model model) {
+    public ResponseEntity<ModelAndView> getById(@PathVariable int id,
+                                         ModelAndView model) {
 
         Course course = courseService.getById(id);
         CourseModel courseModel = new CourseModel();
@@ -84,8 +90,9 @@ private final ModelMapper mapper;
 
         mapper.map(course, courseModel);
 
-        model.addAttribute("course", course);
-        model.addAttribute("courseAverageRating", averageRating);
+        model.addObject("course", course);
+        model.addObject("courseAverageRating", averageRating);
+        model.addObject("courseComments", commentService.getAllForCourse(id));
 
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
     }
@@ -124,6 +131,25 @@ private final ModelMapper mapper;
 
         model.addAttribute("allCourses", dtoList);
         return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<Set<CommentModel>> getCourseComments(@PathVariable int id) {
+        return new ResponseEntity<>(commentService.getAllForCourse(id), HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<Boolean> createCourseComment(@PathVariable int id,
+                                                       @RequestParam String comment,
+                                                       Principal principal) {
+        User loggedUser = userService.getByEmail(principal.getName());
+        Course course = courseService.getById(id);
+
+        if (comment == null || comment.trim().equals("")) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "comment is blank");
+        }
+        commentService.create(loggedUser, course, comment);
+        return new ResponseEntity<>(true, HttpStatus.CREATED);
     }
 
     @PostMapping("/{id}/enable")

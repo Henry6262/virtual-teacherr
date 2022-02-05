@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -35,4 +36,6 @@ public class CourseModel {
     private double averageRating;
 
     private int courseCompletionPercentage;
+
+    private Set<CommentModel> comments;
 }

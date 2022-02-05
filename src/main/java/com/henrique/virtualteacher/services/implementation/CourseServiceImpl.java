@@ -28,13 +28,11 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-
 public class CourseServiceImpl implements CourseService {
 
     private static final String ALREADY_ENROLLED_MSG = "User with id: %d is already enrolled in course with id: %d";
     private static final String USER_UNAUTHORIZED_ERROR_MSG = "You are not authorized to perform this operation";
 
-    @Autowired
     private final CourseRepository courseRepository;
     private final UserService userService;
     private final UserRepository userRepository;
@@ -50,11 +48,17 @@ public class CourseServiceImpl implements CourseService {
         if (loggedUser.isNotTeacherOrAdmin()) {
             throw new UnauthorizedOperationException(USER_UNAUTHORIZED_ERROR_MSG);
         }
+        try {
+            getByTitle(course.getTitle());
+            throw new DuplicateEntityException("Course", "Title", course.getTitle());
 
-        Course newCourse = new Course();
-        mapCourse(course, newCourse);
+        } catch (EntityNotFoundException e) {
 
-        courseRepository.save(newCourse);
+            Course newCourse = new Course();
+            mapCourse(course, newCourse);
+
+            courseRepository.save(newCourse);
+        }
     }
 
     private void mapCourse(CourseModel dto, Course newCourse) {
@@ -77,7 +81,7 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.save(courseToUpdate);
     }
 
-    private boolean titleAlreadyExists(String title, String currentTitle) {
+    public boolean titleAlreadyExists(String title, String currentTitle) {
 
         if (currentTitle.equals(title)) {
             return false;

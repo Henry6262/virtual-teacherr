@@ -1,5 +1,7 @@
 package com.henrique.virtualteacher.configurations;
 
+import com.henrique.virtualteacher.entities.Comment;
+import com.henrique.virtualteacher.models.CommentModel;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,11 @@ public class BeansConfig {
         mapper.getConfiguration()
                 .setFieldMatchingEnabled(true)
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
+
+//        mapper.createTypeMap(Comment.class, CommentModel.class)
+//                .addMappings(modelMapper -> modelMapper.map(source -> source.getCourse().getId(), CommentModel::setCourseId))
+//                .addMapping(modelMapper -> modelMapper.getUser().getId(), CommentModel::setUserId);
+
         return mapper;
     }
 

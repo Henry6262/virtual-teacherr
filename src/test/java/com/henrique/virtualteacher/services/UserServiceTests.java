@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -28,6 +29,8 @@ public class UserServiceTests {
     UserRepository userRepository;
     @Mock
     ModelMapper modelMapper =  new ModelMapper();
+    @Mock
+    BCryptPasswordEncoder passwordEncoder;
 
     @InjectMocks
     UserServiceImpl userService;
@@ -126,17 +129,6 @@ public class UserServiceTests {
         );
     }
 
-    @Test
-    public void create_shouldCallRepository_when_UserDetailsAreCorrect(){
-
-        RegisterUserModel mockRegister = Helpers.createUserRegisterModel();
-
-        userService.create(mockRegister);
-
-        Mockito.verify(userRepository, Mockito.times(1))
-                .save(Helpers.createMockUser());
-        //fix
-    }
 
     @Test
     public void create_shouldThrow_exception_when_passwords_doesNot_meet_requirements(){
