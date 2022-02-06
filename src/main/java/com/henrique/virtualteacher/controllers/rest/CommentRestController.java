@@ -1,5 +1,6 @@
 package com.henrique.virtualteacher.controllers.rest;
 
+import com.henrique.virtualteacher.entities.Comment;
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.models.CommentModel;
@@ -10,6 +11,7 @@ import io.swagger.models.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,7 +35,7 @@ public class CommentRestController {
     }
 
     @PutMapping("/{id}/update")
-    public ResponseEntity<CommentModel> updateCourseComment(@PathVariable int id,
+    public ResponseEntity<CommentModel> update(@PathVariable int id,
                                                             @RequestParam String newComment,
                                                             Principal principal) {
 
@@ -44,6 +46,16 @@ public class CommentRestController {
         }
         commentService.update(id, newComment, loggedUser);
         return new ResponseEntity<>(commentService.getById(id), HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<Boolean> delete(@PathVariable int id,
+                                          Principal principal) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+
+        commentService.delete(id, loggedUser);
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
     }
 
 }

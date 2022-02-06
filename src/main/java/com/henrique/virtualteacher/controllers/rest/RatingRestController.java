@@ -1,18 +1,14 @@
 package com.henrique.virtualteacher.controllers.rest;
 
-import com.henrique.virtualteacher.entities.Course;
-import com.henrique.virtualteacher.entities.CourseRating;
+import com.henrique.virtualteacher.entities.Rating;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.services.interfaces.RatingService;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +32,7 @@ public class RatingRestController {
 
         User loggedUser = userService.getByEmail(principal.getName());
 
-        CourseRating rating = ratingService.getById(id);
+        Rating rating = ratingService.getById(id);
         model.addAttribute("rating",rating);
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
     }
@@ -48,10 +44,10 @@ public class RatingRestController {
                                         Model model) {
 
         User loggedUser = userService.getByEmail(principal.getName());
-        CourseRating courseRating = ratingService.getById(id);
-        ratingService.update(courseRating, newRating, loggedUser);
+        Rating rating = ratingService.getById(id);
+        ratingService.update(rating, newRating, loggedUser);
 
-        CourseRating updatedRating = ratingService.getById(id);
+        Rating updatedRating = ratingService.getById(id);
 
         model.addAttribute("updatedRating");
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -62,9 +58,9 @@ public class RatingRestController {
                                         Principal principal){
 
         User loggedUser = userService.getByEmail(principal.getName());
-        CourseRating courseRating = ratingService.getById(id);
+        Rating rating = ratingService.getById(id);
 
-        ratingService.delete(courseRating, loggedUser);
+        ratingService.delete(rating, loggedUser);
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

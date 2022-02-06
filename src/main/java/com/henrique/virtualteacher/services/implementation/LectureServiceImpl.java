@@ -27,8 +27,6 @@ public class LectureServiceImpl implements LectureService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
-
-
     @Override
     public Lecture getById(int id) {
         return lectureRepository.getById(id)
@@ -47,8 +45,6 @@ public class LectureServiceImpl implements LectureService {
                 .orElseThrow(() -> new EntityNotFoundException("Lecture", "Title", title));
     }
 
-
-
     @Override
     public List<Lecture> getAll() {
         return lectureRepository.findAll();
@@ -64,7 +60,6 @@ public class LectureServiceImpl implements LectureService {
         return lectureRepository.getAllByEnabled(enabled);
     }
 
-
     @Override
     public void completeLectureForUser(User loggedUser, Lecture lecture) {
 
@@ -79,6 +74,9 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public Lecture create(Lecture lecture, User loggedUser) {
 
+        if (loggedUser.isNotTeacherOrAdmin()) {
+            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not authorized to create lectures",loggedUser.getId()));
+        }
         checkIfTitleIsUnique(lecture.getTitle());
 
         lectureRepository.save(lecture);

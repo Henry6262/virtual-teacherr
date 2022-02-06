@@ -12,11 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import static org.hibernate.annotations.CascadeType.DELETE;
-import static org.hibernate.annotations.CascadeType.REMOVE;
 
 @Getter
 @Setter
@@ -74,7 +72,7 @@ public class Course {
     @JoinTable(name = "course_ratings",
     joinColumns = @JoinColumn(name = "course_id"),
     inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<CourseRating> ratings;
+    private List<Rating> ratings;
 
     @OneToMany
     @JsonIgnore
@@ -87,7 +85,7 @@ public class Course {
         return enabled;
     }
 
-    public void addRating(CourseRating rating) {
+    public void addRating(Rating rating) {
         if (this.ratings.stream()
         .anyMatch(rating1 -> rating.getUser().getId() == rating.getUser().getId())) {
             throw new DuplicateEntityException(String.format("User with id: {%d}, has already left a rating to the course with id: {%d}", rating.getUser().getId(), rating.getId()));

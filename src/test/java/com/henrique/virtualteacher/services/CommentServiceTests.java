@@ -5,6 +5,7 @@ import com.henrique.virtualteacher.entities.Comment;
 import com.henrique.virtualteacher.entities.Lecture;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
+import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.CommentModel;
 import com.henrique.virtualteacher.repositories.CommentRepository;
 import com.henrique.virtualteacher.services.implementation.CommentServiceImpl;
@@ -88,6 +89,31 @@ public class CommentServiceTests {
         Mockito.verify(commentRepository, Mockito.times(1))
                 .getAllByCourseIdAndUserId(comment.getCourse().getId(), comment.getUser().getId());
 
+    }
+
+    @Test
+    public void update_shouldThrowException_whenUserIsNotAllowed() {
+        Comment comment = Helpers.createMockComment();
+        User commentCreator = comment.getUser();
+
+        User otherMockUser = Helpers.createMockUser();
+        otherMockUser.setId(21);
+
+        Mockito.when(commentRepository.getById(comment.getId())).thenReturn(Optional.of(comment));
+
+        Assertions.assertThrows(UnauthorizedOperationException.class, () ->commentService.update(comment.getId(),"yessir",otherMockUser));
+    }
+
+    @Test
+    public void delete_shouldThrowException_whenUserIsNotAllowed() {
+        Comment comment = Helpers.createMockComment();
+        User commentCreator = comment.getUser();
+
+        User otherUser = Helpers.createMockUser();
+
+        Mockito.when(commentRepository.getById(comment.getId())).thenReturn(Optional.of(comment));
+
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> commentService.delete(comment.getId(), otherUser));
     }
 
 }

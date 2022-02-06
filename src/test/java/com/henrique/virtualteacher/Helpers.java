@@ -35,6 +35,17 @@ public class Helpers {
         return createLecture(course);
     }
 
+    public static Lecture createMockLecture() {
+        return createLecture(createMockCourse());
+    }
+
+    public static LectureModel createMockLectureModel() {
+        LectureModel lectureModel = new LectureModel();
+        Lecture lecture = createMockLecture();
+        mapper.map(lecture, lectureModel);
+        return lectureModel;
+    }
+
     public static Assignment createMockPendingAssignment() {
         return createAssignment(Status.PENDING);
     }
@@ -47,6 +58,19 @@ public class Helpers {
         return createComment();
     }
 
+    public static Rating createMockRating() {
+        return createRating();
+    }
+
+    private static Rating createRating() {
+        Rating rating = new Rating();
+        rating.setCourse(createCourse());
+        rating.setUser(createUser());
+        rating.setRating(5);
+        rating.setId(1);
+        return rating;
+    }
+
     public static CommentModel createMockCommentModel() {
         CommentModel commentModel = new CommentModel();
         mapper.map(createComment(), commentModel);
@@ -57,12 +81,11 @@ public class Helpers {
         Comment comment = new Comment();
         comment.setCourse(createMockCourse());
         comment.setUser(createUser());
+        comment.getUser().setId(21);
         comment.setContent("content");
         comment.setId(1);
         return comment;
     }
-
-
 
     public static CourseModel createMockCourseModel(String courseTitle) {
         Course course = createCourse();
@@ -70,6 +93,14 @@ public class Helpers {
         mapper.map(course, courseModel);
         courseModel.setTitle(courseTitle);
         return courseModel;
+    }
+
+    public static List<Rating> createMockRatingList() {
+        List<Rating> ratings = new ArrayList<>();
+        for (int i = 0; i < 5 ; i++) {
+            ratings.add(createMockRating());
+        }
+        return ratings;
     }
 
     public static Set<Comment> createMockCommentModelList() {
@@ -97,6 +128,14 @@ public class Helpers {
             mockLectureList.add(current);;
         }
         return mockLectureList;
+    }
+
+    public static List<Assignment> createMockAssignmentList(){
+        List<Assignment> assignments = new ArrayList<>();
+        for (int i = 0; i < 5 ; i++) {
+            assignments.add(createAssignment(Status.GRADED));
+        }
+        return assignments;
     }
 
     public static User createUserFromRegisterModel(RegisterUserModel registerUserModel) {

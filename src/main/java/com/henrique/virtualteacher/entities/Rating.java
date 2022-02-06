@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 
 @Entity
 @Getter
@@ -13,7 +12,7 @@ import javax.validation.constraints.Email;
 @NoArgsConstructor
 
 @Table(name = "course_ratings")
-public class CourseRating {
+public class Rating {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

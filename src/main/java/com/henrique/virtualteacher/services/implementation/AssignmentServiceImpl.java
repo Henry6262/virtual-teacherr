@@ -162,5 +162,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     @Override
     public void delete(Assignment assignment, User loggedUser) {
 
+        checkUserIsAuthorized(loggedUser, assignment);
+        assignmentRepository.delete(assignment);
     }
 }

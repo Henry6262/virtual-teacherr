@@ -1,22 +1,19 @@
 package com.henrique.virtualteacher.services.implementation;
 
 import com.henrique.virtualteacher.entities.Course;
-import com.henrique.virtualteacher.entities.CourseRating;
+import com.henrique.virtualteacher.entities.Rating;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
-import com.henrique.virtualteacher.models.CourseModel;
 import com.henrique.virtualteacher.repositories.RatingRepository;
 import com.henrique.virtualteacher.services.interfaces.CourseService;
 import com.henrique.virtualteacher.services.interfaces.RatingService;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,27 +27,29 @@ public class RatingServiceImpl implements RatingService {
 
 
     @Override
-    public CourseRating getById(int id) {
+    public Rating getById(int id) {
         return ratingRepository.findById(id).
                 orElseThrow(() -> new EntityNotFoundException("Course Rating", "id", String.valueOf(id)));
     }
 
     @Override
-    public List<CourseRating> getAllByCourseId(int courseId) {
+    public List<Rating> getAllByCourseId(int courseId) {
         return ratingRepository.getAllByCourseId(courseId);
     }
 
     @Override
-    public List<CourseRating> getAllByUserId(int userId) {
+    public List<Rating> getAllByUserId(int userId) {
         return ratingRepository.getAllByUserId(userId);
     }
 
     public double getAverageRatingForCourse(Course course) {
 
-        double numberOfRatings = getAllByCourseId(course.getId()).size();
+        List<Rating> ratings = getAllByCourseId(course.getId());
 
-        double allRatingsSum = getAllByCourseId(course.getId())
-                .stream().mapToInt(CourseRating::getRating)
+        double numberOfRatings = ratings.size();
+
+        double allRatingsSum = ratings
+                .stream().mapToInt(Rating::getRating)
                 .sum();
 
         return  allRatingsSum / numberOfRatings;
@@ -60,13 +59,13 @@ public class RatingServiceImpl implements RatingService {
 
         if (getAllByUserId(loggedUser.getId())
                 .stream()
-                .map(CourseRating::getCourse)
+                .map(Rating::getCourse)
                 .anyMatch(c -> c.getId() == course.getId())) {
 
             throw new ImpossibleOperationException(String.format("User with id: {%d}, has already rated Course with id: {%d}", loggedUser.getId(), course.getId()));
         }
 
-        CourseRating courseRating = new CourseRating();
+        Rating courseRating = new Rating();
         courseRating.setCourse(course);
         courseRating.setUser(loggedUser);
         courseRating.setRating(rating);
@@ -78,24 +77,24 @@ public class RatingServiceImpl implements RatingService {
         ratingRepository.save(courseRating);
     }
 
-    public void update(CourseRating courseRating, int newRating, User loggedUser) {
+    public void update(Rating rating, int newRating, User loggedUser) {
 
-        User ratingCreator = courseRating.getUser();
+        User ratingCreator = rating.getUser();
 
         if (ratingCreator.getId() != loggedUser.getId()){
-            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not the creator of the Rating with id: {%d}", loggedUser.getId(), courseRating.getId()));
+            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not the creator of the Rating with id: {%d}", loggedUser.getId(), rating.getId()));
         }
 
-        courseRating.setRating(newRating);
-        ratingRepository.save(courseRating);
+        rating.setRating(newRating);
+        ratingRepository.save(rating);
     }
 
-    public void delete(CourseRating courseRating, User loggedUser) {
+    public void delete(Rating rating, User loggedUser) {
 
-        if (courseRating.getUser().getId() != loggedUser.getId()) {
-            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not the creator of the rating with id: {%d}",loggedUser.getId(),courseRating.getId()));
+        if (rating.getUser().getId() != loggedUser.getId()) {
+            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not the creator of the rating with id: {%d}",loggedUser.getId(), rating.getId()));
         }
-        ratingRepository.delete(courseRating);
+        ratingRepository.delete(rating);
     }
 
 }

@@ -1,25 +1,24 @@
 package com.henrique.virtualteacher.services.interfaces;
 
 import com.henrique.virtualteacher.entities.Course;
-import com.henrique.virtualteacher.entities.CourseRating;
+import com.henrique.virtualteacher.entities.Rating;
 import com.henrique.virtualteacher.entities.User;
-import com.henrique.virtualteacher.models.CourseModel;
 
 import java.util.List;
 
 public interface RatingService {
 
-    CourseRating getById(int id);
+    Rating getById(int id);
 
-    List<CourseRating> getAllByCourseId(int courseId);
+    List<Rating> getAllByCourseId(int courseId);
 
-    List<CourseRating> getAllByUserId(int userId);
+    List<Rating> getAllByUserId(int userId);
 
     void create(Course course, User user, int rating);
 
-    void update(CourseRating courseRating,int newRating, User loggedUser);
+    void update(Rating rating, int newRating, User loggedUser);
 
-    void delete(CourseRating courseRating, User loggedUser);
+    void delete(Rating rating, User loggedUser);
 
     double getAverageRatingForCourse(Course course);
 
