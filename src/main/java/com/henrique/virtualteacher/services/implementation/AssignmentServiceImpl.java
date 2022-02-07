@@ -113,9 +113,11 @@ public class AssignmentServiceImpl implements AssignmentService {
 
         Course course = courseService.getById(courseId);
 
-        return userGradedAssignmentsForCourse.stream()
+        double sum =  userGradedAssignmentsForCourse.stream()
                 .mapToDouble(Assignment::getGrade)
                 .sum();
+
+        return sum / userGradedAssignmentsForCourse.size();
     }
 
     @Override
