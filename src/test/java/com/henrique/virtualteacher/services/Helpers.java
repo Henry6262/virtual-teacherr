@@ -1,4 +1,4 @@
-package com.henrique.virtualteacher;
+package com.henrique.virtualteacher.services;
 
 import com.henrique.virtualteacher.entities.*;
 import com.henrique.virtualteacher.models.*;

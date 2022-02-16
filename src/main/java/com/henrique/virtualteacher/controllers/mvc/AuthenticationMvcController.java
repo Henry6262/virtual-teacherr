@@ -24,7 +24,6 @@ public class AuthenticationMvcController {
     @GetMapping("/login")
     public String showLoginAndRegisterPage(Model model) {
         RegisterUserModel registerModel = new RegisterUserModel();
-        model.addAttribute("registerObject", registerModel);
         return "login";
     }
 

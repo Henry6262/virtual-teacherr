@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="../static/css/courses-create-styles.css" th:href="@{/css/courses-create-styles.css}" rel="stylesheet">
+    <title>Create Course</title>
+</head>
+
+<body>
+
+
+<div class="content">
+
+    <form class="create-course-form" enctype="multipart/form-data">
+        <div class="field title">
+            <label>Title</label>
+            <input id="title-input" class="input">
+        </div>
+
+        <div class="field topic">
+            <label>Topic</label>
+            <select class="topic-dropdown" id="topic-input"></select>
+        </div>
+
+        <div class="field difficulty">
+            <label>Difficulty</label>
+            <select class="input difficulty-dropdown" id="difficulty-input">
+                <option>BEGINNER</option>
+                <option>INTERMEDIATE</option>
+                <option>ADVANCED</option>
+                <option>NERD</option>
+            </select>
+        </div>
+
+        <div class="field description">
+            <label>Description</label>
+            <textarea rows="5" cols="80" class="input" id="description-input">
+        </textarea>
+        </div>
+
+        <div class="field">
+            <label>Starting Date</label>
+            <input type="date" class="input" id="starting-date-input">
+        </div>
+
+        <button id="create-course-button" type="button">Create Course</button>
+    </form>
+
+    <form id="picture-form" enctype="multipart/form-data" th:action="@{/api/images/upload}" method="post">
+        <label>Course Image</label>
+        <input name="file" class="file-input" type="file" multiple>
+        <input id="input-button" type="submit"></input>
+    </form>
+
+    <button class="course-form-submit-button">Create</button>
+
+    <div class="picture">
+        <img src="" class="image-content">
+    </div>
+
+</div>
+
+
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+<script>
+
+    let imageWasUploaded = false
+
+    function deleteImageFromCloudinary(imageUrl) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/images/destroy',
+            data: {url: imageUrl},
+
+            success: function (data) {
+
+            },
+
+            error: function (data) {
+
+            }
+
+        })
+    }
+
+    const inputButtonSelector = document.querySelector('#input-button')
+    const pictureFormSelector = document.querySelector("#picture-form")
+    const uploadImageSelector = document.querySelector('.file-input')
+    const imageSelector = document.querySelector('.image-content')
+    const courseSubmitButtonSelector = document.querySelector('.course-form-submit-button')
+
+    let createSelector = document.querySelector("#create-course-button");
+
+    const titleSelector = document.querySelector("#title-input")
+    const topicSelector = document.querySelector("#topic-input")
+    const descriptionSelector = document.querySelector("#description-input")
+    const difficultySelector = document.querySelector("#difficulty-input")
+    const startingDateSelector = document.querySelector("#starting-date-input")
+    const pictureSelector = document.querySelector("#picture-input")
+
+    const formPicture = document.querySelector('#cmon')
+
+
+    $('.course-form-submit-button').on('click', function (e) {
+
+        e.preventDefault()
+
+        const courseModel = {
+            title: titleSelector.value,
+            topic: topicSelector.value,
+            description: descriptionSelector.value,
+            difficulty: difficultySelector.value,
+            startingDate: startingDateSelector.value,
+            picture: ''
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/api/courses",
+            content: 'application/json',
+            data: JSON.stringify(courseModel),
+
+            success: function() {
+                alert('course created')
+            },
+
+            error: function () {
+                alert('something went wrong =(')
+            }
+
+        })
+
+
+    })
+
+    pictureFormSelector.addEventListener('change', function (e) {
+        e.preventDefault()
+        inputButtonSelector.click()
+    })
+
+    $(document).on('submit','#picture-form', function (e) {
+
+        if (uploadImageSelector.value === '') {
+            alert("Please select a valid image")
+        }
+
+        e.preventDefault()
+        var formData = new FormData(this)
+        $.ajax({
+            type: "POST",
+            url: "/api/images/upload",
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            success: function(imageUrl) {
+
+                imageSelector.setAttribute("src", imageUrl)
+            },
+
+            error: function(data) {
+                alert(data)
+            }
+
+        })
+    })
+
+
+
+
+    $.ajax({
+        type: "GET",
+        url: "/api/courses/topics",
+        dataType: "json",
+
+        success: function (response) {
+            let topicsSelector = $(".topic-dropdown")
+
+            $.each(response, function (index, value) {
+                topicsSelector.append(
+                    "<option>" + value + "</option>"
+                )
+            })
+        },
+
+        error: function (response) {
+            prompt("error m8")
+        }
+    })
+
+
+
+</script>
+
+<!--<script>-->
+
+<!--    let createSelector = document.querySelector("#create-course-button");-->
+
+<!--    const titleSelector = document.querySelector("#title-input")-->
+<!--    const topicSelector = document.querySelector("#topic-input")-->
+<!--    const descriptionSelector = document.querySelector("#description-input")-->
+<!--    const difficultySelector = document.querySelector("#difficulty-input")-->
+<!--    const startingDateSelector = document.querySelector("#starting-date-input")-->
+<!--    const pictureSelector = document.querySelector("#picture-input")-->
+
+<!--    const formPicture = document.querySelector('#cmon')-->
+
+<!--    //first test if uploading a picture works-->
+<!--    //tomorrow do selectors and check if title is not unique, and fields not empty-->
+
+<!--    createSelector.addEventListener("click", function () {-->
+
+
+
+<!--        const courseModel = {-->
+<!--            title: titleSelector.value,-->
+<!--            topic: topicSelector.value,-->
+<!--            description: descriptionSelector.value,-->
+<!--            difficulty: difficultySelector.value,-->
+<!--            startingDate: startingDateSelector.value,-->
+<!--            picture: pictureSelector.value-->
+<!--        }-->
+
+<!--        $.ajax({-->
+<!--            type: "POST",-->
+<!--            url: "/api/courses",-->
+<!--            dataType: "json",-->
+<!--            data: JSON.stringify(courseModel),-->
+
+<!--            success: function() {-->
+<!--                alert('course created')-->
+<!--            },-->
+
+<!--            error: function () {-->
+<!--                alert('something went wrong =(')-->
+<!--            }-->
+
+<!--        })-->
+
+
+<!--    })-->
+
+<!--</script>-->
+
+</body>
+
+</html>

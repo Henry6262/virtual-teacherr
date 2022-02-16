@@ -25,12 +25,13 @@ public class CourseModel {
     @NotBlank
     private String description;
 
-    @NotBlank
-    private int difficulty;
+    private EnumDifficulty difficulty;
 
     @NotBlank
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate startingDate;
+
+    private String picture;
 
     @NotBlank
     private double averageRating;

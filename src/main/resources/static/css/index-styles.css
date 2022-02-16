@@ -1,0 +1,38 @@
+.navigation {
+    padding: 27px;
+    background-color: #657ced;
+}
+
+body {
+    margin: 0px
+}
+
+.page-links {
+    float: right;
+    margin: 0px;
+    display: -webkit-inline-flex;
+}
+
+.column {
+}
+
+.column a {
+    text-decoration: none;
+    color: #1a1a1a;
+
+}
+
+.column-entry {
+    margin-left: 8px;
+    margin-right: 8px;
+
+}
+
+.logo {
+    display: inline-flex;
+}
+
+.logo-text {
+    margin: 0px;
+    font-family: sf pro text,-apple-system,BlinkMacSystemFont,Roboto,segoe ui,Helvetica,Arial,sans-serif,apple color emoji,segoe ui emoji,segoe ui symbol;
+}

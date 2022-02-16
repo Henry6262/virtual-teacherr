@@ -8,6 +8,7 @@ class VirtualTeacherApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }

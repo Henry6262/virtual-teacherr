@@ -27,7 +27,7 @@ public interface AssignmentService {
 
     void grade(Assignment assignment, User loggedUser, int grade);
 
-    void create(Assignment assignment, User loggedUser); //fixme: needs to have teacher role to approve
+    void create(Assignment assignment); //fixme: needs to have teacher role to approve
 
     void update(String newContent, Assignment gradeToUpdate, User loggedUser);
 

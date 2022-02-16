@@ -3,6 +3,7 @@ package com.henrique.virtualteacher.controllers.rest;
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
+import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.models.RegisterUserModel;
 import com.henrique.virtualteacher.models.SearchDto;
 import com.henrique.virtualteacher.models.UserModel;
@@ -72,19 +73,22 @@ public class UserRestController {
 
         User toFind = userService.getByEmail(searchDto.getKeyword());
 
-        return mapper.map(toFind, new TypeToken<UserModel>() {}.getType());
+        UserModel usermodel = new UserModel();
+        mapper.map(toFind, usermodel);
+        return usermodel;
     }
 
     @GetMapping("/login")
-    public ResponseEntity<Model> verifyLoginInfo(@RequestParam("keyword")SearchDto email,
+    public ResponseEntity<String> verifyLoginInfo(@RequestParam("keyword")SearchDto email,
                                    @RequestParam("password") SearchDto password,
                                    Model model) {
 
-        model.addAttribute("success", "success");
-        model.addAttribute("wow", userService.getByEmail("henri@gmail.com"));
-
-         userService.verifyLoginInfo(email.getKeyword(), password.getKeyword());
-         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
+        try {
+            userService.verifyLoginInfo(email.getKeyword(), password.getKeyword());
+        } catch (ImpossibleOperationException e) {
+            return new ResponseEntity<>("failure", HttpStatus.CONFLICT);
+        }
+         return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
     }
 
 
@@ -96,12 +100,6 @@ public class UserRestController {
 
 
         return new ResponseEntity<>(true,HttpStatus.CREATED);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<Boolean> login(@RequestParam("keyword") SearchDto keyword,
-                                         @RequestParam("password") SearchDto password) {
-        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
     }
 
     @PutMapping()

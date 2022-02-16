@@ -1,11 +1,9 @@
 package com.henrique.virtualteacher.controllers.rest;
 
+import com.henrique.virtualteacher.configurations.CloudinaryConfig;
 import com.henrique.virtualteacher.entities.*;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
-import com.henrique.virtualteacher.models.CommentModel;
-import com.henrique.virtualteacher.models.CourseModel;
-import com.henrique.virtualteacher.models.LectureModel;
-import com.henrique.virtualteacher.models.Status;
+import com.henrique.virtualteacher.models.*;
 import com.henrique.virtualteacher.services.interfaces.*;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -17,14 +15,18 @@ import org.springframework.http.StreamingHttpOutputMessage;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -37,6 +39,7 @@ private final LectureService lectureService;
 private final RatingService ratingService;
 private final AssignmentService assignmentService;
 private final CommentService commentService;
+private final CloudinaryConfig cloudinaryConfig;
 private final Logger logger;
 private final ModelMapper mapper;
 
@@ -98,14 +101,17 @@ private final ModelMapper mapper;
     }
 
     @GetMapping("/enabled")
-    public ResponseEntity<Model> getAllEnabled(Principal principal,
+    public ResponseEntity<List<Course>> getAllEnabled(Authentication principal,
                                                Model model) {
-        User loggedUser = userService.getByEmail(principal.getName());
+
+        if (principal != null) {
+            User loggedUser = userService.getByEmail(principal.getName());
+        }
 
         List<Course> enabledCourses = courseService.getAllByEnabled(true);
         model.addAttribute("enabledCourses", enabledCourses);
 
-        return new ResponseEntity<>(model,HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(enabledCourses,HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/disabled")
@@ -138,7 +144,7 @@ private final ModelMapper mapper;
         return new ResponseEntity<>(commentService.getAllForCourse(id), HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/{id}/comments")
+    @PostMapping("/{id}/comment")
     public ResponseEntity<Boolean> createCourseComment(@PathVariable int id,
                                                        @RequestParam String comment,
                                                        Principal principal) {
@@ -182,13 +188,13 @@ private final ModelMapper mapper;
     }
 
     @PostMapping()
-    public ResponseEntity<Boolean> create(@RequestBody CourseModel courseModel,
-                                          Authentication authentication) {
+    public ResponseEntity<String> create(@RequestBody CourseModel courseModel,
+                                          Principal principal) {
 
-        User loggedUser = userService.getByEmail(authentication.getName());
+        User loggedUser = userService.getByEmail(principal.getName());
         courseService.create(courseModel, loggedUser);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("success",HttpStatus.OK);
     }
 
     @PutMapping("/{id}/update")
@@ -252,7 +258,7 @@ private final ModelMapper mapper;
         assignment.setContent(content);
         assignment.setStatus(Status.PENDING);
 
-        assignmentService.create(assignment, loggedUser);
+        assignmentService.create(assignment);
 
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
     }
@@ -339,6 +345,26 @@ private final ModelMapper mapper;
         model.addAttribute("averageRating", ratingService.getAverageRatingForCourse(course));
 
         return new ResponseEntity<>(model ,HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/image")
+    public ResponseEntity<CourseModel> changePicture(@PathVariable int id,
+                                                Principal principal,
+                                                MultipartFile multipartFile) throws IOException {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+
+        courseService.upload(multipartFile, id, loggedUser);
+
+        CourseModel courseModel = mapper.map(courseService.getById(id), new TypeToken<CourseModel>() {}.getType());
+        return new ResponseEntity<>(courseModel, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/topics")
+    public ResponseEntity<List<EnumTopics>> getCourseTopics() {
+
+        List<EnumTopics> enumTopicsSet = Arrays.stream(EnumTopics.values()).collect(Collectors.toList());
+        return new ResponseEntity<>(enumTopicsSet, HttpStatus.ACCEPTED);
     }
 
 }

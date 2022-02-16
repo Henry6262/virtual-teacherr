@@ -6,7 +6,9 @@ import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.models.CourseModel;
 import com.henrique.virtualteacher.models.EnumTopics;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.List;
@@ -40,6 +42,8 @@ public interface CourseService {
     void enroll(Course course, User loggedUser);
 
     void complete(Course course, User loggedUser);
+
+    void upload (MultipartFile file, int courseId, User loggedUser) throws IOException;
 
     void addLectureToCourse(Lecture lecture, int courseId);
 

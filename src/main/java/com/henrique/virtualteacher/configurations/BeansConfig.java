@@ -7,9 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 
 @Configuration
+@PropertySource("classpath:application.properties")
 public class BeansConfig {
 
     @Bean
@@ -30,7 +33,6 @@ public class BeansConfig {
     public Logger logger() {
         return LoggerFactory.getLogger("VirtualTeacher");
     }
-
 
 
 }

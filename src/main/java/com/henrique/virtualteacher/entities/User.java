@@ -127,7 +127,7 @@ public class User {
 
     public boolean hasAssignment(Assignment assignment) {
         return getAssignments().stream()
-                .anyMatch(grade -> grade.getLecture().getId() == assignment.getLecture().getId());
+                .anyMatch(assignment1 -> assignment1.getLecture().getId() == assignment.getLecture().getId());
     }
 
     public boolean hasCompletedCourse(Course course) {

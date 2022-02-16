@@ -50,12 +50,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/admins")
                 .authenticated()
+
+
+
+                .antMatchers(HttpMethod.POST, "/api/courses/image")
+                .permitAll()
+                .antMatchers(HttpMethod.GET, "/api/courses/topics")
+                .permitAll()
                 .antMatchers(HttpMethod.POST, "/api/courses", "/api/courses/{id}")
                 .hasAnyAuthority("ADMIN", "TEACHER")
                 .antMatchers(HttpMethod.POST, "/api/courses/{id}/rate", "/api/courses/{id}/complete", "/api/courses/{id}/enroll",
                             "/api/courses/{id}/lecture/{entryId}", "/api/courses/{id}/lecture/{entryId}/submit")
                 .hasAuthority("STUDENT")
-                .antMatchers(HttpMethod.GET, "/api/courses/{id}/lecture/{entryId}", "/api/courses/enabled", "/api/courses/{id}")
+                .antMatchers(HttpMethod.GET,  "/api/courses/enabled")
+                .permitAll()
+                .antMatchers(HttpMethod.GET, "/api/courses/{id}/lecture/{entryId}", "/api/courses/{id}")
                 .hasAuthority("STUDENT")
                 .antMatchers(HttpMethod.DELETE, "/api/courses/{id}")
                 .hasAnyAuthority("ADMIN", "TEACHER")
@@ -65,6 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasAnyAuthority("ADMIN", "TEACHER")
                 .antMatchers(HttpMethod.POST, "/api/courses/enable", "/api/courses/disable")
                 .hasAnyAuthority("ADMIN", "TEACHER")
+
 
                 .antMatchers(HttpMethod.GET, "/api/users/search", "/api/users/login")
                 .permitAll()

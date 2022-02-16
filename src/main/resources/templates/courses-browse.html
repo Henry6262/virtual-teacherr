@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse</title>
+    <link href="../static/css/browse-styles.css" th:href="@{/css/browse-styles.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="courses">
+
+
+</div>
+
+</body>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+<script>
+    window.onload = function loadCourses() {
+        $.ajax({
+            type: "GET",
+            url:"/api/courses/enabled",
+            dataType: "json",
+
+            success: function (response) {
+
+                let tableContent = $(".courses")
+
+                $.each(response, function (index, value) {
+                tableContent.append(
+                    "<div class='course-element'> " +
+                        "<div class='course-name'>" + value.title + "</div>" +
+                        "<div>" + value.topic + "</div>" +
+                        "<div>" + value.difficulty+ "</div>" +
+                        "<div>" + value.picture + "</div>" +
+                    "</div>"
+                )
+
+                })
+
+            },
+
+            error: function (data) {
+                prompt("courses could not be loaded")
+            }
+
+
+        })
+    }
+
+
+</script>
+
+</html>

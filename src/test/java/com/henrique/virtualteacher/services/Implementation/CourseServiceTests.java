@@ -1,7 +1,5 @@
-package com.henrique.virtualteacher.services;
+package com.henrique.virtualteacher.services.Implementation;
 
-import com.henrique.virtualteacher.Helpers;
-import com.henrique.virtualteacher.VirtualTeacherApplication;
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.Lecture;
 import com.henrique.virtualteacher.entities.User;
@@ -13,25 +11,17 @@ import com.henrique.virtualteacher.models.CourseModel;
 import com.henrique.virtualteacher.models.EnumTopics;
 import com.henrique.virtualteacher.repositories.CourseRepository;
 import com.henrique.virtualteacher.repositories.LectureRepository;
+import com.henrique.virtualteacher.services.Helpers;
 import com.henrique.virtualteacher.services.implementation.CourseServiceImpl;
 import com.henrique.virtualteacher.services.implementation.LectureServiceImpl;
-import com.henrique.virtualteacher.services.interfaces.CourseService;
-import org.hibernate.id.uuid.Helper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.commons.annotation.Testable;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Optional;

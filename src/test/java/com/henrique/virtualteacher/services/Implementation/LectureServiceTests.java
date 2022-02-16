@@ -1,6 +1,5 @@
-package com.henrique.virtualteacher.services;
+package com.henrique.virtualteacher.services.Implementation;
 
-import com.henrique.virtualteacher.Helpers;
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.Lecture;
 import com.henrique.virtualteacher.entities.User;
@@ -10,8 +9,8 @@ import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.LectureModel;
 import com.henrique.virtualteacher.repositories.LectureRepository;
+import com.henrique.virtualteacher.services.Helpers;
 import com.henrique.virtualteacher.services.implementation.LectureServiceImpl;
-import org.hibernate.id.uuid.Helper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

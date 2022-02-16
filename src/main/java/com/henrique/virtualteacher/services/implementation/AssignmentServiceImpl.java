@@ -39,7 +39,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     public Assignment getById(int id, User loggedUser) {
 
         Assignment assignment = assignmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Grade", "id", String.valueOf(id)));
+                .orElseThrow(() -> new EntityNotFoundException("Assignment", "id", String.valueOf(id)));
 
         checkUserIsAuthorized(loggedUser, assignment);
 
@@ -56,7 +56,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     public Assignment getByUserIdAndLectureId(int userId, int lectureId, User loggedUser) {
 
         Assignment assignment = assignmentRepository.getByUserIdAndLectureId(userId, lectureId)
-                .orElseThrow(() -> new EntityNotFoundException("Grade", "id", String.valueOf(lectureId)));
+                .orElseThrow(() -> new EntityNotFoundException("Assignment", "id", String.valueOf(lectureId)));
 
         checkUserIsAuthorized(loggedUser, assignment);
 
@@ -70,7 +70,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         List<Assignment> grades = assignmentRepository.getAllByUserIdAndLectureCourseId(userId, courseId);
 
         if (grades.isEmpty()) {
-            throw new EntityNotFoundException(String.format("Grade with User with id: {%d}, and Course with id: {%d}, has not been found", userId, courseId));
+            throw new EntityNotFoundException(String.format("Assignment with User with id: {%d}, and Course with id: {%d}, has not been found", userId, courseId));
         }
         checkUserIsAuthorized(loggedUser, grades.get(0));
 
@@ -133,16 +133,10 @@ public class AssignmentServiceImpl implements AssignmentService {
 
 
     @Override
-    public void create(Assignment assignment, User loggedUser) {
+    public void create(Assignment assignment) {
 
-        checkUserIsAuthorized(loggedUser, assignment);
-
-        if (loggedUser.hasAssignment(assignment)){
-            throw new ImpossibleOperationException(String.format("User with id: {%d}, already has a grade for the lecture with id: {%d}", loggedUser.getId(), assignment.getLecture().getId()));
-        }
-
-        if (!loggedUser.isTeacher()) {
-            throw new UnauthorizedOperationException(String.format("User with id: {%d} is not authorized to create a Grade", loggedUser.getId()));
+        if (assignment.getUser().hasAssignment(assignment)){
+            throw new ImpossibleOperationException(String.format("User with id: {%d}, already has already Submitted an Assignment for the lecture with id: {%d}", assignment.getUser().getId(), assignment.getLecture().getId()));
         }
 
         assignmentRepository.save(assignment);

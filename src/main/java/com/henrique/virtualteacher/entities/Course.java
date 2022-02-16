@@ -2,6 +2,7 @@ package com.henrique.virtualteacher.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.henrique.virtualteacher.exceptions.DuplicateEntityException;
+import com.henrique.virtualteacher.models.EnumDifficulty;
 import com.henrique.virtualteacher.models.EnumTopics;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,8 +40,9 @@ public class Course {
     @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "difficulty")
-    private int difficulty;
+    private EnumDifficulty difficulty;
 
     @Column(name = "starting_date")
     @DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -48,6 +50,9 @@ public class Course {
 
     @Column(name = "enabled")
     private boolean enabled;
+
+    @Column(name = "picture")
+    private String picture;
 
     @OneToMany()
     @JoinTable(name = "users_enrolled_courses",

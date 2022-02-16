@@ -1,17 +1,17 @@
-package com.henrique.virtualteacher.services;
+package com.henrique.virtualteacher.services.Implementation;
 
-import com.henrique.virtualteacher.Helpers;
 import com.henrique.virtualteacher.entities.Assignment;
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
+import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.Status;
 import com.henrique.virtualteacher.repositories.AssignmentRepository;
 import com.henrique.virtualteacher.repositories.CourseRepository;
+import com.henrique.virtualteacher.services.Helpers;
 import com.henrique.virtualteacher.services.implementation.AssignmentServiceImpl;
 import com.henrique.virtualteacher.services.implementation.CourseServiceImpl;
-import com.henrique.virtualteacher.services.interfaces.CourseService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class AssignmentServiceTests {
+public class AssignmentServiceImplTests {
 
     @Mock
     AssignmentRepository assignmentRepository;
@@ -130,4 +130,31 @@ public class AssignmentServiceTests {
 
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> assignmentService.grade(assignment, mockUser, 100));
     }
+
+    @Test
+    public void create_shouldThrowException_whenUserAlreadySubmittedAssignment() {
+        Assignment assignment = Helpers.createMockGradedAssignment();
+        assignment.getUser().setAssignments(List.of(assignment));
+
+        Assertions.assertThrows(ImpossibleOperationException.class, () -> assignmentService.create(assignment));
+    }
+
+    @Test
+    public void update_shouldThrowException_whenUserAlreadySubmittedAssignment() {
+        Assignment assignment = Helpers.createMockGradedAssignment();
+        User mockInitiator = Helpers.createMockUser();
+        mockInitiator.setId(21);
+
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> assignmentService.update("ww3",assignment, mockInitiator));
+    }
+
+    @Test
+    public void delete_shouldThrowException_whenUserIsNotCreatorOrTeacher() {
+        Assignment assignment = Helpers.createMockGradedAssignment();
+        User mockInitiator = Helpers.createMockUser();
+        mockInitiator.setId(21);
+
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> assignmentService.delete(assignment, mockInitiator));
+    }
+
 }

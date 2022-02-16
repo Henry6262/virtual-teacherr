@@ -11,9 +11,11 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
 import java.util.List;
@@ -69,4 +71,29 @@ public class AssignmentRestController {
         return new ResponseEntity<>(model,HttpStatus.ACCEPTED);
     }
 
+    @PutMapping("/{id}/update")
+    public ResponseEntity<Model> update(@PathVariable int id,
+                                        @RequestParam String newContent,
+                                        Principal principal,
+                                        Model model) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+        Assignment assignment = assignmentService.getById(id, loggedUser);
+
+        assignmentService.update(newContent, assignment, loggedUser);
+        model.addAttribute("Status", "success");
+
+        return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<Model> delete(@PathVariable int id,
+                                        Principal principal,
+                                        Model model) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+        Assignment assignment = assignmentService.getById(id, loggedUser);
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 }

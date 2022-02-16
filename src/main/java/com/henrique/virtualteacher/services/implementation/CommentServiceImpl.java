@@ -82,6 +82,8 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new EntityNotFoundException("Comment", "id", String.valueOf(commentId)));
 
         checkUserIsAuthorized(comment, loggedUser);
+
+        comment.setContent(newComment);
         commentRepository.save(comment);
     }
 

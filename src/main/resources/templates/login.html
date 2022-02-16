@@ -272,7 +272,7 @@
 
             checkEmail(username, 'login')
 
-            checkForEmptyInput(passwordSelector, password, 'password')
+
 
             if (!inputInvalidEntries.includes(true)) {
                 verifyLoginInfo(username,password)
@@ -330,16 +330,27 @@
             $.ajax({
                 type:'GET',
                 url: '/api/users/login',
-                dataType: 'json',
-                contentType: 'application/json',
+                dataType: "json",
                 data: {keyword: username, password: password},
 
-                success: function(data) {
+                success: function() {
+                    checkForEmptyInput(passwordSelector, password, 'password')
+                    if (inputInvalidEntries.includes(true)){
+                        return
+                    }
                     login(username, password)
                 },
 
                 error: function(error) {
-                   setErrorFor(passwordSelector,'username or password incorrect')
+                    if (error.responseText !== "success") {
+                        setErrorFor(passwordSelector,'username or password incorrect')
+                        return
+                    }
+                    checkForEmptyInput(passwordSelector, password, 'password')
+                    if (inputInvalidEntries.includes(true)){
+                        return
+                    }
+                    login(username, password)
                 }
 
             })
@@ -374,15 +385,14 @@
 
             $.ajax({
                 type: 'POST',
-                dataType: 'application/json',
+                dataType: 'json',
                 url: '/auth/login',
                 data: {
                     username: username,
                     password: password
                 },
 
-                success: function(data) {
-                    window.location = '/';
+                success: function() {
                 },
 
                 error: function(data) {

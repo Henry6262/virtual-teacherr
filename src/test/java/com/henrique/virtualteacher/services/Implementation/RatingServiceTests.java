@@ -1,6 +1,5 @@
-package com.henrique.virtualteacher.services;
+package com.henrique.virtualteacher.services.Implementation;
 
-import com.henrique.virtualteacher.Helpers;
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.Rating;
 import com.henrique.virtualteacher.entities.User;
@@ -8,6 +7,7 @@ import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.repositories.RatingRepository;
+import com.henrique.virtualteacher.services.Helpers;
 import com.henrique.virtualteacher.services.implementation.RatingServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
-import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class RatingServiceTests {

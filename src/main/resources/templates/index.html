@@ -2,17 +2,40 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link href="../static/css/index-styles.css" th:href="@{/css/index-styles.css}" type="text/css" rel="stylesheet">
     <title>home</title>
 </head>
 <body>
 
+<div class=" navigation">
+
+
+    <div class="logo">
+        <span class="logo-text">VIRTUAL</span>
+    </div>
+
+    <div class="page-links">
+        <div class="column">
+            <a th:href="@{/courses/browse}" href="courses-browse.html">
+                <span class="column-entry" >Browse</span>
+            </a>
+        </div>
+        <div class="column">
+            <a >
+                <span class="column-entry">My Courses</span>
+            </a>
+        </div>
+        <div class="column">
+            <span class="column-entry">Profile</span>
+        </div>
+    </div>
+
+
+</div>
 
 <div>
     <h1>Welcome</h1>
     <br>
-<!--    <span sec:authentication = "principal.username">User</span>-->
-
-
     <a href="#" th:href="@{/auth/login}">Login</a>
 </div>
 

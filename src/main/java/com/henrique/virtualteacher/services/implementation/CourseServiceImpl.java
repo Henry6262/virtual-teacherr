@@ -1,5 +1,6 @@
 package com.henrique.virtualteacher.services.implementation;
 
+import com.henrique.virtualteacher.configurations.CloudinaryConfig;
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.Lecture;
 import com.henrique.virtualteacher.entities.User;
@@ -21,7 +22,9 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +42,7 @@ public class CourseServiceImpl implements CourseService {
     private final ModelMapper mapper;
     private final Logger logger;
     private final LectureService lectureService;
+    private final CloudinaryConfig cloudinaryConfig;
 
     @Override
     public void create(CourseModel course, User loggedUser) {
@@ -152,6 +156,19 @@ public class CourseServiceImpl implements CourseService {
 
         logger.info(String.format("User with id: {%d}, has completed the course with id: {%d}", loggedUser.getId(), course.getId()));
         userRepository.save(loggedUser);
+    }
+
+    @Override
+    public void upload(MultipartFile file, int courseId, User loggedUser) throws IOException {
+
+        Course course = getById(courseId);
+        if (loggedUser.isNotTeacherOrAdmin()) {
+            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not authorized to change Course information",loggedUser.getId()));
+        }
+
+        String uploadedFileUrl = cloudinaryConfig.upload(file);
+        course.setPicture(uploadedFileUrl);
+        courseRepository.save(course);
     }
 
     public int getPercentageOfCompletedCourseLectures(User loggedUser, Course course) {
