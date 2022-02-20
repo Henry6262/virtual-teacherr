@@ -67,7 +67,7 @@ public class CourseServiceImpl implements CourseService {
 
     private void mapCourse(CourseModel dto, Course newCourse) {
         mapper.map(dto, newCourse);
-        newCourse.setEnabled(true);
+        newCourse.setEnabled(false);
     }
 
     @Override

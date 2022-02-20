@@ -6,57 +6,72 @@
     <title>Create Course</title>
 </head>
 
-<body>
+<body class="body">
 
 
 <div class="content">
+<div class="wrapper">
 
-    <form class="create-course-form" enctype="multipart/form-data">
+    <div class="mega-div">
+
+
+        <div class="image-cropper">
+            <img id="blah" src="https://res.cloudinary.com/henrique-mk/image/upload/v1645374514/default_hn8tin.jpg" alt="image">
+        </div>
+
+        <form id="picture-form" enctype="multipart/form-data" method="post">
+
+            <div class="file-div">
+                <label for="file">Upload</label>
+                <input id="file" name="file" class="file-input" type="file" multiple>
+                <input id="input-button" type="submit"/>
+            </div>
+        </form>
+    </div>
+
+    <form id="create-course-form" class="create-course-form">
         <div class="field title">
-            <label>Title</label>
-            <input id="title-input" class="input">
+            <input placeholder="Title" id="title-input" class="input">
         </div>
 
-        <div class="field topic">
-            <label>Topic</label>
-            <select class="topic-dropdown" id="topic-input"></select>
+        <div class="dropdowns">
+
+            <div class="topic">
+                <h1 class="heading">Topic</h1>
+                <select class="topic-dropdown dropdown" id="topic-input" type="text"></select>
+            </div>
+
+            <div class="difficulty">
+                <h1 class="heading">Difficulty</h1>
+                <select class="dropdown" id="difficulty-input">
+                    <option>BEGINNER</option>
+                    <option>INTERMEDIATE</option>
+                    <option>ADVANCED</option>
+                    <option>NERD</option>
+                </select>
+            </div>
+
+            <div class="field date-field">
+                <h1>Starting Date</h1>
+                <input type="date" class="input" id="starting-date-input">
+            </div>
+
         </div>
 
-        <div class="field difficulty">
-            <label>Difficulty</label>
-            <select class="input difficulty-dropdown" id="difficulty-input">
-                <option>BEGINNER</option>
-                <option>INTERMEDIATE</option>
-                <option>ADVANCED</option>
-                <option>NERD</option>
-            </select>
-        </div>
-
+        <h2 class="header">Description</h2>
         <div class="field description">
-            <label>Description</label>
             <textarea rows="5" cols="80" class="input" id="description-input">
         </textarea>
         </div>
 
-        <div class="field">
-            <label>Starting Date</label>
-            <input type="date" class="input" id="starting-date-input">
-        </div>
-
-        <button id="create-course-button" type="button">Create Course</button>
     </form>
 
-    <form id="picture-form" enctype="multipart/form-data" th:action="@{/api/images/upload}" method="post">
-        <label>Course Image</label>
-        <input name="file" class="file-input" type="file" multiple>
-        <input id="input-button" type="submit"></input>
-    </form>
-
-    <button class="course-form-submit-button">Create</button>
-
-    <div class="picture">
-        <img src="" class="image-content">
+    <div class="button-div">
+        <button class="course-form-submit-button">Create</button>
     </div>
+
+
+</div>
 
 </div>
 
@@ -73,6 +88,7 @@
         $.ajax({
             type: 'POST',
             url: '/api/images/destroy',
+            contentType: "application/json",
             data: {url: imageUrl},
 
             success: function (data) {
@@ -91,6 +107,7 @@
     const uploadImageSelector = document.querySelector('.file-input')
     const imageSelector = document.querySelector('.image-content')
     const courseSubmitButtonSelector = document.querySelector('.course-form-submit-button')
+    const imageCropperSelector = document.querySelector(".image-cropper")
 
     let createSelector = document.querySelector("#create-course-button");
 
@@ -100,55 +117,82 @@
     const difficultySelector = document.querySelector("#difficulty-input")
     const startingDateSelector = document.querySelector("#starting-date-input")
     const pictureSelector = document.querySelector("#picture-input")
+    const blahSelector = document.querySelector("#blah")
 
     const formPicture = document.querySelector('#cmon')
 
+    let pictureWasChanged = false;
+    let uploadedPictureUrl = document.getElementById('blah').src;
+    let formHasErrors = [];
+
+    function checkFieldIsNotEmpty(selector, value) {
+        if (value === '' || value === ' ') {
+            setErrorFor(selector, "title")
+            formHasErrors.push(true)
+        } else {
+            //todo : maybe add checkmark next to inout field
+        }
+    }
+
+    function setErrorFor(selector, errorMessage ){
+        //todo
+    }
 
     $('.course-form-submit-button').on('click', function (e) {
 
         e.preventDefault()
+        formHasErrors.length = 0
 
+        if (pictureWasChanged){
+            uploadImage()
+        }
+
+        checkFieldIsNotEmpty(titleSelector, titleSelector.value)
+        checkFieldIsNotEmpty(startingDateSelector, startingDateSelector.value)
+
+        if (formHasErrors.length > 0) {
+            alert('Please fill all required fields')
+            return
+        }
+
+        createCourse()
+    })
+
+    function createCourse() {
         const courseModel = {
             title: titleSelector.value,
             topic: topicSelector.value,
             description: descriptionSelector.value,
             difficulty: difficultySelector.value,
             startingDate: startingDateSelector.value,
-            picture: ''
+            picture: uploadedPictureUrl
         }
 
         $.ajax({
             type: "POST",
             url: "/api/courses",
-            content: 'application/json',
+            dataType: "json",
+            contentType: 'application/json',
             data: JSON.stringify(courseModel),
 
-            success: function() {
+            success: function(data) {
                 alert('course created')
             },
 
-            error: function () {
-                alert('something went wrong =(')
+            error: function (data) {
+
             }
 
         })
+    }
 
-
-    })
-
-    pictureFormSelector.addEventListener('change', function (e) {
-        e.preventDefault()
-        inputButtonSelector.click()
-    })
-
-    $(document).on('submit','#picture-form', function (e) {
-
+    function uploadImage() {
         if (uploadImageSelector.value === '') {
             alert("Please select a valid image")
+            return
         }
 
-        e.preventDefault()
-        var formData = new FormData(this)
+        var formData = new FormData(pictureFormSelector)
         $.ajax({
             type: "POST",
             url: "/api/images/upload",
@@ -158,16 +202,27 @@
 
             success: function(imageUrl) {
 
-                imageSelector.setAttribute("src", imageUrl)
+                uploadedPictureUrl = imageUrl.body;
             },
 
             error: function(data) {
-                alert(data)
+                alert("login-dumbass")
             }
 
         })
-    })
+    }
 
+    pictureFormSelector.onchange = evt => {
+        const [file] = uploadImageSelector.files
+        if (file) {
+            blahSelector.src = URL.createObjectURL(file)
+            pictureWasChanged = true;
+        }
+    }
+
+    blahSelector.onclick = evt => {
+        uploadImageSelector.click()
+    }
 
 
 

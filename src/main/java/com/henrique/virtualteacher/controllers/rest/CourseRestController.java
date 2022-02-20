@@ -187,14 +187,14 @@ private final ModelMapper mapper;
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
-    @PostMapping()
+    @PostMapping(consumes = "application/json")
     public ResponseEntity<String> create(@RequestBody CourseModel courseModel,
                                           Principal principal) {
 
         User loggedUser = userService.getByEmail(principal.getName());
         courseService.create(courseModel, loggedUser);
 
-        return new ResponseEntity<>("success",HttpStatus.OK);
+        return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
     @PutMapping("/{id}/update")

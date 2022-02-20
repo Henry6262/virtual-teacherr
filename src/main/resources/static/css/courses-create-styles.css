@@ -1,3 +1,180 @@
 #input-button {
     visibility: hidden;
 }
+
+#description-input {
+    width: 65%;
+    font-family: 'Inter', serif;
+    border: 2px solid;
+    border-radius: 5px
+}
+
+#title-input {
+    font-size: 30px;
+    text-align: -webkit-center;
+    outline: none;
+    padding-bottom: 5px;
+}
+
+.body {
+    text-align: -webkit-center;
+}
+
+.create-course-form {
+    width: min-content;
+}
+
+.content {
+    border: 4px solid cornflowerblue;
+    width: fit-content;
+}
+
+.wrapper {
+    text-align: left;
+}
+
+.input {
+    width: 100%;
+    border: none;
+    caret-color: transparent ;
+}
+
+.field {
+    display: flex;
+    padding: 30px 0px 10px 0px;
+    /* width: 100%; */
+    margin: 0px 80px 0px 80px;
+    border: 0;
+    border-bottom: 2px solid black;
+    outline: none;
+    background: transparent;
+}
+
+.description {
+
+    display: block;
+    padding-top: 10px;
+    border-bottom: 2px solid;
+    text-align-last: center;
+    padding-bottom: 30px;
+}
+
+.header {
+font-family: 'Inter';
+padding-top: 20px;
+text-align: -webkit-center;
+}
+
+.heading {
+text-align: center;
+font-family: Inter;
+font-size: x-large;
+}
+
+.dropdowns {
+display: flex;
+gap: 35px;
+place-content: center;
+margin: 20px 30px 0px 30px;
+border-bottom: 2px solid;
+padding-bottom: 40px;
+}
+
+.dropdown {
+display: flex;
+gap: 45px;
+place-content: center;
+padding: 15px 0px;
+border-radius: 4px;
+font-size: medium;
+text-align: -webkit-center;
+}
+
+.date-field {
+font-family: 'Inter';
+padding: 0px 0px 20px;
+display: block;
+text-align: center;
+margin: 0;
+}
+
+.date-field h1 {
+font-size: x-large;
+}
+
+#starting-date-input {
+width: 139px;
+text-align-last: center;
+font-size: larger;
+padding: 0px 0px 0p;
+padding: 10px;
+border: 1px solid;
+border-radius: 6px;
+padding-bottom: 17px;
+}
+
+.mega-div {
+display: block;
+text-align: -webkit-center;
+}
+
+.mega-div h1 {
+font-family: Inter;
+}
+
+.file-div {
+display: inline-block;
+}
+
+.file-input {
+position: absolute;
+left: 0;
+top: 0;
+right: 0;
+bottom: 0;
+font-size: 1;
+width: 0;
+height: 100%;
+opacity: 0;
+}
+
+.file-div label {
+visibility: hidden;
+}
+
+#blah {
+object-fit: cover;
+border-radius: 50%;
+height: 200px;
+width: 200px;
+margin-top: 45px;
+}
+
+#blah:hover {
+cursor: pointer;
+}
+
+.image-cropper {
+
+}
+
+#picture-form {
+align-self: center;
+}
+
+.button-div {
+    text-align: -webkit-center;
+    margin: 30px;
+}
+
+.button-div:hover {
+    cursor: pointer;
+}
+
+.submit-button {
+    padding: 15px 30px;
+    font-size: larger;
+    font-family: 'Inter';
+    border-radius: 7px;
+    background-color: cornflowerblue;
+}
