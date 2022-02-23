@@ -15,6 +15,28 @@ html.modal-active, body.modal-active {
 }
 
 
+#modal-container.four {
+    z-index: 10;
+    transform: scale(1);
+}
+#modal-container.four .modal-background {
+    background: rgba(0, 0, 0, 0.7);
+}
+#modal-container.four .modal-background .modal {
+    animation: blowUpModal 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.four + .content {
+    z-index: 1;
+    animation: blowUpContent 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.four.out .modal-background .modal {
+    animation: blowUpModalTwo 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.four.out + .content {
+    animation: blowUpContentTwo 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+
 #modal-container.six {
     transform: scale(1);
 }
@@ -49,7 +71,6 @@ html.modal-active, body.modal-active {
 #modal-container.six.out .modal-background .modal .modal-svg rect {
     animation: sketchOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
 }
-
 
 #modal-container .modal-background {
     display: table-cell;

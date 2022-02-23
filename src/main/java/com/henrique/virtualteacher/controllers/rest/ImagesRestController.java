@@ -32,6 +32,7 @@ public class ImagesRestController {
 
         String url = cloudinaryConfig.upload(file);
         return new ResponseEntity<>(url, HttpStatus.CREATED);
+
     }
 
     @PostMapping("/destroy")

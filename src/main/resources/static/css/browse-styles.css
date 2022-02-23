@@ -5,3 +5,14 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
+
+.course-element {
+    width: fit-content;
+}
+
+course-image {
+    max-width: 240px;
+    width: 100%;
+    border-radius: 3px;
+    border: 2px solid black;
+}
