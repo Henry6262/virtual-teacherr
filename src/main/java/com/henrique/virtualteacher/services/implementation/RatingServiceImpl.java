@@ -22,7 +22,6 @@ public class RatingServiceImpl implements RatingService {
 
     private final RatingRepository ratingRepository;
     private final UserService userService;
-    private final CourseService courseService;
     private final ModelMapper modelMapper;
 
 
@@ -45,7 +44,6 @@ public class RatingServiceImpl implements RatingService {
     public double getAverageRatingForCourse(Course course) {
 
         List<Rating> ratings = getAllByCourseId(course.getId());
-
         double numberOfRatings = ratings.size();
 
         double allRatingsSum = ratings

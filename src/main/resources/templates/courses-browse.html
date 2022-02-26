@@ -7,6 +7,7 @@
     <link href="../static/css/browse-modal.css" th:href="@{/css/browse-modal.css}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
 </head>
 <body>
 
@@ -22,6 +23,8 @@
 <!--    </div>-->
 <!--</div>-->
 
+
+
 <div id="costumModal9" class="modal" data-easein="expandIn"  tabindex="-1" role="dialog" aria-labelledby="costumModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -29,7 +32,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                     ×
                 </button>
-                <h4 class="modal-title">
+                <h4 id="title-modal" class="modal-title">
                     Modal Header
                 </h4>
             </div>
@@ -65,12 +68,18 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.2/velocity.ui.min.js'></script>
 
-<script>$(".modal").each(function(l){$(this).on("show.bs.modal",function(l){var o=$(this).attr("data-easein");"shake"==o?$(".modal-dialog").velocity("callout."+o):"pulse"==o?$(".modal-dialog").velocity("callout."+o):"tada"==o? $(".modal-dialog").velocity("callout."+o):"flash"==o?$(".modal-dialog").velocity("callout."+o):"bounce"==o?$(".modal-dialog").velocity("callout."+o):"swing"==o?$(".modal-dialog").velocity("callout."+o):$(".modal-dialog").velocity("transition."+o)})});</script>
+
+<script>$(".modal").each(function(l){$(this).on("show.bs.modal",function(l){var o=$(this).attr("data-easein");"shake"==o?$(".modal-dialog").velocity("callout."+o):"pulse"==o?$(".modal-dialog").velocity("callout."+o):"tada"==o? $(".modal-dialog").velocity("callout."+o):"flash"==o?$(".modal-dialog").velocity("callout."+o):"bounce"==o?$(".modal-dialog").velocity("callout."+o):"swing"==o?$(".modal-dialog").velocity("callout."+o):$(".modal-dialog").velocity("transition."+o)})});
+
+
+
+</script>
+
 
 <script>
 
     loadCourses()
-     function loadCourses() {
+     async function loadCourses() {
         $.ajax({
             type: "GET",
             url:"/api/courses/enabled",
@@ -82,20 +91,53 @@
 
                 $.each(response, function (index, value) {
                 tableContent.append(
-                    "<div class='course-element' onclick='showModal()' style='width: fit-content;'> " +
+                    "<a href=\"#costumModal9\" role=\"button\" class='course-modal-link' style='text-decoration: none ' data-toggle=\"modal\">"+
+                      "<div class='course-element'  style='width: fit-content;'> " +
                         "<div class='course-container'>" +
                             "<div>" + "<img src='"+value.picture+"' id='course-image' style='max-width: 240px;" + "width: 100%;" + "border-radius: 3px;" + "border: 2px solid black;' src='#' alt='course image'>" + "</div>" +
-                            "<div class='course-text' style='margin: 0px 0px 0px 5px;'>" +
-                                "<div class='course-name'>" + value.title + "</div>" +
+                            "<div  class='course-text' style='margin: 0px 0px 0px 5px;'>" +
+                                "<div id='name-course' class='course-name'>" + value.title + "</div>" +
+                                    "<div class=\'star-rating\'>" +
+                                        "<span class=\"fa fa-star-o\" data-rating=\"1\"></span>"+
+                                        "<span class=\"fa fa-star-o\" data-rating=\"2\"></span>"+
+                                        "<span class=\"fa fa-star-o\" data-rating=\"3\"></span>"+
+                                        "<span class=\"fa fa-star-o\" data-rating=\"4\"></span>"+
+                                        "<span class=\"fa fa-star-o\" data-rating=\"5\"></span>"+
+                                        "<input type=\"hidden\" onload='' name=\"whatever3\" class=\"rating-value\" value='" +value.averageRating + "'  >" +
+                                    "</div>" +
                                 "<div>" + value.topic + "</div>" +
                                 "<div>" + value.difficulty+ "</div>" +
                             "</div>" +
                         "</div>" +
-                    "</div>"
+                      "</div>" +
+                    "</a>"
                 )
 
-                })
+                    var $star_rating = $('.star-rating .fa');
 
+                    function SetRatingStar() {
+                        return $star_rating.each(function() {
+                            if (parseInt($star_rating.siblings('input.rating-value').val()) >= parseInt($(this).data('rating'))) {
+                                return $(this).removeClass('fa-star-o').addClass('fa-star');
+                            } else {
+                                return $(this).removeClass('fa-star').addClass('fa-star-o');
+                            }
+                        });
+                    };
+
+                    $star_rating.on('click', function() {
+
+                        $star_rating.siblings('input.rating-value').val($(this).data('rating'));
+                        return SetRatingStar();
+                    });
+
+                    SetRatingStar();
+                    $(document).ready(function() {
+
+                    });
+
+                    document.cookie ='SameSite'
+                })
             },
 
             error: function (data) {
@@ -106,22 +148,11 @@
     }
 
 
-
-    function showModal() {
-        var buttonId = 'four';
-        $('#modal-container').removeAttr('class').addClass(buttonId);
-        $('body').addClass('modal-active');
-        document.cookie = 'SameSite'
-    }
-
-    $('modal-background').click(function(){
-        $(this).addClass('out');
-        $(this).removeClass(`four`)
-        $('body').removeClass('modal-active');
-    });
+    $('.modal').on('toggle', function (e) {
+        $(this).getElementById('title-modal').text($(this).getElementById('name-course').content)
+    })
 
     //# sourceURL=filename.js
 </script>
-
 
 </html>

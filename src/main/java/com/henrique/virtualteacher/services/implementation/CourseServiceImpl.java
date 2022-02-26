@@ -14,10 +14,12 @@ import com.henrique.virtualteacher.repositories.CourseRepository;
 import com.henrique.virtualteacher.repositories.UserRepository;
 import com.henrique.virtualteacher.services.interfaces.CourseService;
 import com.henrique.virtualteacher.services.interfaces.LectureService;
+import com.henrique.virtualteacher.services.interfaces.RatingService;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 
+import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +47,23 @@ public class CourseServiceImpl implements CourseService {
     private final Logger logger;
     private final LectureService lectureService;
     private final CloudinaryConfig cloudinaryConfig;
+    private final RatingService ratingService;
+
+    @Override
+    public List<CourseModel> mapAllToModel(List<Course> courses, User loggedUser, boolean includeCompletionPercentage) {
+        List<CourseModel> dtoList = new ArrayList<>();
+
+        for (Course current : courses) {
+            CourseModel courseModel = mapper.map(current, new TypeToken<CourseModel>() {}.getType());
+            courseModel.setAverageRating(ratingService.getAverageRatingForCourse(current));
+
+            if (includeCompletionPercentage) {
+                courseModel.setCourseCompletionPercentage(getPercentageOfCompletedCourseLectures(loggedUser, current));
+            }
+            dtoList.add(courseModel);
+        }
+        return dtoList;
+    }
 
     @Override
     public void create(CourseModel course, User loggedUser) {
@@ -238,8 +259,16 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> getAllByEnabled(boolean isEnabled) {
-        return courseRepository.findByEnabled(isEnabled);
+    public List<CourseModel> getAllByEnabled(boolean isEnabled,  Optional<User> loggedUser) {
+
+        List<CourseModel> courseModels;
+        if (loggedUser.isPresent()){
+            courseModels = mapAllToModel(courseRepository.findByEnabled(isEnabled),loggedUser.get(), true);
+        } else {
+            courseModels = mapAllToModel(courseRepository.findByEnabled(isEnabled), null, false);
+        }
+
+        return courseModels;
     }
 
     @Override

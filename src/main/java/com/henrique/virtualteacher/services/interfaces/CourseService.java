@@ -12,8 +12,11 @@ import java.io.IOException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Optional;
 
 public interface CourseService {
+
+    List<CourseModel> mapAllToModel(List<Course> courses, User loggedUser, boolean includeCompletitionAmount);
 
     Course getById(int id);
 
@@ -23,7 +26,7 @@ public interface CourseService {
 
     List<Course> getAllByTopic(EnumTopics topic);
 
-    List<Course> getAllByEnabled(boolean isEnabled);
+    List<CourseModel> getAllByEnabled(boolean isEnabled, Optional<User> loggedUser);
 
     List<Course> getAllByDifficulty(int difficultyLevel);
 

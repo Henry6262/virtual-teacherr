@@ -3,9 +3,14 @@ body {
     background-color: #E0E0E0;
     font-family: 'Roboto', sans-serif
 }
+
+
+
 a[data-toggle="modal"] {
     margin: 5px;
+
 }
+
 .title {
     color: #757575;
     font-weight: bold;
@@ -14,10 +19,17 @@ a[data-toggle="modal"] {
     text-align: left;
 }
 .modal-content {
+    height: 550px;
+    margin-top: 230px;
     border: none;
     border-radius: 2px;
     box-shadow: 0 16px 28px 0 rgba(0,0,0,0.22),0 25px 55px 0 rgba(0,0,0,0.21);
 }
+
+.modal-dialog {
+    width: 700px;
+}
+
 .modal-header{
     border-bottom: 0;
     padding-top: 15px;

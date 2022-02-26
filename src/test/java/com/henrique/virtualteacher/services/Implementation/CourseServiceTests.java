@@ -98,7 +98,7 @@ public class CourseServiceTests {
         List<Course> mockCourses = Helpers.createMockCourseList();
 
         Mockito.when(courseRepository.findByEnabled(true)).thenReturn(mockCourses);
-        courseService.getAllByEnabled(true);
+        courseService.getAllByEnabled(true, Optional.empty());
         Mockito.verify(courseRepository, Mockito.times(1))
                 .findByEnabled(true);
     }

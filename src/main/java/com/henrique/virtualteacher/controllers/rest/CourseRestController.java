@@ -22,10 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 import java.security.Principal;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,7 +33,6 @@ public class CourseRestController {
 private final CourseService courseService;
 private final UserService userService;
 private final LectureService lectureService;
-private final RatingService ratingService;
 private final AssignmentService assignmentService;
 private final CommentService commentService;
 private final CloudinaryConfig cloudinaryConfig;
@@ -44,27 +40,14 @@ private final Logger logger;
 private final ModelMapper mapper;
 
 
-    private List<CourseModel> mapAllToModel(List<Course> courses, User loggedUser, boolean includeCompletionPercentage) {
-        List<CourseModel> dtoList = new ArrayList<>();
 
-        for (Course current : courses) {
-            CourseModel courseModel = mapper.map(current, new TypeToken<CourseModel>() {}.getType());
-            courseModel.setAverageRating(ratingService.getAverageRatingForCourse(current));
-
-            if (includeCompletionPercentage) {
-                courseModel.setCourseCompletionPercentage(courseService.getPercentageOfCompletedCourseLectures(loggedUser, current));
-            }
-            dtoList.add(courseModel);
-        }
-        return dtoList;
-    }
 
     @GetMapping("/enrolled")
     public ResponseEntity<Model> enrolledCourses(Principal principal,
                                                         Model model) {
 
         User loggedUser = userService.getByEmail(principal.getName());
-        List<CourseModel> courseModels = mapAllToModel(loggedUser.getEnrolledCourses(), loggedUser, true);
+        List<CourseModel> courseModels = courseService.mapAllToModel(loggedUser.getEnrolledCourses(), loggedUser, true);
 
         model.addAttribute("enrolledCourses", courseModels);
 
@@ -77,7 +60,7 @@ private final ModelMapper mapper;
 
         User loggedUser = userService.getByEmail(principal.getName());
 
-        List<CourseModel> courseModels = mapAllToModel(loggedUser.getCompletedCourses(), loggedUser, true);
+        List<CourseModel> courseModels = courseService.mapAllToModel(loggedUser.getCompletedCourses(), loggedUser, true);
         model.addAttribute("completedCourses", courseModels);
 
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
@@ -89,27 +72,30 @@ private final ModelMapper mapper;
 
         Course course = courseService.getById(id);
         CourseModel courseModel = new CourseModel();
-        double averageRating = ratingService.getAverageRatingForCourse(course);
+//        double averageRating = ratingService.getAverageRatingForCourse(course);
 
         mapper.map(course, courseModel);
 
         model.addObject("course", course);
-        model.addObject("courseAverageRating", averageRating);
+//        model.addObject("courseAverageRating", averageRating);
         model.addObject("courseComments", commentService.getAllForCourse(id));
 
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/enabled")
-    public ResponseEntity<List<Course>> getAllEnabled(Authentication principal,
+    public ResponseEntity<List<CourseModel>> getAllEnabled(Principal principal,
                                                Model model) {
 
-        if (principal != null) {
-            User loggedUser = userService.getByEmail(principal.getName());
+        Optional<User> loggedUser;
+
+        if (principal == null) {
+            loggedUser = Optional.empty();
+        } else {
+            loggedUser = Optional.of(userService.getByEmail(principal.getName()));
         }
 
-        List<Course> enabledCourses = courseService.getAllByEnabled(true);
-        model.addAttribute("enabledCourses", enabledCourses);
+        List<CourseModel> enabledCourses = courseService.getAllByEnabled(true, loggedUser);
 
         return new ResponseEntity<>(enabledCourses,HttpStatus.ACCEPTED);
     }
@@ -118,9 +104,10 @@ private final ModelMapper mapper;
     ResponseEntity<Model> getAllDisabled(Principal principal,
                                                      Model model) {
 
+
         User loggedUser = userService.getByEmail(principal.getName());
 
-        List<Course> disabledCourses = courseService.getAllByEnabled(false);
+        List<CourseModel> disabledCourses = courseService.getAllByEnabled(false, Optional.of(loggedUser));
         model.addAttribute("disabledCourses", disabledCourses);
 
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
@@ -133,7 +120,7 @@ private final ModelMapper mapper;
         User loggedUser = userService.getByEmail(principal.getName());
 
         List<Course> courses = courseService.getAll();
-        List<CourseModel> dtoList = mapAllToModel(courses, loggedUser, false);
+        List<CourseModel> dtoList = courseService.mapAllToModel(courses, loggedUser, false);
 
         model.addAttribute("allCourses", dtoList);
         return new ResponseEntity<>(model, HttpStatus.OK);
@@ -340,9 +327,9 @@ private final ModelMapper mapper;
 
         User loggedUser = userService.getByEmail(principal.getName());
         Course course = courseService.getById(id);
-        ratingService.create(course, loggedUser, rating);
-
-        model.addAttribute("averageRating", ratingService.getAverageRatingForCourse(course));
+//        ratingService.create(course, loggedUser, rating);
+//
+//        model.addAttribute("averageRating", ratingService.getAverageRatingForCourse(course));
 
         return new ResponseEntity<>(model ,HttpStatus.OK);
     }

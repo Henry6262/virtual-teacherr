@@ -62,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/courses/{id}/rate", "/api/courses/{id}/complete", "/api/courses/{id}/enroll",
                             "/api/courses/{id}/lecture/{entryId}", "/api/courses/{id}/lecture/{entryId}/submit")
                 .hasAuthority("STUDENT")
-                .antMatchers(HttpMethod.GET,  "/api/courses/enabled")
+                .antMatchers(HttpMethod.GET,  "/api/courses/enabled", "/api/courses/test")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/api/courses/{id}/lecture/{entryId}", "/api/courses/{id}")
                 .hasAuthority("STUDENT")

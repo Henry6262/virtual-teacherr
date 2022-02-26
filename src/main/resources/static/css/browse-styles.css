@@ -4,6 +4,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
+    justify-items: center;
 }
 
 .course-element {
@@ -15,4 +16,20 @@ course-image {
     width: 100%;
     border-radius: 3px;
     border: 2px solid black;
+}
+
+.star-rating {
+    line-height:32px;
+    font-size:1.25em;
+}
+
+.star-rating:hover {
+    cursor: pointer;
+}
+
+.star-rating .fa-star{color: yellow;}
+
+
+#container {
+    width: fit-content;
 }
