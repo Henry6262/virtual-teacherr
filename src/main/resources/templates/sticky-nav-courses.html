@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"  xmlns:th="http://www.thymeleaf.org"
-                 xmlns="http://www.w3.org/1999/html">>
+                 xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Courses</title>
@@ -52,24 +52,37 @@
 <main class="et-main">
     <section class="et-slide" id="tab-es6">
 
-        <div id="browse-courses" >
+        <div id="browse-wrapper">
 
-            <div th:each="course : ${courses}" class="course-element" >
-                <a>
-                    <div class="course-container">
-                        <div class="course-image-content">
-                            <img id="course-image" src="#" th:src="${course.picture}" >
+            <h2 class="heading">Recommended Courses</h2>
+            <div class="arrow-wrapper">
+                <div class="random"></div>
+                <a href="#" class="arrow left"></a>
+            </div>
+            <div id="browse-courses">
+
+            <div th:each="course : ${courses}" class="course-element">
+                    <a>
+                        <div class="course-container">
+                            <div class="course-image-content">
+                                <img id="course-image" src="#" th:src="${course.picture}">
+                            </div>
+                            <div class="course-text-content">
+                                <div id="name-course" th:text="${course.title}"></div>
+                                <div id="topic-course" th:text="${course.topic}"></div>
+                                <div id="difficulty-course" th:text="${course.difficulty}"></div>
+                            </div>
                         </div>
-                        <div class="course-text-content">
-                            <div id="name-course" th:text="${course.title}"></div>
-                            <div id="topic-course" th:text="${course.topic}"></div>
-                            <div id="difficulty-course" th:text="${course.difficulty}"></div>
-                        </div>
-                    </div>
-                </a>
+                    </a>
+                </div>
             </div>
 
+            <div class="arrow-wrapper">
+                <div class="random2"></div>
+                <a href="#" class="arrow right"></a>
+            </div>
         </div>
+
 
     </section>
 
@@ -101,6 +114,71 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
 
 <script>
+
+    const courseElements = document.querySelectorAll('.course-element')
+    const courseBrowse = document.querySelector('#browse-courses')
+    const arrowWrapper = document.querySelector('.arrow-wrapper')
+    const rightArrow = document.querySelector('.right')
+
+    rightArrow.addEventListener('click', function (e) {
+        e.preventDefault()
+        loadNextCourses()
+    })
+
+
+    reset()
+    function reset() {
+        courseElements.forEach((element, index) => displayCourses(element, index))
+    }
+
+
+    function displayCourses(element, index) {
+
+        if (index > 5){
+            element.style.opacity = "0"
+            element.style.transform = `TranslateX(${ 525 }%)`
+        } else {
+            element.style.opacity = '1'
+            element.style.transform = `TranslateX(${ (100 * index) + (5 * index) }%)`
+        }
+
+    }
+
+    let firstElementIndex = 0
+    let lastElementIndex = 5;
+    let currentRowElement = 0 // 0 to 4
+
+    function loadNextCourses() {
+
+        //check if we can show a new row with atleast 1 course
+        if (firstElementIndex +5 > courseElements.length -1){
+            reset()
+            firstElementIndex = 0
+            lastElementIndex = 5
+            return
+        }
+
+        firstElementIndex += 6;
+        lastElementIndex += 6;
+        currentRowElement = 0
+
+        courseElements.forEach((element, index) =>  {
+
+            if (index < firstElementIndex - 6) {
+                return;
+            }
+
+            if (index >= firstElementIndex -6 && index < firstElementIndex) {
+                element.style.transform = `TranslateX(${0}%)`
+                element.style.opacity = '0'
+            }
+            else if (index >= firstElementIndex && index <= lastElementIndex) {
+                element.style.opacity = '1'
+                element.style.transform = `TranslateX(${ (100 * currentRowElement) + (5 * currentRowElement++) }%)`
+            }
+
+        })
+    }
 
 </script>
 

@@ -187,7 +187,7 @@ public class Helpers {
         course.setId(1);
         course.setTitle("info");
         course.setDescription("description");
-        course.setDifficulty(5);
+        course.setDifficulty(EnumDifficulty.INTERMEDIATE);
         course.setTopic(EnumTopics.JAVA);
         course.setEnabled(true);
         course.setCourseLectures(new ArrayList<>());

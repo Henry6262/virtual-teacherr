@@ -1,5 +1,6 @@
 body {
     font-family: "Century Gothic", "Lato", sans-serif;
+    margin: 0px
 }
 
 a {
@@ -8,15 +9,13 @@ a {
 
 .et-hero-tabs,
 .et-slide {
-    display: flex;
-    flex-direction: column;
-    /*justify-content: center;             if error return to normal*/
+    display: flow-root;
+    flex-direction: initial;
     align-items: center;
     height: 100vh;
     position: relative;
     background: #eee;
     text-align: center;
-    padding: 0 2em;
 }
 .et-hero-tabs h1,
 .et-slide h1 {
@@ -92,21 +91,56 @@ a {
 /* BELOW ARE MY CHANGES */
 
 
+#browse-wrapper {
 
+}
+
+.random {
+    background-color: black;
+    position: absolute;
+    padding: 27px;
+    margin: 75px 26px 24px 70px;
+    border-radius: 50%;
+    z-index: 20;
+}
+
+.random2 {
+    background-color: black;
+    position: absolute;
+    padding: 27px;
+    margin: 75px 52px 36px 1593px;
+    border-radius: 50%;
+}
+
+.heading {
+    margin-top: 41px;
+    font-size: xx-large;
+}
 
 #browse-courses {
+
     display: flex;
     gap: 10px;
-    margin: 50px 0px 0px 0px;
+    margin: 15px 0px 0px 95px;
+
 }
 
 .course-element {
+    position: absolute;
     width: fit-content;
+    transition: transform 0.8s ease-in-out ,
+    opacity 600ms linear,
+    visibility 0ms linear 600ms;
+}
+
+
+.course-container {
     transition: all 0.2s ease-in-out !important;
 }
 
-.course-element:hover {
+.course-container:hover {
     transform: translateY(-5px);
+    cursor: pointer;
 }
 
 #course-image {
@@ -122,6 +156,56 @@ a {
 .course-text-content {
     margin: 0px 0px 0px 5px
 }
+
+
+
+/*  ARROWS SLIDER CSS BELOW */
+
+.arrow-wrapper {
+
+}
+
+.arrow {
+    z-index: 100;
+    position: absolute;
+    /* top: 40%; */
+    width: 15px;
+    height: 15px;
+    /* height: auto; */
+    background: transparent;
+    border-top: 1vmin solid white;
+    border-right: 1vmin solid white;
+    box-shadow: 0 0 0 lightgrey;
+    transition: all 200ms ease;
+    margin: 101px 72px 47px 89px;
+}
+
+.arrow.left {
+  left: 0;
+  transform: translate3d(0, -50%, 0) rotate(-135deg);
+}
+.arrow.right {
+  right: 0;
+  transform: translate3d(0, -50%, 0) rotate(45deg);
+}
+.arrow:hover {
+  border-color: dodgerblue;
+  box-shadow: 0.5vmin -0.5vmin 0 white;
+}
+.arrow:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-40%, -60%) rotate(45deg);
+  width: 200%;
+  height: 200%;
+}
+
+.arrow:before:hover {
+    transform: translateX(5px);
+}
+
 
 
 
