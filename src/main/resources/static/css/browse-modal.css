@@ -4,7 +4,10 @@ body {
     font-family: 'Roboto', sans-serif
 }
 
-
+.iamgeee {
+    max-width: 30px;
+    max-height: 30px;
+}
 
 a[data-toggle="modal"] {
     margin: 5px;
@@ -15,10 +18,62 @@ a[data-toggle="modal"] {
     color: #757575;
     font-weight: bold;
 }
+
 .modal {
     text-align: left;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    display: none;
+    visibility: hidden;
+    backdrop-filter: none;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+    outline: 0;
+
+    transition: visibility 0.8s ease-in-out
 }
+
+.open {
+
+    text-align: -webkit-center;
+    visibility: visible;
+    display: block;
+    backdrop-filter: brightness(0.4);
+}
+
+/*.closed {*/
+/*    display: none;*/
+/*    backdrop-filter: none;*/
+/*}*/
+
+@media (min-width: 768px) {
+    .modal-content {
+        -webkit-box-shadow: 0 5px 15px rgb(0 0 0 / 50%);
+        box-shadow: 0 5px 15px rgb(0 0 0 / 50%);
+    }
+}
+
+.modal-open .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .modal-content {
+    position: relative;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid #999;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 6px;
+    outline: 0;
+    -webkit-box-shadow: 0 3px 9px rgb(0 0 0 / 50%);
+    box-shadow: 0 3px 9px rgb(0 0 0 / 50%);
+
     height: 550px;
     margin-top: 230px;
     border: none;

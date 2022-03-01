@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <link href="../static/css/courses-create-styles.css" th:href="@{/css/courses-create-styles.css}" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/modal-browse-courses-styles.css" th:href="@{/css/modal-browse-courses-styles.css}">
+    <script src="https://kit.fontawesome.com/4083de25cb.js" crossorigin="anonymous"></script>
     <title>Create Course</title>
 </head>
 
@@ -14,8 +16,8 @@
 
     <div class="mega-div">
 
-
         <div class="image-cropper">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
             <img id="blah" src="https://res.cloudinary.com/henrique-mk/image/upload/v1645374514/default_hn8tin.jpg" alt="image">
         </div>
 
@@ -66,19 +68,89 @@
 
     </form>
 
-    <div class="button-div">
-        <button class="course-form-submit-button">Create</button>
+    <button CLASS="next-button" type="button">Next</button>
+
+
+</div>
+</div>
+
+
+
+
+    <!--    <div class="button-div">-->
+<!--        <button class="course-form-submit-button">Create</button>-->
+<!--    </div>-->
+
+
+
+
+    <div class="modal-frame">
+        <div class="modal">
+            <div class="modal-inset">
+                <div class="button close"><i class="fa fa-close"></i></div>
+
+                <div class="modal-body">
+                    <h3 class="modal-title">What skills will the user learn in the course?</h3>
+                    <div class="inputs">
+                        <div id="skill-1">
+                            <small class="skill-label">Skill 1</small>
+                            <textarea class="skill-input" maxlength="100"></textarea>
+                        </div>
+                        <div id="skill-2">
+                            <small class="skill-label">Skill 2</small>
+                            <textarea class="skill-input"></textarea>
+                        </div>
+                        <div id="skill-3">
+                            <small class="skill-label">Skill 3</small>
+                            <textarea class="skill-input"></textarea>
+                        </div>
+                    </div>
+                    <p class="ps">**I know the SASS is a bit messy, I did this on the fly and for fun
+                        <br /> and w.e. I DO WHAT I WANT!!</p>
+                </div>
+            </div>
+        </div>
     </div>
+    <div class="modal-overlay"></div>
 
 
-</div>
-
-</div>
 
 
 
 
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+<script>
+    $modal = $('.modal-frame');
+    $overlay = $('.modal-overlay');
+
+    /* Need this to clear out the keyframe classes so they dont clash with each other between ener/leave. Cheers. */
+    $modal.bind('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(e){
+        if($modal.hasClass('state-leave')) {
+            $modal.removeClass('state-leave');
+        }
+    });
+
+    $('.close').on('click', function() {
+        hideModal()
+    });
+
+    $('.next-button').on('click', function(){
+        closeModal()
+    });
+
+    function hideModal() {
+        $overlay.removeClass('state-show');
+        $modal.removeClass('state-appear').addClass('state-leave');
+    }
+
+    function closeModal() {
+        $overlay.addClass('state-show');
+        $modal.removeClass('state-leave').addClass('state-appear');
+    }
+
+    document.cookie = 'SameSite'
+</script>
 
 <script>
 
