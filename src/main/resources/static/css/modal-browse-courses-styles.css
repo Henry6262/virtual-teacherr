@@ -146,7 +146,6 @@ html, body {
     max-width: 200px;
     max-height: 150px;
     border-radius: 5px;
-    margin-right: 200px;
 }
 
 .date-div {
@@ -160,9 +159,11 @@ html, body {
 }
 
 .modal-inset {
+    max-width: 35rem;
     position: relative;
     padding: 60px;
     border-radius: 10px;
+    margin-left: 275px;
     background-color: white;
     min-width: 320px;
     min-height: 126px;
@@ -215,14 +216,17 @@ html, body {
     transition-delay: 0.1s;
 }
 .modal-body h3 {
-    font-weight: 700;
+    font-weight: 300;
     padding-bottom: 22px;
-    display: block;
+    /* display: block; */
     color: #f24b4b;
-    text-align: center;
+    /* text-align: center; */
+    border-bottom: 1px solid black;
     font-family: 'Inter';
-    font-size: 26px;
-    line-height: 30px;
+    font-size: 34px;
+    line-height: 35px;
+    /* align-self: center; */
+    align-self: center;
 }
 .modal-body p {
     padding-bottom: 20px;

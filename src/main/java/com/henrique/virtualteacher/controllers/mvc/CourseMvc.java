@@ -26,31 +26,33 @@ public class CourseMvc {
     private final CourseService courseService;
 
 
-    @GetMapping("/browse")
-    public String showAllEnabledCourses() {
-        return "courses-browse";
-    }
+
 
     @GetMapping("/create")
     public String showCreateCoursePage() {
         return "courses-create";
     }
 
-    @GetMapping("/test")
-    public String showStickyNavPage(Principal principal,
+    @GetMapping("/browse")
+    public String showBrowseCourses(Principal principal,
                                     Model model){
 
         Optional<User> loggedUser;
+        boolean userIsAnonymous = true;
+
         if (principal == null) {
             loggedUser = Optional.empty();
+            model.addAttribute("anonymous_user_picture","https://res.cloudinary.com/henrique-mk/image/upload/v1646573717/13-136710_anonymous-browsing-user_t9wm22.jpg");
         } else {
+            userIsAnonymous = false;
             loggedUser = Optional.of(userService.getByEmail(principal.getName()));
+            model.addAttribute("loggedUser",loggedUser.get());
         }
 
-        List<CourseModel> courses = courseService.getAllByEnabled(true, loggedUser);
 
+        List<CourseModel> courses = courseService.getAllByEnabled(true, loggedUser);
         model.addAttribute("courses", courses);
-        model.addAttribute("one-course", courses.get(0));
+        model.addAttribute("user_is_anonymous", userIsAnonymous);
 
         return "browse-courses-ultimate";
     }

@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
   <link href="../static/css/courses-browse-ultimate-styles.css" th:href="@{/css/courses-browse-ultimate-styles.css}" rel="stylesheet">
   <link rel="stylesheet" href="../static/css/modal-browse-courses-styles.css" th:href="@{/css/modal-browse-courses-styles.css}">
+  <link rel="stylesheet" href="../static/css/hover-button-styles.css" th:href="@{/css/hover-button-styles.css}">
   <title>Title</title>
 
   <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
@@ -26,7 +27,9 @@
 
   <a href="#">
     <div class="logo">
-      <img src="https://static1.squarespace.com/static/58da61243a0411e118c534d9/5ab7ed2e88251b198c3e5d48/5ab7ed2e03ce64c499d195db/1522003251202/Bear.png?format=500w">
+      <img th:unless="${user_is_anonymous}" class="user_image" th:src="${loggedUser.getProfilePicture()}" src="#">
+      <img th:if="${user_is_anonymous}" class="user_image" th:src="${anonymous_user_picture}">
+
     </div>
   </a>
 
@@ -95,15 +98,14 @@
 
   <section class="works smooth-in">
 
-
+    <a href="#" class="arrow left"></a>
 
     <div id="browse-wrapper">
 
       <h2 class="heading">Recommended Courses</h2>
-      <div class="arrow-wrapper">
-        <div class="random"></div>
-        <a href="#" class="arrow left"></a>
-      </div>
+
+
+
       <div id="browse-courses">
 
         <div th:each="course : ${courses}" class="course-element">
@@ -120,6 +122,9 @@
                 <div style="visibility: hidden; display:none" class="hidden-fields">
                   <div id="description-course" th:text="${course.description}"></div>
                   <div id="starting-date-course" th:text="${course.startingDate}"></div>
+                  <div id="skill-1" th:text="${course.getSkill1()}"></div>
+                  <div id="skill-2" th:text="${course.getSkill2()}"></div>
+                  <div id="skill-3" th:text="${course.getSkill3()}"></div>
                 </div>
               </div>
               <div class="container">
@@ -134,44 +139,67 @@
           </a>
         </div>
 
-
-
       </div>
 
-<!--      <div class="arrow-wrapper">-->
-<!--        <div class="random2"></div>-->
-<!--        <a href="#" class="arrow right"></a>-->
-<!--      </div>-->
+      <a href="#" class="arrow right"></a>
 
-      <div class="arrow-div">
-        <a class="arrow-a" href="#">
-          <span class="right"></span>
-        </a>
-      </div>
 
-      </div>
+    </div>
 
     <div class="modal-frame">
         <div class="modal-inset">
           <div class="button close"><i class="fa fa-close"></i></div>
 
           <div class="modal-body">
-            <h3 class="modal-title">Such Modal, Much Animate!</h3>
-            <div class="date-div">
-              <small>Starting date:</small>
-              <p class="modal-date"></p>
+
+            <div class="modal-top" style="display: flex;gap: 40px;">
+              <img class="modal-image" src="#">
+              <h3 class="modal-title">Such Modal, Much Animate!</h3>
             </div>
-            <img class="modal-image" src="#">
 
 
-            <small class="modal-avg-rating"></small>
 
+            <div class="rating-div" style="text-align: left">
+              <small style="color: black; font-weight: bold">Rating:</small>
+              <small style="color: black" class="modal-avg-rating"></small>
+            </div>
 
+            <div class="level-div" style="text-align: left">
+              <small style="font-weight: bold; color: black">Level</small>
+              <small style="color: black" class="modal-level"></small>
+            </div>
+
+            <div class="date-div">
+              <small style="color:black; font-weight: bold;">Starting date:</small>
+              <p style="margin-top: unset" class="modal-date"></p>
+            </div>
 
             <p class="modal-description">Nothing groundbreaking, but I hope you enjoyed <br /> the physics for the open/close animation =).</p>
 
+            <div class="skills-container">
+              <div class="skill-element">
+                <div class="check"></div>
+                <div class="modal-skills one"></div>
+              </div>
+              <div class="skill-element">
+                <div class="check"></div>
+                <div class="modal-skills two"></div>
+              </div>
+              <div class="skill-element">
+                <div class="check"></div>
+                <div class="modal-skills three"></div>
+              </div>
+            </div>
 
-            <p class="ps">**I know the SASS is a bit messy, I did this on the fly and for fun <br /> and w.e. I DO WHAT I WANT!!</p>
+
+            <a href="#" class="cta">
+              <span>Enroll</span>
+              <svg width="13px" height="10px" viewBox="0 0 13 10">
+                <path d="M1,5 L11,5"></path>
+                <polyline points="8 1 12 5 8 9"></polyline>
+              </svg>
+            </a>
+
           </div>
         </div>
 
@@ -212,6 +240,9 @@
 <!-- partial -->
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
 
+<script>
+
+</script>
 
 <script>
 
@@ -282,6 +313,12 @@
   const courseStartingDateSelector = document.querySelector('.modal-date')
   const modalReview = document.querySelector('.modal-review')
   const modalAvg = document.querySelector('.modal-avg-rating')
+  const modalLevel = document.querySelector(".modal-level")
+  const modalSkill1 = document.querySelector('.one')
+  const modalSkill2 = document.querySelector('.two')
+  const modalSkill3 = document.querySelector('.three')
+
+
 
   //todo make click on background of modal, exit modal,
   // also make modal show information of clicked item
@@ -305,8 +342,15 @@
     const courseStartingDate = e.querySelector('#starting-date-course')
     const courseAverageRating = e.querySelector('.review')
     const courseAvgText = e.querySelector('.avg-rating')
+    const courseSkill1 = e.querySelector('#skill-1')
+    const courseSkill2 = e.querySelector('#skill-2')
+    const courseSkill3 = e.querySelector('#skill-3')
+    const courseDifficulty = e.querySelector("#difficulty-course")
 
-
+    modalLevel.innerHTML = courseDifficulty.innerHTML
+    modalSkill1.innerHTML = courseSkill1.innerHTML
+    modalSkill2.innerHTML = courseSkill2.innerHTML
+    modalSkill3.innerHTML = courseSkill3.innerHTML
     modalAvg.innerHTML = courseAvgText.innerHTML
     courseStartingDateSelector.innerHTML = courseStartingDate.innerHTML;
     modalTitleSelector.innerHTML = courseTitle.innerHTML
@@ -371,7 +415,8 @@
 
     if (index > 3){
       element.style.opacity = "0"
-      element.style.transform = `TranslateX(${ 315 }%)`
+      element.style.zIndex = -1
+      element.style.transform = `TranslateX(${ 312 }%)`
     } else {
       element.style.opacity = '1'
       element.style.zIndex = '10'
@@ -384,7 +429,7 @@
   let lastElementIndex = 3;
   let currentRowElement = 0 // 0 to 4
 
-  const elementsToSum = 3
+  const elementsToSum = 4
 
   function loadNextCourses() {
 
@@ -406,9 +451,10 @@
         return;
       }
 
-      if (index >= firstElementIndex -elementsToSum && index < firstElementIndex) {
+      if (index >= firstElementIndex - elementsToSum && index < firstElementIndex) {
         element.style.transform = `TranslateX(${0}%)`
         element.style.opacity = '0'
+        element.style.zIndex = -1
       }
       else if (index >= firstElementIndex && index <= lastElementIndex) {
         element.style.opacity = '1'

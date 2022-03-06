@@ -262,11 +262,7 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseModel> getAllByEnabled(boolean isEnabled,  Optional<User> loggedUser) {
 
         List<CourseModel> courseModels;
-        if (loggedUser.isPresent()){
-            courseModels = mapAllToModel(courseRepository.findByEnabled(isEnabled),loggedUser.get(), true);
-        } else {
-            courseModels = mapAllToModel(courseRepository.findByEnabled(isEnabled), null, false);
-        }
+        courseModels = mapAllToModel(courseRepository.findByEnabled(isEnabled), null, false);
 
         return courseModels;
     }
