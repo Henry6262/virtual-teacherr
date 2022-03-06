@@ -135,19 +135,37 @@ html, body {
         height: calc(100% - 55px);
     }
 }
-.modal {
-    display: block;
-    vertical-align: middle;
-    text-align: center;
+
+/*.modal {*/
+/*    display: block;*/
+/*    vertical-align: middle;*/
+/*    text-align: center;*/
+/*}*/
+
+.modal-image {
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: 5px;
+    margin-right: 200px;
+}
+
+.date-div {
+    display: flex;
+    gap: 4px;
+    text-align: left;
+}
+
+.REVIEW-ROW {
+    display: flex;
 }
 
 .modal-inset {
     position: relative;
     padding: 60px;
+    border-radius: 10px;
     background-color: white;
     min-width: 320px;
     min-height: 126px;
-    margin: auto;
     visibility: hidden;
     -moz-box-shadow: 2px 2px 8px 1px rgba(0, 0, 0, 0.2);
     -webkit-box-shadow: 2px 2px 8px 1px rgba(0, 0, 0, 0.2);
@@ -200,15 +218,20 @@ html, body {
     font-weight: 700;
     padding-bottom: 22px;
     display: block;
-    color: #F2594B;
+    color: #f24b4b;
     text-align: center;
+    font-family: 'Inter';
+    font-size: 26px;
+    line-height: 30px;
 }
 .modal-body p {
     padding-bottom: 20px;
+    color: black
 }
 .modal-body .ps {
     font-size: 12px;
     opacity: .3;
+    color: black;
 }
 
 @-webkit-keyframes modalComeIn {

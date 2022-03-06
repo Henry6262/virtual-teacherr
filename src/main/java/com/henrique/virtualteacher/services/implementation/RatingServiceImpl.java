@@ -46,6 +46,10 @@ public class RatingServiceImpl implements RatingService {
         List<Rating> ratings = getAllByCourseId(course.getId());
         double numberOfRatings = ratings.size();
 
+        if (ratings.isEmpty()) {
+            return 0;
+        }
+
         double allRatingsSum = ratings
                 .stream().mapToInt(Rating::getRating)
                 .sum();

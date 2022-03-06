@@ -52,7 +52,7 @@ public class CourseMvc {
         model.addAttribute("courses", courses);
         model.addAttribute("one-course", courses.get(0));
 
-        return "sticky-nav-courses";
+        return "browse-courses-ultimate";
     }
 
 }

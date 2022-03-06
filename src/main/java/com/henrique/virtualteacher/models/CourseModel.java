@@ -38,5 +38,9 @@ public class CourseModel {
 
     private int courseCompletionPercentage;
 
+    private String skill1;
+    private String skill2;
+    private String skill3;
+
     private Set<CommentModel> comments;
 }

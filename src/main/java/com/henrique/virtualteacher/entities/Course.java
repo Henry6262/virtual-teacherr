@@ -54,6 +54,15 @@ public class Course {
     @Column(name = "picture")
     private String picture;
 
+    @Column(name = "skill_1")
+    private String skill1;
+
+    @Column(name = "skill_2")
+    private String skill2;
+
+    @Column(name = "skill_3")
+    private String skill3;
+
     @OneToMany()
     @JoinTable(name = "users_enrolled_courses",
     inverseJoinColumns = @JoinColumn(name = "course_id"))

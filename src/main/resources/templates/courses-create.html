@@ -17,7 +17,9 @@
     <div class="mega-div">
 
         <div class="image-cropper">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <div class="icon-div">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
             <img id="blah" src="https://res.cloudinary.com/henrique-mk/image/upload/v1645374514/default_hn8tin.jpg" alt="image">
         </div>
 
@@ -90,30 +92,35 @@
                 <div class="button close"><i class="fa fa-close"></i></div>
 
                 <div class="modal-body">
-                    <h3 class="modal-title">What skills will the user learn in the course?</h3>
+                    <h3 class="modal-title">What skills will the user learn <br> in the course?</h3>
                     <div class="inputs">
                         <div id="skill-1">
                             <small class="skill-label">Skill 1</small>
-                            <textarea class="skill-input" maxlength="100"></textarea>
+                            <textarea class="skill-input skill-input-1" maxlength="100"></textarea>
                         </div>
                         <div id="skill-2">
                             <small class="skill-label">Skill 2</small>
-                            <textarea class="skill-input"></textarea>
+                            <textarea class="skill-input skill-input-2"></textarea>
                         </div>
                         <div id="skill-3">
                             <small class="skill-label">Skill 3</small>
-                            <textarea class="skill-input"></textarea>
+                            <textarea class="skill-input skill-input-3"></textarea>
                         </div>
                     </div>
-                    <p class="ps">**I know the SASS is a bit messy, I did this on the fly and for fun
-                        <br /> and w.e. I DO WHAT I WANT!!</p>
+
+                    <div class="button-container-1 ">
+                        <span class="mas">MASK1</span>
+                        <button id='work' type="button" name="Hover">MASK1</button>
+                    </div>
+
+                    <p class="ps">the skills will be displayed to the students <br>
+                        before enrolling to the course
+                    </p>
                 </div>
             </div>
         </div>
     </div>
     <div class="modal-overlay"></div>
-
-
 
 
 
@@ -154,26 +161,6 @@
 
 <script>
 
-    let imageWasUploaded = false
-
-    function deleteImageFromCloudinary(imageUrl) {
-        $.ajax({
-            type: 'POST',
-            url: '/api/images/destroy',
-            contentType: "application/json",
-            data: {url: imageUrl},
-
-            success: function (data) {
-
-            },
-
-            error: function (data) {
-
-            }
-
-        })
-    }
-
     const inputButtonSelector = document.querySelector('#input-button')
     const pictureFormSelector = document.querySelector("#picture-form")
     const uploadImageSelector = document.querySelector('.file-input')
@@ -190,8 +177,14 @@
     const startingDateSelector = document.querySelector("#starting-date-input")
     const pictureSelector = document.querySelector("#picture-input")
     const blahSelector = document.querySelector("#blah")
+    const iconUploadSelector = document.querySelector(".fa-cloud-arrow-up")
+    const iconDivSelector = document.querySelector('.icon-div')
 
-    const formPicture = document.querySelector('#cmon')
+    const skill1 = document.querySelector('.skill-input-1')
+    const skill2 = document.querySelector('.skill-input-2')
+    const skill3 = document.querySelector('.skill-input-3')
+
+    const formPicture = document.querySelector('#picture-form')
 
     let pictureWasChanged = false;
     let uploadedPictureUrl = document.getElementById('blah').src;
@@ -210,7 +203,7 @@
         //todo
     }
 
-    $('.course-form-submit-button').on('click', function (e) {
+    $('#work').on('click', function (e) {
 
         e.preventDefault()
         formHasErrors.length = 0
@@ -237,7 +230,11 @@
             description: descriptionSelector.value,
             difficulty: difficultySelector.value,
             startingDate: startingDateSelector.value,
-            picture: uploadedPictureUrl
+            picture: uploadedPictureUrl,
+
+            skill1: skill1.value,
+            skill2: skill2.value,
+            skill3: skill3.value
         }
 
         $.ajax({
@@ -291,6 +288,15 @@
             pictureWasChanged = true;
         }
     }
+
+
+    blahSelector.addEventListener('mouseover', function(e) {
+        iconUploadSelector.classList.add('show')
+    })
+
+    blahSelector.addEventListener('mouseout', function (e) {
+        iconUploadSelector.classList.remove('show')
+    })
 
     blahSelector.onclick = evt => {
         uploadImageSelector.click()
