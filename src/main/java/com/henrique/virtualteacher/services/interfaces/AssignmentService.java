@@ -21,7 +21,7 @@ public interface AssignmentService {
 
     List<Assignment> getAllPending(User loggedUser);
 
-
+    int getUserCompletedCourseLectures(int userId, int courseId, User loggedUser);
 
     double getUserAverageGradeForCourse(int userId, int courseId, User LoggedUser);
 

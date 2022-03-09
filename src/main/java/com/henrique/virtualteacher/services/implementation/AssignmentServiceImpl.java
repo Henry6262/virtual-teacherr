@@ -89,6 +89,16 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
+    public int getUserCompletedCourseLectures(int userId, int courseId, User loggedUser){
+
+        if (loggedUser.getId() != userId && !loggedUser.isTeacher()) {
+            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not authorized to access the Assignments of the User with id: {%d}", loggedUser.getId(), userId));
+        }
+
+        return assignmentRepository.getAllByUserIdAndLectureCourseId(userId, courseId).size();
+    }
+
+    @Override
     public List<Assignment> getAllGradedForCourse(int courseId, User loggedUser) {
 
         if (!loggedUser.isTeacher()) {

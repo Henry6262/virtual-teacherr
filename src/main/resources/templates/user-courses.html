@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>My Courses</title>
+    <link rel="stylesheet" href="../static/css/page-skeleton-styles.css" th:href="@{/css/page-skeleton-styles.css}">
+    <link rel="stylesheet" href="../static/css/user-courses-styles.css" th:href="@{/css/user-courses-styles.css}">
+    <link rel="stylesheet" href="../static/css/progress-circles-styles.css" th:href="@{/css/progress-circles-styles.css}">
+    <link rel="stylesheet" href="../static/css/glowing-background-styles.css" th:href="@{/css/glowing-background-styles.css}">
+
+
+
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
+    <script src="https://kit.fontawesome.com/4083de25cb.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="body">
+
+<header class="side-header">
+
+    <a href="#">
+        <div class="logo">
+            <img class="user_image" src="#" th:src="${userPicture}">
+        </div>
+    </a>
+
+    <nav class="navbar-side">
+
+        <ul>
+
+            <li><a class="li-icons" th:href="@{/courses/browse}" href="#">
+                <div  class="svg-space icons"><i class="fa-solid fa-bag-shopping icon"></i></div>Browse</a>
+            </li>
+            <li class="active"><a class="li-icons" href="#" th:href="@{/courses/enrolled}">
+                <div  class="svg-space icons"><i class="fa-solid fa-book icon"></i></div>My Courses</a>
+            </li>
+            <li><a class="li-icons" href="labs.html">
+                <div class="svg-space icons"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 64 80" enable-background="new 0 0 64 64" xml:space="preserve"><g><g><g><path d="M57,51H7V21h50V51z M9,49h46V23H9V49z"/></g><g><path d="M29.7,23H7V13h19.7L29.7,23z M9,21h18.1l-1.8-6H9V21z"/></g></g></g></svg></div> Labs</a>
+            </li>
+            <li><a class="li-icons" href="#" th:href="@{/users/profile}">
+                <div class="svg-space icons"><i class="fa-solid fa-user-graduate icon"></i></div>Profile</a>
+            </li>
+
+            <li class="bottom"><a href="#">
+                <div class="svg-space"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 64 80" enable-background="new 0 0 64 64" xml:space="preserve"><g><g><g><path d="M35.9,57.1h-7.8l-0.6-6.6c-1.9-0.5-3.6-1.2-5.3-2.2L17,52.5L11.5,47l4.2-5.2c-1-1.6-1.7-3.4-2.2-5.3l-6.6-0.6v-7.8     l6.6-0.6c0.5-1.8,1.2-3.6,2.2-5.3L11.5,17l5.5-5.5l5.2,4.2c1.6-1,3.4-1.7,5.3-2.2l0.6-6.6h7.8l0.6,6.6c1.9,0.5,3.6,1.2,5.3,2.2     l5.2-4.2l5.5,5.5l-4.2,5.2c1,1.6,1.7,3.4,2.2,5.3l6.6,0.6v7.8l-6.6,0.6c-0.5,1.8-1.2,3.6-2.2,5.3l4.2,5.2L47,52.5l-5.2-4.2     c-1.6,1-3.4,1.7-5.3,2.2L35.9,57.1z M29.9,55.1h4.2l0.6-6.4h0.8c2.1-0.4,4-1.2,5.8-2.4l0.6-0.4l4.9,4l3-3l-4-4.9l0.4-0.6     c1.2-1.8,2-3.7,2.4-5.8v-0.8l0.9-0.1l5.5-0.5v-4.2l-6.4-0.6v-0.8c-0.4-2.1-1.2-4-2.4-5.8L45.8,22l4-4.9l-3-3l-4.9,4l-0.6-0.4     c-1.8-1.2-3.7-2-5.8-2.4h-0.8l-0.1-0.9l-0.5-5.5h-4.2l-0.6,6.4h-0.8c-2.1,0.4-4,1.2-5.8,2.4L22,18.2l-4.9-4l-3,3l4,4.9l-0.4,0.6     c-1.2,1.8-2,3.7-2.4,5.8v0.8l-0.9,0.1l-5.5,0.5v4.2l6.4,0.6v0.8c0.4,2.1,1.2,4,2.4,5.8l0.4,0.6l-4,4.9l3,3l4.9-4l0.6,0.4     c1.8,1.2,3.7,2,5.8,2.4h0.8l0.1,0.9L29.9,55.1z"/></g><g><path d="M32,43.9c-6.6,0-11.9-5.3-11.9-11.9S25.4,20.1,32,20.1S43.9,25.4,43.9,32S38.6,43.9,32,43.9z M32,22.1     c-5.5,0-9.9,4.4-9.9,9.9s4.4,9.9,9.9,9.9s9.9-4.4,9.9-9.9S37.5,22.1,32,22.1z"/></g></g></g></svg></div> Light / Dark</a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+</header>
+
+<main class="main-wrapper">
+
+    <header class="top-navbar">
+
+        <div class="page-title">
+            My Courses
+        </div>
+
+        <form class="searchbar">
+            <input type="search" name="" placeholder="Search...">
+            <a href="#" class="js-close-bar">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 54 67.5" version="1.1" x="0px" y="0px"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g fill="#ffffff" fill-rule="nonzero"><path d="M0.738461538,53.2615385 C1.10769231,53.6307692 1.56923077,53.8153846 2.07692308,53.8153846 C2.58461538,53.8153846 3.04615385,53.6307692 3.41538462,53.2615385 L27,29.6769231 L50.5846154,53.2615385 C50.9538462,53.6307692 51.4153846,53.8153846 51.9230769,53.8153846 C52.3846154,53.8153846 52.8923077,53.6307692 53.2615385,53.2615385 C54,52.5230769 54,51.3230769 53.2615385,50.5846154 L29.6769231,27 L53.2615385,3.41538462 C54,2.67692308 54,1.47692308 53.2615385,0.738461538 C52.5230769,-8.60422844e-16 51.3230769,-8.60422844e-16 50.5846154,0.738461538 L27,24.3230769 L3.41538462,0.738461538 C2.67692308,-2.77555756e-17 1.47692308,-2.77555756e-17 0.738461538,0.738461538 C-2.77555756e-17,1.47692308 -2.77555756e-17,2.67692308 0.738461538,3.41538462 L24.3230769,27 L0.738461538,50.5846154 C-2.77555756e-17,51.3230769 -2.77555756e-17,52.5230769 0.738461538,53.2615385 Z"/></g></g></svg>
+            </a>
+        </form>
+
+        <nav class="navbar-top">
+
+            <ul>
+                <li>
+                    <a href="#"><svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" x="0px" y="0px" viewBox="0 0 100 125"><g transform="translate(0,-952.36218)"><path style="text-indent:0;text-transform:none;direction:ltr;block-progression:tb;baseline-shift:baseline;color:#fff;enable-background:accumulate;" d="m 71,964.36218 c -6.60369,0 -12,5.39626 -12,12 0,1.569 0.29072,3.0923 0.84375,4.4688 l -22.8125,12.6562 c -2.13154,-1.9311 -4.9437,-3.125 -8.03125,-3.125 -6.60369,0 -12,5.3963 -12,12.00002 0,6.6037 5.39631,12 12,12 3.09975,0 5.92804,-1.1803 8.0625,-3.125 l 22.8125,12.6562 c -0.5623,1.3864 -0.875,2.886 -0.875,4.4688 0,6.6037 5.39631,12 12,12 6.60369,0 12,-5.3963 12,-12 0,-6.6038 -5.39631,-12 -12,-12 -3.59539,0 -6.82772,1.6018 -9.03125,4.125 L 39.5625,1008.0497 c 0.91769,-1.6941 1.4375,-3.634 1.4375,-5.6875 0,-2.0637 -0.51137,-3.98752 -1.4375,-5.68752 l 22.40625,-12.4375 c 2.20362,2.526 5.43355,4.125 9.03125,4.125 6.60369,0 12,-5.3963 12,-12 0,-6.60374 -5.39631,-12 -12,-12 z m 0,4 c 4.44191,0 8,3.55804 8,8 0,4.442 -3.55809,8 -8,8 -4.44191,0 -8,-3.558 -8,-8 0,-4.44196 3.55809,-8 8,-8 z m -42,26 c 4.44191,0 8,3.558 8,8.00002 0,4.442 -3.55809,8 -8,8 -4.44191,0 -8,-3.558 -8,-8 0,-4.44202 3.55809,-8.00002 8,-8.00002 z m 42,26.00002 c 4.44191,0 8,3.558 8,8 0,4.4419 -3.55809,8 -8,8 -4.44191,0 -8,-3.5581 -8,-8 0,-4.442 3.55809,-8 8,-8 z" fill="#fff" fill-opacity="1" stroke="none" marker="none" visibility="visible" display="inline" overflow="visible"/></g></svg></a>
+                </li>
+
+                <li class="js-open-bar">
+                    <a href="#"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 125" enable-background="new 0 0 100 100" xml:space="preserve"><g><circle fill="none" stroke="#ffffff" stroke-width="3" stroke-miterlimit="10" cx="59.1" cy="39.7" r="37.6"/><rect x="-1.7" y="80.3" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -52.2955 37.5849)" stroke="#ffffff" stroke-miterlimit="10" width="41.9" height="3.2"/></g></svg></a>
+                </li>
+
+                <li class="menu-toggle">
+                    <a href="#"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 125" enable-background="new 0 0 100 100" xml:space="preserve"><g><g><path d="M4.667,82.982H95v-6.018H4.667V82.982z M4.667,52.895H95v-6.018H4.667V52.895z M4.667,19.798v6.018H95v-6.018H4.667z"/></g></g></svg></a>
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </header>
+
+    <section style="-webkit-column-count: 3;" class="works smooth-in">
+
+        <div class="content">
+            <div class="user-courses glow-div" th:each="course:${userCourses}">
+                <div style="display: inline-block" class="course-element work " >
+                    <div class="image-div">
+
+                    </div>
+                    <img class="course-image" src="#" th:src="${course.picture}">
+                    <div class="text-div">                <!--TODO: MAKE TEXT HIDDEN AND ON HOVER SHOW TEHM WITH TRANSITION -->
+                        <div id="course-name" th:text="${course.getTitle()}"></div>
+
+                        <div class="set-size charts-container">
+                            <div class="pie-wrapper progress-30">
+                                <span class="label" th:text="${course.getCourseCompletionPercentage()} + '%' ">1<span class="smaller">%</span></span>
+                                <div class="pie">
+                                    <div class="left-side half-circle"></div>
+                                    <div class="right-side half-circle"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+            </div>
+        </div>
+        </div>
+
+    </section>
+
+    <footer>
+
+        <nav class="footer-nav">
+            <ul>
+                <li>
+                    <a href="#"><i class="fab fa-facebook-square"></i></a>
+                </li>
+                <li>
+                    <a href="#"><i class="fab fa-dribbble-square"></i></a>
+                </li>
+                <li>
+                    <a href="#"><i class="fab fa-codepen"></i></a>
+                </li>
+                <li>
+                    <a href="#"><i class="fab fa-github-square"></i></a>
+                </li>
+                <li>
+                    <a href="#">colourjim@gmail.com</a>
+                </li>
+            </ul>
+        </nav>
+
+    </footer>
+
+</main>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script> <!-- for glowing background -->
+
+
+<script>
+
+    $('.charts-container').each(function (){
+        const currentElement = $(this);
+
+        const rightCircle = currentElement.find('.right-side')
+        const leftCircle = currentElement.find(".left-side")
+        const elementPercentage = currentElement.children(".label").context.innerText
+        const percentageNumberValue = Number(elementPercentage.substring(0, elementPercentage.length - 1));
+
+        if (percentageNumberValue <= 50) {
+            rightCircle.display = 'none';
+            const percentage = percentageNumberValue * 100 / 50 //50 bcs it is percentage for the left-side circle
+            const degrees = percentage * 180 / 100
+            const degreeString = `rotate(${degrees}deg)`
+            leftCircle.css('transform', degreeString)
+        } else {
+            rightCircle.display = "unset"
+            const percentage = percentageNumberValue * 100 / 100 //100 because it includes the right-side
+            const degrees = percentage * 360 / 100
+            const degreeString = `rotate(${degrees}deg)`
+            rightCircle.css('transform', degreeString)
+            leftCircle.css('transform', 'rotate(180deg)') //180 ts max, as it is half of the circle
+            //todo: if percentage is more than 50, do calculation an =d make changes
+        }
+
+    })
+
+</script>
+
+</body>
+</html>

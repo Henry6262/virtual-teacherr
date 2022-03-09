@@ -2,6 +2,7 @@ package com.henrique.virtualteacher.controllers.rest;
 
 import com.henrique.virtualteacher.configurations.CloudinaryConfig;
 import com.henrique.virtualteacher.entities.*;
+import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.*;
 import com.henrique.virtualteacher.services.interfaces.*;
@@ -304,6 +305,23 @@ private final ModelMapper mapper;
 
         logger.info(String.format("User with id: %d, has enrolled into Course with id: %d", loggedUser.getId(), course.getId()));
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/enroll")
+    public ResponseEntity<Boolean> enroll(@RequestParam String courseTitle,
+                                          Principal principal) {
+
+        User loggedUser = userService.getByEmail(principal.getName());
+        Course course  = courseService.getByTitle(courseTitle);
+
+        try {
+            courseService.enroll(course, loggedUser);
+        } catch (ImpossibleOperationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+
+        logger.info(String.format("User with id: %d, has enrolled into Course with id: %d", loggedUser.getId(), course.getId()));
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @PostMapping("/{id}/complete")

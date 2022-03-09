@@ -16,6 +16,8 @@ import java.util.Set;
 @NoArgsConstructor
 public class CourseModel {
 
+    private int id;
+
     @NotBlank
     private String title;
 

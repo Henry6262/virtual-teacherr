@@ -1,0 +1,16 @@
+.text-div {
+    display: flex;
+    gap: 20px;
+}
+
+.percentage {
+    font-size: 17px;
+}
+
+#course-name {
+    max-width: 75%;
+    width: 100%;
+    align-self: center;
+    font-size: 18px;
+    font-weight: bold
+}

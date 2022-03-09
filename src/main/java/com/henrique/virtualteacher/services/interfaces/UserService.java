@@ -1,6 +1,5 @@
 package com.henrique.virtualteacher.services.interfaces;
 
-import com.henrique.virtualteacher.entities.Lecture;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.models.RegisterUserModel;
 import com.henrique.virtualteacher.models.UserUpdateModel;
@@ -8,10 +7,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.security.Principal;
 import java.util.List;
-import java.util.Set;
 
 public interface UserService extends UserDetailsService {
+
+    boolean UserIsLogged(Principal principal);
 
     List<User> getAll(User loggedUser);
 

@@ -9,6 +9,7 @@ import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.CourseModel;
+import com.henrique.virtualteacher.models.EnumDifficulty;
 import com.henrique.virtualteacher.models.EnumTopics;
 import com.henrique.virtualteacher.repositories.CourseRepository;
 import com.henrique.virtualteacher.repositories.UserRepository;
@@ -50,15 +51,17 @@ public class CourseServiceImpl implements CourseService {
     private final RatingService ratingService;
 
     @Override
-    public List<CourseModel> mapAllToModel(List<Course> courses, User loggedUser, boolean includeCompletionPercentage) {
+    public List<CourseModel> mapAllToModel(List<Course> courses, User loggedUser, boolean includeCompletionAmount) {
         List<CourseModel> dtoList = new ArrayList<>();
 
         for (Course current : courses) {
             CourseModel courseModel = mapper.map(current, new TypeToken<CourseModel>() {}.getType());
             courseModel.setAverageRating(ratingService.getAverageRatingForCourse(current));
 
-            if (includeCompletionPercentage) {
-                courseModel.setCourseCompletionPercentage(getPercentageOfCompletedCourseLectures(loggedUser, current));
+            if (loggedUser != null) {
+                if (includeCompletionAmount) {
+                    courseModel.setCourseCompletionPercentage(getPercentageOfCompletedCourseLectures(loggedUser, current));
+                }
             }
             dtoList.add(courseModel);
         }
@@ -205,6 +208,11 @@ public class CourseServiceImpl implements CourseService {
         return percentage;
     }
 
+    public List<CourseModel> getTopTheeCoursesByRating() {
+        List<Course> topThree = courseRepository.getThreeRandomCourses();
+        return mapAllToModel(topThree, null, false);
+    }
+
     @Override
     public void verifyUserHasCompletedAllCourseLectures(User user, Course course) {
 
@@ -268,7 +276,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> getAllByDifficulty(int difficultyLevel) {
+    public List<Course> getAllByDifficulty(EnumDifficulty difficultyLevel) {
         return courseRepository.findByDifficulty(difficultyLevel);
     }
 }

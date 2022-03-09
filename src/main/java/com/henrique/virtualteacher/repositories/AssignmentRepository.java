@@ -24,6 +24,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Integer>
 
     List<Assignment> getAllByUserIdAndLectureCourseIdAndStatus(int userId, int courseId, Status status);
 
+
 }
 
 

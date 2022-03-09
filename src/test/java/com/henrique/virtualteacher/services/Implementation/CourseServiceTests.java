@@ -8,6 +8,7 @@ import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.CourseModel;
+import com.henrique.virtualteacher.models.EnumDifficulty;
 import com.henrique.virtualteacher.models.EnumTopics;
 import com.henrique.virtualteacher.repositories.CourseRepository;
 import com.henrique.virtualteacher.repositories.LectureRepository;
@@ -77,10 +78,10 @@ public class CourseServiceTests {
     public void getAllByDifficulty_should_callRepository_andReturn_list() {
         List<Course> mockCourses = Helpers.createMockCourseList();
 
-        Mockito.when(courseRepository.findByDifficulty(4)).thenReturn(mockCourses);
-        courseService.getAllByDifficulty(4);
+        Mockito.when(courseRepository.findByDifficulty(EnumDifficulty.ADVANCED)).thenReturn(mockCourses);
+        courseService.getAllByDifficulty(EnumDifficulty.ADVANCED);
         Mockito.verify(courseRepository, Mockito.times(1))
-                .findByDifficulty(4);
+                .findByDifficulty(EnumDifficulty.ADVANCED);
     }
 
     @Test

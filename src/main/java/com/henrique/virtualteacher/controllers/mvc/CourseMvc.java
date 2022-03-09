@@ -1,6 +1,5 @@
 package com.henrique.virtualteacher.controllers.mvc;
 
-import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.models.CourseModel;
 import com.henrique.virtualteacher.services.interfaces.CourseService;
@@ -10,8 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 
 import java.security.Principal;
 import java.util.List;
@@ -25,17 +22,32 @@ public class CourseMvc {
     private final UserService userService;
     private final CourseService courseService;
 
-
-
-
     @GetMapping("/create")
     public String showCreateCoursePage() {
         return "courses-create";
     }
 
+
+    @GetMapping("/enrolled")
+    public String showLoggedUserCourses(Principal principal,
+                                        Model model){
+
+        if (!userService.UserIsLogged(principal)) {
+            return "login";
+        }
+
+        User loggedUser = userService.getByEmail(principal.getName());
+        List<CourseModel> userCourses = courseService.mapAllToModel(loggedUser.getEnrolledCourses(), loggedUser, true);
+
+        model.addAttribute("userCourses", userCourses);
+        model.addAttribute("userPicture", loggedUser.getProfilePicture());
+
+        return "user-courses";
+    }
+
     @GetMapping("/browse")
     public String showBrowseCourses(Principal principal,
-                                    Model model){
+                                    Model model) {
 
         Optional<User> loggedUser;
         boolean userIsAnonymous = true;
@@ -51,6 +63,7 @@ public class CourseMvc {
 
 
         List<CourseModel> courses = courseService.getAllByEnabled(true, loggedUser);
+        model.addAttribute("top_three_courses", courseService.getTopTheeCoursesByRating());
         model.addAttribute("courses", courses);
         model.addAttribute("user_is_anonymous", userIsAnonymous);
 

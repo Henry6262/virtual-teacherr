@@ -132,7 +132,7 @@ public class User {
 
     public boolean hasCompletedCourse(Course course) {
         return getCompletedCourses().stream()
-                .anyMatch(course1 -> course.getId() == course.getId());
+                .anyMatch(course1 -> course1.getId() == course.getId());
     }
 
     public boolean hasCompletedLecture(Lecture lecture) {

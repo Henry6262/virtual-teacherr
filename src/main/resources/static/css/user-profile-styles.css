@@ -1,0 +1,14 @@
+
+:root {
+
+}
+
+.works {
+    -webkit-column-count: unset;
+    column-count: unset;
+}
+
+.content {
+    padding: 300px;
+    background-color: darkslategray;
+}
