@@ -12,8 +12,6 @@ import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.StreamingHttpOutputMessage;
-import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +33,7 @@ private final CourseService courseService;
 private final UserService userService;
 private final LectureService lectureService;
 private final AssignmentService assignmentService;
+private final RatingService ratingService;
 private final CommentService commentService;
 private final CloudinaryConfig cloudinaryConfig;
 private final Logger logger;
@@ -345,9 +344,8 @@ private final ModelMapper mapper;
 
         User loggedUser = userService.getByEmail(principal.getName());
         Course course = courseService.getById(id);
-//        ratingService.create(course, loggedUser, rating);
-//
-//        model.addAttribute("averageRating", ratingService.getAverageRatingForCourse(course));
+
+        ratingService.create(course, loggedUser, rating);
 
         return new ResponseEntity<>(model ,HttpStatus.OK);
     }
@@ -366,10 +364,10 @@ private final ModelMapper mapper;
     }
 
     @GetMapping("/topics")
-    public ResponseEntity<List<EnumTopics>> getCourseTopics() {
+    public ResponseEntity<List<EnumTopic>> getCourseTopics() {
 
-        List<EnumTopics> enumTopicsSet = Arrays.stream(EnumTopics.values()).collect(Collectors.toList());
-        return new ResponseEntity<>(enumTopicsSet, HttpStatus.ACCEPTED);
+        List<EnumTopic> enumTopicSet = Arrays.stream(EnumTopic.values()).collect(Collectors.toList());
+        return new ResponseEntity<>(enumTopicSet, HttpStatus.ACCEPTED);
     }
 
 }

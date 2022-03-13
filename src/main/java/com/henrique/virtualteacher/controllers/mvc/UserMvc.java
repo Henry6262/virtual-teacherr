@@ -1,6 +1,7 @@
 package com.henrique.virtualteacher.controllers.mvc;
 
 import com.henrique.virtualteacher.entities.User;
+import com.henrique.virtualteacher.services.interfaces.AssignmentService;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import java.security.Principal;
 public class UserMvc {
 
     private final UserService userService;
+    private final AssignmentService assignmentService;
 
 
     @GetMapping("/profile")
@@ -23,12 +25,17 @@ public class UserMvc {
                                   Model model) {
 
         if (principal == null) {
-            //todo: show error page telling to login
-            // maybe make the page have a overlay with a lock -> would be cool af
+            return "login";
         }
 
         User loggedUser = userService.getByEmail(principal.getName());
-        model.addAttribute("loggedUser", loggedUser);
+        model.addAttribute("profilePicture", loggedUser.getProfilePicture());
+        model.addAttribute("totalCompletedCourses", loggedUser.getCompletedCourses().size());
+        model.addAttribute("totalCompletedLectures", loggedUser.getCompletedLectures().size());
+        model.addAttribute("totalComments", loggedUser.getComments());
+        model.addAttribute("averageGradeForAllCourses", assignmentService.getStudentAverageGradeForAllCourses(loggedUser));
+        model.addAttribute("mostStudiedCourseTopic", loggedUser.mostStudiedCourseTopic());
+
         return "user-profile";
     }
 

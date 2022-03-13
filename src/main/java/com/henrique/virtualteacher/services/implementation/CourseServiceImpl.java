@@ -10,7 +10,7 @@ import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.CourseModel;
 import com.henrique.virtualteacher.models.EnumDifficulty;
-import com.henrique.virtualteacher.models.EnumTopics;
+import com.henrique.virtualteacher.models.EnumTopic;
 import com.henrique.virtualteacher.repositories.CourseRepository;
 import com.henrique.virtualteacher.repositories.UserRepository;
 import com.henrique.virtualteacher.services.interfaces.CourseService;
@@ -22,7 +22,6 @@ import org.modelmapper.ModelMapper;
 
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,7 +55,7 @@ public class CourseServiceImpl implements CourseService {
 
         for (Course current : courses) {
             CourseModel courseModel = mapper.map(current, new TypeToken<CourseModel>() {}.getType());
-            courseModel.setAverageRating(ratingService.getAverageRatingForCourse(current));
+            courseModel.setAverageRating(Math.round(ratingService.getAverageRatingForCourse(current) * 100.0) / 100.0);
 
             if (loggedUser != null) {
                 if (includeCompletionAmount) {
@@ -262,15 +261,17 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> getAllByTopic(EnumTopics topic) {
-        return courseRepository.findByTopic(topic);
+    public List<CourseModel> getAllByTopic(EnumTopic topic) {
+        return mapAllToModel(courseRepository.findByTopic(topic), null,false);
     }
 
     @Override
     public List<CourseModel> getAllByEnabled(boolean isEnabled,  Optional<User> loggedUser) {
 
         List<CourseModel> courseModels;
-        courseModels = mapAllToModel(courseRepository.findByEnabled(isEnabled), null, false);
+        courseModels = mapAllToModel(courseRepository.findByEnabled(isEnabled)
+                .stream()
+                .limit(30).collect(Collectors.toList()), null, false);
 
         return courseModels;
     }

@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../static/css/user-profile-styles.css" th:href="@{/css/user-profile-styles.css}">
     <link rel="stylesheet" href="../static/css/page-skeleton-styles.css" th:href="@{/css/page-skeleton-styles.css}">
+    <link rel="stylesheet" href="../static/css/image-parallax-effect-styles.css" th:href="@{/css/image-parallax-effect-styles.css}">
+    <link rel="stylesheet" href="../static/css/hover-cards-styles.css" th:href="@{/css/hover-cards-styles.css}">
+
+
     <title>My Profile</title>
 
     <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
     <script src="https://kit.fontawesome.com/4083de25cb.js" crossorigin="anonymous"></script>
 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 </head>
 <body class="body">
@@ -19,15 +24,14 @@
 
     <a href="#">
         <div class="logo">
-            <img th:unless="${user_is_anonymous}" class="user_image" th:src="${loggedUser.getProfilePicture()}" src="#">
+            <img class="user_image" src="#" th:src="${profilePicture}">
         </div>
     </a>
 
     <nav class="navbar-side">
-
         <ul>
 
-            <li class="active"><a class="li-icons" th:href="@{/courses/browse}" href="#">
+            <li ><a class="li-icons" th:href="@{/}" href="#">
                 <div  class="svg-space icons"><i class="fa-solid fa-bag-shopping icon"></i></div>Browse</a>
             </li>
             <li><a class="li-icons" href="#" th:href="@{/courses/enrolled}">
@@ -36,7 +40,7 @@
             <li><a class="li-icons" href="labs.html">
                 <div class="svg-space icons"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 64 80" enable-background="new 0 0 64 64" xml:space="preserve"><g><g><g><path d="M57,51H7V21h50V51z M9,49h46V23H9V49z"/></g><g><path d="M29.7,23H7V13h19.7L29.7,23z M9,21h18.1l-1.8-6H9V21z"/></g></g></g></svg></div> Labs</a>
             </li>
-            <li><a class="li-icons" href="#" th:href="@{/users/profile}">
+            <li class="active"><a class="li-icons" href="#" th:href="@{/users/profile}">
                 <div class="svg-space icons"><i class="fa-solid fa-user-graduate icon"></i></div>Profile</a>
             </li>
 
@@ -45,7 +49,6 @@
             </li>
 
         </ul>
-
     </nav>
 
 </header>
@@ -55,7 +58,7 @@
 
 <main class="main-wrapper">
 
-    <header class="top-navbar">
+    <header class="navbar-user-page">
 
         <div class="page-title">
             Work
@@ -68,80 +71,181 @@
             </a>
         </form>
 
-        <nav class="navbar-top">
 
-            <ul>
-                <li>
-                    <a href="#"><svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" x="0px" y="0px" viewBox="0 0 100 125"><g transform="translate(0,-952.36218)"><path style="text-indent:0;text-transform:none;direction:ltr;block-progression:tb;baseline-shift:baseline;color:#fff;enable-background:accumulate;" d="m 71,964.36218 c -6.60369,0 -12,5.39626 -12,12 0,1.569 0.29072,3.0923 0.84375,4.4688 l -22.8125,12.6562 c -2.13154,-1.9311 -4.9437,-3.125 -8.03125,-3.125 -6.60369,0 -12,5.3963 -12,12.00002 0,6.6037 5.39631,12 12,12 3.09975,0 5.92804,-1.1803 8.0625,-3.125 l 22.8125,12.6562 c -0.5623,1.3864 -0.875,2.886 -0.875,4.4688 0,6.6037 5.39631,12 12,12 6.60369,0 12,-5.3963 12,-12 0,-6.6038 -5.39631,-12 -12,-12 -3.59539,0 -6.82772,1.6018 -9.03125,4.125 L 39.5625,1008.0497 c 0.91769,-1.6941 1.4375,-3.634 1.4375,-5.6875 0,-2.0637 -0.51137,-3.98752 -1.4375,-5.68752 l 22.40625,-12.4375 c 2.20362,2.526 5.43355,4.125 9.03125,4.125 6.60369,0 12,-5.3963 12,-12 0,-6.60374 -5.39631,-12 -12,-12 z m 0,4 c 4.44191,0 8,3.55804 8,8 0,4.442 -3.55809,8 -8,8 -4.44191,0 -8,-3.558 -8,-8 0,-4.44196 3.55809,-8 8,-8 z m -42,26 c 4.44191,0 8,3.558 8,8.00002 0,4.442 -3.55809,8 -8,8 -4.44191,0 -8,-3.558 -8,-8 0,-4.44202 3.55809,-8.00002 8,-8.00002 z m 42,26.00002 c 4.44191,0 8,3.558 8,8 0,4.4419 -3.55809,8 -8,8 -4.44191,0 -8,-3.5581 -8,-8 0,-4.442 3.55809,-8 8,-8 z" fill="#fff" fill-opacity="1" stroke="none" marker="none" visibility="visible" display="inline" overflow="visible"/></g></svg></a>
-                </li>
-
-
-            </ul>
-
-        </nav>
 
     </header>
 
     <section class="works smooth-in">
 
-
         <div class="wrapper">
             <div class="content">
+
+                <section class="main">
+                    <div class="wrap wrap--1">
+                        <div  class="container container--1" >
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+                <div class="content-card">
+                    <!-- card -->
+                    <div class="card">
+
+                        <div class="icon-card"><i class="material-icons md-36">face</i></div>
+                        <p class="title-card">Completed Courses</p>
+                        <p class="text-card" th:text="${totalCompletedCourses}"></p>
+
+                    </div>
+                    <!-- end card -->
+                    <!-- card -->
+                    <div class="card">
+
+                        <div class="icon-card"><i class="material-icons md-36">favorite_border</i></div>
+                        <p class="title-card">Top Language</p>
+                        <p class="text-card" th:text="${mostStudiedCourseTopic}">Check all your favourites in one place.</p>
+
+                    </div>
+                    <!-- end card -->
+                    <!-- card -->
+                    <div class="card">
+
+                        <div class="icon-card"><i class="material-icons md-36">alternate_email</i></div>
+                        <p class="title-card">Average Grade</p>
+                        <p class="text-card" th:text="${averageGradeForAllCourses}">Add or change your contacts and links.</p>
+
+                    </div>
+                    <!-- end card -->
+
+                </div><!-- partial -->
+
+
+
+
 
             </div>
         </div>
 
-
     </section>
-
-    <footer>
-
-        <nav class="footer-nav">
-            <ul>
-                <li>
-                    <a href="#"><i class="fab fa-facebook-square"></i></a>
-                </li>
-                <li>
-                    <a href="#"><i class="fab fa-dribbble-square"></i></a>
-                </li>
-                <li>
-                    <a href="#"><i class="fab fa-codepen"></i></a>
-                </li>
-                <li>
-                    <a href="#"><i class="fab fa-github-square"></i></a>
-                </li>
-                <li>
-                    <a href="#">colourjim@gmail.com</a>
-                </li>
-            </ul>
-        </nav>
-
-    </footer>
 
 </main>
 
-
-
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
 
 <script>
 
-    const $body = $('.body');
-    const $btnMenu = $('.menu-toggle');
-    $btnMenu.click(function() {
-        $body.toggleClass('menu-open');
+
+    loadUserImage()
+
+        function loadUserImage() {
+
+
+            let userImageUrl = document.querySelector('.user_image').getAttribute("src")
+            document.querySelector('.container').style.background.url = `url(${userImageUrl})`
+        }
+
+
+
+    class parallaxTiltEffect {
+
+        constructor({element, tiltEffect}) {
+
+            this.element = element;
+            this.container = this.element.querySelector(".container");
+            this.size = [300, 360];
+            [this.w, this.h] = this.size;
+
+            this.background = "url"
+
+            this.tiltEffect = tiltEffect;
+
+            this.mouseOnComponent = false;
+
+            this.handleMouseMove = this.handleMouseMove.bind(this);
+            this.handleMouseEnter = this.handleMouseEnter.bind(this);
+            this.handleMouseLeave = this.handleMouseLeave.bind(this);
+            this.defaultStates = this.defaultStates.bind(this);
+            this.setProperty = this.setProperty.bind(this);
+            this.init = this.init.bind(this);
+
+            this.init();
+        }
+
+        handleMouseMove(event) {
+            const {offsetX, offsetY} = event;
+
+            let X;
+            let Y;
+
+            if (this.tiltEffect === "reverse") {
+                X = ((offsetX - (this.w/2)) / 3) / 3;
+                Y = (-(offsetY - (this.h/2)) / 3) / 3;
+            }
+
+            else if (this.tiltEffect === "normal") {
+                X = (-(offsetX - (this.w/2)) / 3) / 3;
+                Y = ((offsetY - (this.h/2)) / 3) / 3;
+            }
+
+            this.setProperty('--rY', X.toFixed(2));
+            this.setProperty('--rX', Y.toFixed(2));
+
+            this.setProperty('--bY', (80 - (X/4).toFixed(2)) + '%');
+            this.setProperty('--bX', (50 - (Y/4).toFixed(2)) + '%');
+        }
+
+        handleMouseEnter() {
+            this.mouseOnComponent = true;
+            this.container.classList.add("container--active");
+        }
+
+        handleMouseLeave() {
+            this.mouseOnComponent = false;
+            this.defaultStates();
+        }
+
+        defaultStates() {
+            this.container.classList.remove("container--active");
+            this.setProperty('--rY', 0);
+            this.setProperty('--rX', 0);
+            this.setProperty('--bY', '80%');
+            this.setProperty('--bX', '50%');
+        }
+
+        setProperty(p, v) {
+            return this.container.style.setProperty(p, v);
+        }
+
+        init() {
+            this.element.addEventListener('mousemove', this.handleMouseMove);
+            this.element.addEventListener('mouseenter', this.handleMouseEnter);
+            this.element.addEventListener('mouseleave', this.handleMouseLeave);
+        }
+
+    }
+
+    const $ = e => document.querySelector(e);
+
+    const wrap1 = new parallaxTiltEffect({
+        element: $('.wrap--1'),
+        tiltEffect: 'reverse'
     });
 
-    const btnCloseBar = document.querySelector('.js-close-bar');
-    const btnOpenBar = document.querySelector('.js-open-bar');
-    const searchBar = document.querySelector('.searchbar');
-
-    btnOpenBar.addEventListener('click', () => {
-        searchBar.classList.add('bar--is-visible');
+    const wrap2 = new parallaxTiltEffect({
+        element: $('.wrap--2'),
+        tiltEffect: 'normal'
     });
 
-    btnCloseBar.addEventListener('click', () => {
-        searchBar.classList.remove('bar--is-visible');
+    const wrap3 = new parallaxTiltEffect({
+        element: $('.wrap--3'),
+        tiltEffect: 'reverse'
     });
+
+</script>
+
+<script>
 
 </script>
 

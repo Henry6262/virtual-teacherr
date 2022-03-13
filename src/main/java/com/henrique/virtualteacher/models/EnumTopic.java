@@ -1,6 +1,6 @@
 package com.henrique.virtualteacher.models;
 
 
-public enum EnumTopics {
+public enum EnumTopic {
     JAVA, JAVASCRIPT, ANGULAR, REACT, PYTHON, C, RUBY
 }

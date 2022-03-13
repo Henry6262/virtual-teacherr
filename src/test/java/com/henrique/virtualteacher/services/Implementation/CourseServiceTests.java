@@ -9,7 +9,7 @@ import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.CourseModel;
 import com.henrique.virtualteacher.models.EnumDifficulty;
-import com.henrique.virtualteacher.models.EnumTopics;
+import com.henrique.virtualteacher.models.EnumTopic;
 import com.henrique.virtualteacher.repositories.CourseRepository;
 import com.henrique.virtualteacher.repositories.LectureRepository;
 import com.henrique.virtualteacher.services.Helpers;
@@ -88,8 +88,8 @@ public class CourseServiceTests {
     public void getAllByTopic_should_callRepository_andReturn_list() {
         List<Course> mockCourses = Helpers.createMockCourseList();
 
-        Mockito.when(courseRepository.findByTopic(EnumTopics.JAVA)).thenReturn(mockCourses);
-        List<Course> result = courseService.getAllByTopic(EnumTopics.JAVA);
+        Mockito.when(courseRepository.findByTopic(EnumTopic.JAVA)).thenReturn(mockCourses);
+        List<CourseModel> result = courseService.getAllByTopic(EnumTopic.JAVA);
 
         Assertions.assertEquals(mockCourses.size(), result.size());
     }

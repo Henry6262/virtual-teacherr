@@ -25,6 +25,8 @@ public interface AssignmentService {
 
     double getUserAverageGradeForCourse(int userId, int courseId, User LoggedUser);
 
+    double getStudentAverageGradeForAllCourses(User loggedUser);
+
     void grade(Assignment assignment, User loggedUser, int grade);
 
     void create(Assignment assignment); //fixme: needs to have teacher role to approve

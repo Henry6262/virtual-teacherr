@@ -3,7 +3,6 @@ package com.henrique.virtualteacher.services;
 import com.henrique.virtualteacher.entities.*;
 import com.henrique.virtualteacher.models.*;
 import org.modelmapper.ModelMapper;
-import org.springframework.expression.spel.ast.Assign;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -188,7 +187,7 @@ public class Helpers {
         course.setTitle("info");
         course.setDescription("description");
         course.setDifficulty(EnumDifficulty.INTERMEDIATE);
-        course.setTopic(EnumTopics.JAVA);
+        course.setTopic(EnumTopic.JAVA);
         course.setEnabled(true);
         course.setCourseLectures(new ArrayList<>());
         course.setStartingDate(LocalDate.now());

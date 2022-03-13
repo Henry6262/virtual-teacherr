@@ -3,7 +3,7 @@ package com.henrique.virtualteacher.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.henrique.virtualteacher.exceptions.DuplicateEntityException;
 import com.henrique.virtualteacher.models.EnumDifficulty;
-import com.henrique.virtualteacher.models.EnumTopics;
+import com.henrique.virtualteacher.models.EnumTopic;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,7 +35,7 @@ public class Course {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "topic")
-    private EnumTopics topic;
+    private EnumTopic topic;
 
     @Column(name = "description")
     private String description;

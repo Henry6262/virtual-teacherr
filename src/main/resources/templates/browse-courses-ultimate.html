@@ -53,8 +53,11 @@
       <li><a class="li-icons" href="labs.html">
         <div class="svg-space icons"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 64 80" enable-background="new 0 0 64 64" xml:space="preserve"><g><g><g><path d="M57,51H7V21h50V51z M9,49h46V23H9V49z"/></g><g><path d="M29.7,23H7V13h19.7L29.7,23z M9,21h18.1l-1.8-6H9V21z"/></g></g></g></svg></div> Labs</a>
       </li>
-      <li><a class="li-icons" href="#" th:href="@{/users/profile}">
+      <li><a th:unless="${user_is_anonymous}" class="li-icons" href="#" th:href="@{/users/profile}">
         <div class="svg-space icons"><i class="fa-solid fa-user-graduate icon"></i></div>Profile</a>
+
+        <a th:if="${user_is_anonymous}" class="li-icons" href="#" th:href="@{/auth/login}">
+          <div class="svg-space icons"><i class="fa-solid fa-user-graduate icon"></i></div>Sign In</a>
       </li>
 
       <li class="bottom"><a href="#">
@@ -140,20 +143,66 @@
 
 
 
-    <div id="browse-wrapper">
+    <div class="browse-wrapper 1">
 
-      <a href="#" class="arrow left"></a>
+      <a href="#" class="arrow regular left"></a>
 
 
       <h2 class="heading">Recommended Courses</h2>
-      <div id="browse-courses">
+      <div class="browse-courses">
 
-        <div th:each="course : ${courses}" class="course-element">
+        <div th:each="course : ${courses}" class="course-element default">
           <a onclick="openModal(this)" data-toggle="modal" href="#costumModal9" role="button" class='course-modal-link'>
             <div class="course-container">
               <div class="course-image-content">
                 <!--/*@thymesVar id="course" type=""*/-->
-                <img id="course-image" src="#" th:src="${course.picture}">
+                <img class="course-image" src="#" th:src="${course.picture}">
+              </div>
+              <div class="course-text-content">
+                <div class="name-course" th:text="${course.title}"></div>
+                <div class="topic-course" th:text="${course.topic}"></div>
+                <div class="difficulty-course" th:text="${course.difficulty}"></div>
+                <div style="visibility: hidden; display:none" class="hidden-fields">
+                  <div class="description-course" th:text="${course.description}"></div>
+                  <div class="starting-date-course" th:text="${course.startingDate}"></div>
+                  <div class="skill-1" th:text="${course.getSkill1()}"></div>
+                  <div class="skill-2" th:text="${course.getSkill2()}"></div>
+                  <div class="skill-3" th:text="${course.getSkill3()}"></div>
+                </div>
+              </div>
+              <div class="container">
+                <div class="row pt-5">
+                  <div class="col-12 pt-5 text-center">
+                    <small class="avg-rating" th:text="${course.averageRating}"></small>
+                    <div class="review" th:rate="${course.averageRating}" rate="1"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+      </div>
+
+      <a href="#" class="arrow regular right"></a>
+
+    </div>
+
+
+    <div class="browse-wrapper b2">
+
+      <a href="#" class="arrow java-arrow left"></a>
+
+
+      <h2 class="heading java">Recommended Courses</h2>
+      <div class="browse-courses browse-java">
+
+        <div th:each="course : ${java_courses}" class="course-element java-course">
+          <a onclick="openModal(this)" data-toggle="modal" href="#costumModal9" role="button" class='course-modal-link'>
+            <div class="course-container">
+              <div class="course-image-content">
+                <!--/*@thymesVar id="course" type=""*/-->
+                <img class="course-image" src="#" th:src="${course.picture}">
               </div>
               <div class="course-text-content">
                 <div id="name-course" th:text="${course.title}"></div>
@@ -181,9 +230,10 @@
 
       </div>
 
-      <a href="#" class="arrow right"></a>
+      <a href="#" class="arrow java-arrow right"></a>
 
     </div>
+
 
     <div class="modal-frame">
         <div class="modal-inset">
@@ -267,7 +317,6 @@
           <a href="#"><i class="fab fa-github-square"></i></a>
         </li>
         <li>
-          <a href="#">colourjim@gmail.com</a>
         </li>
       </ul>
     </nav>
@@ -449,16 +498,16 @@
 
 
 
-      courseTitle = e.querySelector('#name-course')
-      courseDescription = e.querySelector('#description-course')
-      courseImage = e.querySelector('#course-image')
-      courseStartingDate = e.querySelector('#starting-date-course')
+      courseTitle = e.querySelector('.name-course')
+      courseDescription = e.querySelector('.description-course')
+      courseImage = e.querySelector('.course-image')
+      courseStartingDate = e.querySelector('.starting-date-course')
       // courseAverageRating = e.querySelector('.review')
       courseAverageRating = e.querySelector('.avg-rating')
-      courseSkill1 = e.querySelector('#skill-1')
-      courseSkill2 = e.querySelector('#skill-2')
-      courseSkill3 = e.querySelector('#skill-3')
-      courseDifficulty = e.querySelector("#difficulty-course")
+      courseSkill1 = e.querySelector('.skill-1')
+      courseSkill2 = e.querySelector('.skill-2')
+      courseSkill3 = e.querySelector('.skill-3')
+      courseDifficulty = e.querySelector(".difficulty-course")
     }
 
     modalSelector.classList.add('open')
@@ -510,48 +559,63 @@
 
 <script>
 
-  const courseElements = document.querySelectorAll('.course-element')
+  <!-- First Arrow Slider -->
+  const courseElements = document.querySelectorAll('.course-element.default')
   const courseBrowse = document.querySelector('#browse-courses')
   const arrowWrapper = document.querySelector('.arrow-wrapper')
-  const rightArrow = document.querySelector('.right')
+  const defaultRightArrow = document.querySelector('.default.right')
+  const defaultLeftArrow = document.querySelector('.default.left')
 
-  rightArrow.addEventListener('click', function (e) {
-    e.preventDefault()
-    loadNextCourses()
-  })
 
 
   reset()
+
   function reset() {
-    courseElements.forEach((element, index) => displayCourses(element, index))
+    courseElements.forEach((element, index) => initializeCourses(element, index))
   }
 
-
-  function displayCourses(element, index) {
-
+  function initializeCourses(element, index) {
 
     if (index > 3){
-      element.style.opacity = "0"
-      element.style.zIndex = -1
-      element.style.transform = `TranslateX(${ 312 }%)`
+      hideElement(element, 312);
     } else {
-      element.style.opacity = '1'
-      element.style.zIndex = '10'
-      element.style.transform = `TranslateX(${ (100 * index) + (4 * index) }%)`
+     showElement(element, index)
     }
 
   }
 
+  function hideElement(element, position) {
+    element.style.opacity = "0"
+    element.style.zIndex = -1
+    element.style.transform = `TranslateX(${ position }%)`
+  }
+
+  function showElement(element, index) {
+    element.style.opacity = '1'
+    element.style.zIndex = '10'
+    element.style.transform = `TranslateX(${ (100 * index) + (4 * index) }%)`
+  }
+
+
+  defaultRightArrow.addEventListener('click', function (e) {
+    e.preventDefault()
+    loadNextCourses()
+  })
+
+  defaultLeftArrow.addEventListener('click', function (e) {
+    e.preventDefault()
+    //todo: loadPreviousCourses()
+  })
+
   let firstElementIndex = 0
   let lastElementIndex = 3;
   let currentRowElement = 0 // 0 to 4
-
   const elementsToSum = 4
 
   function loadNextCourses() {
-
     //check if we can show a new row with atleast 1 course
     if (firstElementIndex + elementsToSum > courseElements.length -1){
+
       reset()
       firstElementIndex = 0
       lastElementIndex = 3
@@ -569,18 +633,85 @@
       }
 
       if (index >= firstElementIndex - elementsToSum && index < firstElementIndex) {
-        element.style.transform = `TranslateX(${0}%)`
-        element.style.opacity = '0'
-        element.style.zIndex = -1
+       hideModal(0)
       }
       else if (index >= firstElementIndex && index <= lastElementIndex) {
-        element.style.opacity = '1'
-        element.style.zIndex = '10'
-        element.style.transform = `TranslateX(${ (100 * currentRowElement) + (4 * currentRowElement++) }%)`
+        showElement(element,currentRowElement)
+        currentRowElement++
       }
 
     })
   }
+  </script>
+
+
+<script>
+
+  const javaArrowRight = document.querySelector('.java-arrow.right')
+  const javaArrowLeft = document.querySelector('.java-arrow.left')
+  const javaCourseElements = document.querySelectorAll('.java-course')
+
+  resetJavaCourses()
+
+  function resetJavaCourses() {
+    javaCourseElements.forEach(
+            (element, index) => initializeJavaCourses(element, index))
+  }
+
+  function initializeJavaCourses(element, index) {
+
+    if (index <= 3) {
+      showElement(element, index)
+    }
+    else {
+      hideElement(element, 440)
+    }
+
+  }
+
+  javaArrowRight.addEventListener('click', function (e) {
+    e.preventDefault()
+    changeVisibleJavaCourses("right")
+  })
+
+  javaArrowLeft.addEventListener('click', function (e) {
+    e.preventDefault()
+    changeVisibleJavaCourses("left")
+  })
+
+  let firstVisibleElementIndex = 0
+  let lastVisibleElementIndex = 3
+
+
+  function changeVisibleJavaCourses(arrowClicked) {
+
+    if (arrowClicked === 'right') {
+      firstElementIndex++;
+      lastElementIndex++
+    }
+    else {
+      firstElementIndex--
+      lastElementIndex--
+    }
+
+    javaCourseElements.forEach((element, index) => function () {
+
+      if (index < firstElementIndex) {
+        return
+      }
+
+      if (index > lastElementIndex) {
+        hideElement(element, 440)
+      }
+      else {
+        showElement(element, index)
+      }
+
+    })
+
+  }
+
+
 
 </script>
 

@@ -78,7 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers(HttpMethod.GET, "/api/users/search", "/api/users/login")
                 .permitAll()
-                .antMatchers(HttpMethod.GET,"/api/users/{id}")
+                .antMatchers(HttpMethod.GET,"/api/users/{id}", "/users/profile")
                 .authenticated()
                 .antMatchers(HttpMethod.GET, "/api/users")
                 .hasAnyAuthority("TEACHER")
@@ -123,8 +123,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/")
                 //todo: in the future make pop up that shows when logout is completed saying logout successful
                 .permitAll();
-
-
 
         http.httpBasic();
 

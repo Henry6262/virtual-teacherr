@@ -66,7 +66,7 @@ public class UserRestController {
 
 
     @GetMapping("/search")
-    public UserModel searchByUsername(@RequestParam("keyword") SearchDto searchDto,
+    public ResponseEntity<Boolean> searchByUsername(@RequestParam("keyword") SearchDto searchDto,
                                       Model model){
 
         model.addAttribute("name",searchDto);
@@ -75,7 +75,7 @@ public class UserRestController {
 
         UserModel usermodel = new UserModel();
         mapper.map(toFind, usermodel);
-        return usermodel;
+        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/login")

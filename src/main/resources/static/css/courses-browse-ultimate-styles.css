@@ -3,9 +3,12 @@
 
 
 /*  FROM HERE UNDER WE GO ARE MY CSS STYLES*/
-#browse-wrapper {
+.browse-wrapper {
     display: inline;
-    float: left;
+}
+
+.browse-wrapper.b2{
+    margin-top: 14rem;
 }
 
 
@@ -34,90 +37,98 @@
     font-family: 'Questrial';
 }
 
-#browse-courses {
+.heading.java {
+    position: absolute;
+    margin-top: 260px;
+}
+
+.browse-courses {
 
     display: flex;
     gap: 10px;
-    margin: 13px 0px 0px 35px;
+    margin: 13px 0px 0px 65px;
     max-height: 220px;
-    justify-content: center;
 }
 
-#difficulty-course {
-    font-size: 12px;
-    opacity: 0.6;
-    font-family: 'Inter';
+.browse-java {
+    margin-top: 21rem;
+}
+
+.difficulty-course {
+font-size: 12px;
+opacity: 0.6;
+font-family: 'Inter';
 }
 
 .course-element {
-    position: absolute;
-    width: fit-content;
-    transition: transform 0.8s ease-in-out ,
-    opacity 400ms linear,
-    visibility 0ms linear 400ms,
-    box-shadow .15s linear;
+position: absolute;
+width: fit-content;
+transition: transform 0.8s ease-in-out ,
+opacity 400ms linear,
+visibility 0ms linear 400ms,
+box-shadow .15s linear;
 }
 
 
 .course-container {
-    transition: all 0.2s ease-in-out !important;
+transition: all 0.2s ease-in-out !important;
 }
 
 .course-container:hover {
-    transform: translateY(-5px);
-    cursor: pointer;
+transform: translateY(-5px);
+cursor: pointer;
 }
 
-#course-image {
-    max-width: 239px;
-    min-width: 239px;
-    width: 100%;
-    max-height: 140px;
-    min-height: 140px;
-    height: 200px;
-    border-radius: 10px;
-    border: 1px solid black;
-    box-shadow: 0 3px 6px rgb(0 0 0 / 45%);
+.course-image {
+max-width: 239px;
+min-width: 239px;
+width: 100%;
+max-height: 140px;
+min-height: 140px;
+height: 200px;
+border-radius: 10px;
+border: 1px solid black;
+box-shadow: 0 3px 6px rgb(0 0 0 / 45%);
 }
 
 
 
-#topic-course {
-    display: none
+.topic-course {
+display: none
 }
 
 .col-12 {
-    display: flex;
-    gap: 10px;
-    margin: 0px 0px 0px 5px
+display: flex;
+gap: 10px;
+margin: 0px 0px 0px 5px
 }
 
 .course-text-content {
-    margin: 0px 0px 0px 5px
+margin: 0px 0px 0px 5px
 }
 
 .check {
-    display: inline-block;
-    transform: rotate(45deg);
-    height: var(--height);
-    width: var(--width);
-    border-bottom: var(--borderWidth) solid var(--borderColor);
-    border-right: var(--borderWidth) solid var(--borderColor);
-    margin-right: 20px;
+display: inline-block;
+transform: rotate(45deg);
+height: var(--height);
+width: var(--width);
+border-bottom: var(--borderWidth) solid var(--borderColor);
+border-right: var(--borderWidth) solid var(--borderColor);
+margin-right: 20px;
 }
 
 .skills-container {
-    margin-bottom: 13%;
+margin-bottom: 13%;
 }
 
 .skill-element {
-    display: flex;
-    margin-bottom: 20px;
+display: flex;
+margin-bottom: 20px;
 }
 
 .modal-skills {
-    color: darkslategray;
-    text-align: -webkit-left;
+color: darkslategray;
+text-align: -webkit-left;
 }
 
 .one {
@@ -156,8 +167,12 @@
     transition: all 200ms ease;
     /* margin: -252px 60px 32px 50px; */
     position: absolute;
-    margin: 97px 57px 18px 57px;
+    margin: 160px 57px 18px 57px;}
+
+.arrow.java-arrow {
+    margin: 31rem 58px 21px 58px
 }
+
 .arrow.left {
     left: 0;
     transform: translate3d(0, -50%, 0) rotate(-135deg);

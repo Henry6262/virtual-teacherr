@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
 
-        <title>CodePen - Flat Login Form</title>
+        <title>Sign In</title>
         <link th:href="@{/css/styles.css}" href='../static/css/styles.css' type="text/css" rel="stylesheet">
 
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
@@ -38,23 +38,23 @@
 
         <form class="form register-form" > <!-- th:action="@{/auth/register}" th:object="${registerObject}" method="post" -->
             <div class="form-control">
-                <input id="firstName"  placeholder="name"/>
+                <input id="firstName"  placeholder="name" autocomplete="chrome-off"/>
                 <small></small>
             </div>
             <div class="form-control">
-                <input id="lastName"  placeholder="lastname">
+                <input id="lastName"  placeholder="lastname" autocomplete="chrome-off">
                 <small></small>
             </div>
             <div class="form-control">
-                <input class="password-register"  placeholder="password"/>
+                <input class="password-register" type="password" placeholder="password" autocomplete="chrome-off"/>
                 <small></small>
             </div>
             <div class="form-control">
-                <input  class="password-confirm-register"  placeholder="confirm password" >
+                <input  class="password-confirm-register" type="password" placeholder="confirm password"  autocomplete="chrome-off">
                 <small></small>
             </div>
             <div class="form-control">
-                <input  class="emailAddress"  placeholder="email address"/>
+                <input  class="emailAddress"  placeholder="email address" autocomplete="chrome-off"/>
                 <small></small>
             </div>
             <div class="content">
@@ -67,12 +67,12 @@
 
         <form class="form login-form active-form" > <!-- th:action="@{/auth/login}" method="post" -->
             <div class="form-control">
-                <input name="username" class="username-login" type="text" placeholder="username"/> <!-- id="username"-->
+                <input name="username" class="username-login" type="text" placeholder="username" autocomplete="chrome-off"/> <!-- id="username"-->
                 <small></small>
             </div>
 
             <div class="form-control">
-                <input name="password" class="password-login"  type="password" placeholder="password"/> <!-- id="password" -->
+                <input name="password" class="password-login"  type="password" placeholder="password" autocomplete="chrome-off off"/> <!-- id="password" -->
                 <small></small>
             </div>
 
@@ -314,7 +314,7 @@
                     }
 
                 },
-                error: function (data) {
+                error: function () {
 
                     if (formType === 'login'){
                         setErrorFor(usernameSelector, `${username} does not exist`)
@@ -373,12 +373,13 @@
                 data: JSON.stringify(RegisterUserModel),
 
                 error: function () {
-                    alert('Something went wrong')
+                    changeActiveFormView();
+                    console.log("error function activated in register")
                     // even when it registers successfully a user, it triggers the error
                 },
 
                 success: function (data){
-                    showModal()
+                    changeActiveFormView()
                 }
             })
         }

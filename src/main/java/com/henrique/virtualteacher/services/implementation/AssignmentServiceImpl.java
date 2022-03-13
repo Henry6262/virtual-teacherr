@@ -119,7 +119,9 @@ public class AssignmentServiceImpl implements AssignmentService {
     @Override
     public double getUserAverageGradeForCourse(int userId, int courseId, User loggedUser) {
 
-        List<Assignment> userGradedAssignmentsForCourse = getAllUserGradedAssignmentsForCourse(userId, courseId, loggedUser);
+        checkUserIsAuthorized(loggedUser, userId);
+
+        List<Assignment> userGradedAssignmentsForCourse = assignmentRepository.getAllByUserIdAndLectureCourseId(userId, courseId);
 
         Course course = courseService.getById(courseId);
 
@@ -127,7 +129,34 @@ public class AssignmentServiceImpl implements AssignmentService {
                 .mapToDouble(Assignment::getGrade)
                 .sum();
 
-        return sum / userGradedAssignmentsForCourse.size();
+        if (sum != 0) {
+            return sum / userGradedAssignmentsForCourse.size();
+        }
+        return -1;
+    }
+
+    private void checkUserIsAuthorized(User loggedUser, int userToGetId) {
+        if (loggedUser.isNotTeacherOrAdmin() && loggedUser.getId() != userToGetId) {
+            throw new UnauthorizedOperationException(String.format("User with id: %d, is not authorized to get course information of User with id: %d", loggedUser.getId(), userToGetId));
+        }
+    }
+
+    @Override
+    public double getStudentAverageGradeForAllCourses(User loggedUser) {
+
+        User userToGet = userService.getById(loggedUser.getId(), loggedUser);
+
+        double sum = 0;
+        for (Course current : userToGet.getCompletedCourses()) {
+            double averageForCurrent  = getUserAverageGradeForCourse(loggedUser.getId(), current.getId(), loggedUser);
+
+            if (averageForCurrent != -1) {
+                sum += averageForCurrent;
+            }
+        }
+
+        return sum == 0 ? 0 : sum /userToGet.getCompletedCourses().size();
+
     }
 
     @Override

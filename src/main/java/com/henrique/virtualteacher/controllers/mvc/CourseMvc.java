@@ -45,29 +45,28 @@ public class CourseMvc {
         return "user-courses";
     }
 
-    @GetMapping("/browse")
-    public String showBrowseCourses(Principal principal,
-                                    Model model) {
-
-        Optional<User> loggedUser;
-        boolean userIsAnonymous = true;
-
-        if (principal == null) {
-            loggedUser = Optional.empty();
-            model.addAttribute("anonymous_user_picture","https://res.cloudinary.com/henrique-mk/image/upload/v1646573717/13-136710_anonymous-browsing-user_t9wm22.jpg");
-        } else {
-            userIsAnonymous = false;
-            loggedUser = Optional.of(userService.getByEmail(principal.getName()));
-            model.addAttribute("loggedUser",loggedUser.get());
-        }
-
-
-        List<CourseModel> courses = courseService.getAllByEnabled(true, loggedUser);
-        model.addAttribute("top_three_courses", courseService.getTopTheeCoursesByRating());
-        model.addAttribute("courses", courses);
-        model.addAttribute("user_is_anonymous", userIsAnonymous);
-
-        return "browse-courses-ultimate";
-    }
+//    @GetMapping("/browse")
+//    public String showBrowseCourses(Principal principal,
+//                                    Model model) {
+//
+//        Optional<User> loggedUser;
+//        boolean userIsAnonymous = true;
+//
+//        if (principal == null) {
+//            loggedUser = Optional.empty();
+//            model.addAttribute("anonymous_user_picture","https://res.cloudinary.com/henrique-mk/image/upload/v1646573717/13-136710_anonymous-browsing-user_t9wm22.jpg");
+//        } else {
+//            userIsAnonymous = false;
+//            loggedUser = Optional.of(userService.getByEmail(principal.getName()));
+//            model.addAttribute("loggedUser",loggedUser.get());
+//        }
+//
+//        List<CourseModel> courses = courseService.getAllByEnabled(true, loggedUser);
+//        model.addAttribute("top_three_courses", courseService.getTopTheeCoursesByRating());
+//        model.addAttribute("courses", courses);
+//        model.addAttribute("user_is_anonymous", userIsAnonymous);
+//
+//        return "browse-courses-ultimate";
+//    }
 
 }

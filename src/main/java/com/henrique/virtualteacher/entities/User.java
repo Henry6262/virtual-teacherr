@@ -3,20 +3,19 @@ package com.henrique.virtualteacher.entities;
 
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.models.EnumRoles;
+import com.henrique.virtualteacher.models.EnumTopic;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @Entity
-
 @NoArgsConstructor
 
 @Table(name = "users")
@@ -84,6 +83,40 @@ public class User {
 
     public void addComment(Comment comment) {
         comments.add(comment);
+    }
+
+
+    public String mostStudiedCourseTopic() {
+
+        if (getEnrolledCourses().size() == 0){
+            return "";
+        }
+
+        List<Course> sortedEnrolledCourses = getEnrolledCourses().stream().sorted(Comparator.comparing(object -> object.getTopic().name())).collect(Collectors.toList());
+
+        int maxSequence = 1;
+        EnumTopic mostStudiedTopic = sortedEnrolledCourses.get(0).getTopic();
+
+        int currentSequence = 1;
+        EnumTopic lastEntry = sortedEnrolledCourses.get(0).getTopic();
+
+        for (int i = 1; i < sortedEnrolledCourses.size() ; i++) {
+
+            EnumTopic currentTopic = sortedEnrolledCourses.get(i).getTopic();
+
+            if (lastEntry == currentTopic) {
+                currentSequence++;
+                if (currentSequence > maxSequence) {
+                    mostStudiedTopic = currentTopic;
+                }
+            }
+            else {
+                currentSequence = 1;
+                lastEntry = currentTopic;
+            }
+
+        }
+        return mostStudiedTopic.name();
     }
 
     public void enrollToCourse(Course course) {

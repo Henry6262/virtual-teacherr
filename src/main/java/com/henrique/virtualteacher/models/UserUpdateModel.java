@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserUpdateModel extends MessageBuilder {
+public class UserUpdateModel {
 
     public static final String FIRSTNAME_INVALID_SIZE_MSG = "First name length must be between 2 and 20 characters";
     public static final String LASTNAME_INVALID_SIZE_MSG = "Last name length must be between 2 and 20 characters";
