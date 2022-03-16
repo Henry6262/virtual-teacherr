@@ -271,7 +271,7 @@ public class CourseServiceImpl implements CourseService {
         List<CourseModel> courseModels;
         courseModels = mapAllToModel(courseRepository.findByEnabled(isEnabled)
                 .stream()
-                .limit(30).collect(Collectors.toList()), null, false);
+                .limit(20).collect(Collectors.toList()), null, false);
 
         return courseModels;
     }

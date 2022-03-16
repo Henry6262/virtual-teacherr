@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = "users_enrolled_courses")
-public class EnrolledCourses {
+public class CourseEnrollment {
 
     @Id
     @Column(name = "user_id")
@@ -17,5 +17,8 @@ public class EnrolledCourses {
 
     @Column(name = "course_id")
     private int courseId;
+
+    @Column(name = "completed")
+    private boolean isCompleted;
 
 }

@@ -563,8 +563,8 @@
   const courseElements = document.querySelectorAll('.course-element.default')
   const courseBrowse = document.querySelector('#browse-courses')
   const arrowWrapper = document.querySelector('.arrow-wrapper')
-  const defaultRightArrow = document.querySelector('.default.right')
-  const defaultLeftArrow = document.querySelector('.default.left')
+  const defaultRightArrow = document.querySelector('.regular.right')
+  const defaultLeftArrow = document.querySelector('.regular.left')
 
 
 
@@ -604,13 +604,58 @@
 
   defaultLeftArrow.addEventListener('click', function (e) {
     e.preventDefault()
-    //todo: loadPreviousCourses()
+   loadPreviousCourses()
   })
+
+
 
   let firstElementIndex = 0
   let lastElementIndex = 3;
   let currentRowElement = 0 // 0 to 4
   const elementsToSum = 4
+
+  const loadedLastElementIndex = courseElements.length -1
+  let loadedFirstElementIndex = 0;
+
+  const a = function () {
+    courseElements.forEach((element, index) => {
+
+      if (index > lastElementIndex) {
+        hideElement(element, 312)
+      }
+
+      else if (index < firstElementIndex) {
+        hideElement(element, 0)
+      }
+
+      if (index >= firstElementIndex && index <= lastElementIndex) {
+        showElement(element, currentRowElement)
+        currentRowElement++
+      }
+    })
+  }
+
+  function loadPreviousCourses() {
+
+    let lastRowWasLoaded = false
+
+    if (firstElementIndex - elementsToSum < 0) {
+
+      firstElementIndex = 16
+      lastElementIndex = 19
+      currentRowElement = 0
+      a()
+    }
+    else {
+      firstElementIndex -= 4
+      lastElementIndex -= 4
+      currentRowElement = 0;
+      a()
+    }
+
+
+  }
+
 
   function loadNextCourses() {
     //check if we can show a new row with atleast 1 course
@@ -633,7 +678,7 @@
       }
 
       if (index >= firstElementIndex - elementsToSum && index < firstElementIndex) {
-       hideModal(0)
+       hideElement(element,0)
       }
       else if (index >= firstElementIndex && index <= lastElementIndex) {
         showElement(element,currentRowElement)
