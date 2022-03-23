@@ -61,13 +61,17 @@ font-family: 'Inter';
 }
 
 .course-element {
-position: absolute;
-width: fit-content;
-transition: transform 0.8s ease-in-out ,
-opacity 400ms linear,
-visibility 0ms linear 400ms,
-box-shadow .15s linear;
+    position: absolute;
+    width: fit-content;
+    max-width: 238px;
+    transition: transform 0.8s ease-in-out ,
+    opacity 400ms linear,
+    visibility 0ms linear 400ms,
+    box-shadow .15s linear;
 }
+
+
+
 
 
 .course-container {
@@ -167,10 +171,10 @@ text-align: -webkit-left;
     transition: all 200ms ease;
     /* margin: -252px 60px 32px 50px; */
     position: absolute;
-    margin: 160px 57px 18px 57px;}
+    margin: 80px 57px 18px 57px;}
 
 .arrow.java-arrow {
-    margin: 31rem 58px 21px 58px
+    margin: 36rem 58px 21px 58px
 }
 
 .arrow.left {

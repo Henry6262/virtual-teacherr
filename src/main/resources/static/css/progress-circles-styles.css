@@ -105,10 +105,9 @@
     border-color: #e67e22;
 }
 .pie-wrapper.progress-90 .pie .left-side {
-    transform: rotate(324deg);
+
 }
 .pie-wrapper.progress-90 .pie .right-side {
-    transform: rotate(180deg);
 }
 .pie-wrapper.progress-45 .pie .half-circle {
     border-color: #1abc9c;

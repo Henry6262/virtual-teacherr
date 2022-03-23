@@ -1,3 +1,334 @@
+insert into courses
+values (1, 'Learn Javascript', 'JAVASCRIPT', 'BEGINNER', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2024/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (2, '101 React Native', 'REACT', 'INTERMEDIATE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (3, 'Learn Java', 'JAVA', 'BEGINNER', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2024/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (4, 'Ruby On Rails', 'RUBY', 'BEGINNER', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (5, 'JAVA OOP', 'JAVA', 'INTERMEDIATE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (6, 'Python Machine-Learning', 'PYTHON', 'ADVANCED', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (7, 'C++ Essentials', 'C', 'BEGINNER', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (8, 'Angular To Mastery', 'ANGULAR', 'INTERMEDIATE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (9, 'JavaScript In 100 Days', 'JAVASCRIPT', 'BEGINNER', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (10, 'React Noob To Master', 'REACT', 'BEGINNER', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (11, 'C Deep-Mechanics', 'C', 'ADVANCED', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/2/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (12, 'Python Mastery', 'PYTHON', 'ADVANCED', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/2', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (13, 'Java DSA', 'JAVA', 'NERD', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (14, 'Angular The Best JS Framework', 'ANGULAR', 'INTERMEDIATE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (15, 'RUBY UI/UX', 'RUBY', 'INTERMEDIATE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (16, 'The Complete Java Course', 'JAVA', 'BEGINNER', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (17, 'JS DOM', 'JAVASCRIPT', 'INTERMEDIATE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (18, 'C in Depth', 'C', 'ADVANCED', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (19, 'Creating a React Mobile App', 'REACT', 'ADVANCED', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (20, 'Python Semantics', 'PYTHON', 'ADVANCED', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (21, 'PHP Mastery', 'PHP', 'INTERMEDIATE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (22, 'Kotlin From Beginner To Pro', 'KOTLIN', 'BEGINNER', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (23, 'Ruby Web Programming', 'RUBY', 'INTERMEDIATE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (24, 'PHP Basics', 'PHP', 'BEGINNER', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (25, 'Building a Responsive App With React', 'REACT', 'INTERMEDIATE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (26, 'Kotlin Static Programming', 'KOTLIN', 'INTERMEDIATE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (27, 'JS ES6 Overview', 'JAVASCRIPT', 'BEGINNER', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (28, 'Java Developing A Spring-Boot App', 'JAVA', 'INTERMEDIATE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (29, 'C Thread Accessing', 'C', 'NERD', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),
+
+       (30, 'The Complete JavaScript Course', 'JAVASCRIPT', 'BEGINNER', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
+        '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.');
+
+
+insert into lectures
+values (1,1, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (2,1, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (3,1, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (4,1, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (5,1, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (6,1, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (7,2, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (8,2, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (10,2, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (11,2, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (12, 2, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (13, 2, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (14, 2, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (15, 2, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (16, 3, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (17, 3, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (18, 3, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (19,3, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (20, 3, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (21, 3, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (22, 3, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (23, 3, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (24, 4, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (25, 4, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (26, 4, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (27, 4, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (28, 4, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (29, 4, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (30, 4, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (31, 4, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (32, 5, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (33, 5, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (34, 5, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (35, 5, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (36, 5, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (37, 5, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (38, 5, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (38, 5, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (39, 6, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (40, 6, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (41, 6, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (42, 6, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (43, 6, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (44, 6, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (45, 6, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (46, 6, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (47, 7, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (48, 7, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (49, 7, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (50, 7, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (51, 7, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (52, 7, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (53, 7, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (54, 7, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (55, 8, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (56, 8, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (57, 8, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (58, 8, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (59, 8, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (60, 8, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (61, 8, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (62, 8, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (63, 9, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (64, 9, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (65, 9, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (66, 9, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (67, 9, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (68, 9, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (69, 9, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (70, 9, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (71, 10, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (72, 10, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (73, 10, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (74, 10, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (75, 10, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (76, 10, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (77, 10, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (78, 10, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (79, 11, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (80, 11, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (81, 11, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (82, 11, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (83, 11, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (84, 11, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (85, 11, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (86, 11, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (87, 12, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (88, 12, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (89, 12, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (90, 12, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (91, 12, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (92, 12, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (93, 12, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (94, 12, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (95, 13, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (96, 13, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (97, 13, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (98, 13, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (99, 13, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (100, 13, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (101, 13, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (102, 13, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+
+       (103, 14, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (104, 14, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (105, 14, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (106, 14, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (107, 14, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (108, 14, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (109, 14, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (110, 14, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+
+       (111, 15, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (112, 15, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (113, 15, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (114, 15, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (115, 15, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (116, 15, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (117, 15, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (118, 15, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (119, 16, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (120, 16, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (121, 16, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (122, 16, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (123, 16, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (124, 16, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (125, 16, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (126, 16, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+
+       (127, 17, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (128, 17, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (129, 17, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (130, 17, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (131, 17, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (132, 17, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (133, 17, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (134, 17, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+
+       (135, 18, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (136, 18, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (137, 18, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (138, 18, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (139, 18, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (140, 18, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (141, 18, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (142, 18, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+
+       (143, 19, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (144, 19, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (145, 19, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (146, 19, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (147, 19, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (148, 19, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (149, 19, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (150, 19, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+
+       (151, 20, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (152, 20, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (153, 20, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (154, 20, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (155, 20, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (156, 20, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (157, 20, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (158, 20, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (159, 21, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (160, 21, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (161, 21, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (162, 21, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (163, 21, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (164, 21, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (165, 21, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (166, 21, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (167, 22, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (168, 22, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (169, 22, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (170, 22, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (171, 22, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (172, 22, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (173, 22, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (174, 22, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (175, 23, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (176, 23, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (177, 23, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (178, 23, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (179, 23, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (180, 23, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (181, 23, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (182, 23, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (183, 24, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (184, 24, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (185, 24, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (186, 24, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (187, 24, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (188, 24, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (189, 24, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (190, 24, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (191, 25, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (192, 25, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (193, 25, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (194, 25, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (195, 25, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (196, 25, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (197, 25, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (198, 25, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+
+       (199, 26, 1, 'Course Roadmap', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (200, 26, 2, 'First Steps', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (201, 26, 3, 'First Steps Part-2', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (202, 26, 4, 'Hands-On Practice', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (203, 26, 5, 'DS And Algorithms', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (204, 26, 6, 'Code Review', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (205, 26, 7, 'What We Learned', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1),
+       (206, 26, 8, 'Final Lecture & Course Graduation', 'on this lecture i will be showing all the points that will be covered during the course', null, 'create a nested loop',1);
+
 insert into course_ratings
 values (4,1,4,4),
        (5,1,5,4),
@@ -60,4 +391,4 @@ values (4,1,4,4),
        (57,6,7,4),
        (58,6,8,4),
        (59,6,9,4),
-       (60,6,10,5)
+       (60,6,10,5);

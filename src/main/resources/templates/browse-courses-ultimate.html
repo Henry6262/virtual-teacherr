@@ -205,15 +205,15 @@
                 <img class="course-image" src="#" th:src="${course.picture}">
               </div>
               <div class="course-text-content">
-                <div id="name-course" th:text="${course.title}"></div>
-                <div id="topic-course" th:text="${course.topic}"></div>
-                <div id="difficulty-course" th:text="${course.difficulty}"></div>
+                <div class="name-course" th:text="${course.title}"></div>
+                <div class="topic-course" th:text="${course.topic}"></div>
+                <div class="difficulty-course" th:text="${course.difficulty}"></div>
                 <div style="visibility: hidden; display:none" class="hidden-fields">
-                  <div id="description-course" th:text="${course.description}"></div>
-                  <div id="starting-date-course" th:text="${course.startingDate}"></div>
-                  <div id="skill-1" th:text="${course.getSkill1()}"></div>
-                  <div id="skill-2" th:text="${course.getSkill2()}"></div>
-                  <div id="skill-3" th:text="${course.getSkill3()}"></div>
+                  <div class="description-course" th:text="${course.description}"></div>
+                  <div class="starting-date-course" th:text="${course.startingDate}"></div>
+                  <div class="skill-1" th:xt="${course.getSkill1()}"></div>
+                  <div class="skill-2" th:text="${course.getSkill2()}"></div>
+                  <div class="skill-3" th:text="${course.getSkill3()}"></div>
                 </div>
               </div>
               <div class="container">
@@ -496,8 +496,6 @@
     } else {
 
 
-
-
       courseTitle = e.querySelector('.name-course')
       courseDescription = e.querySelector('.description-course')
       courseImage = e.querySelector('.course-image')
@@ -652,8 +650,6 @@
       currentRowElement = 0;
       a()
     }
-
-
   }
 
 
@@ -726,37 +722,52 @@
 
   let firstVisibleElementIndex = 0
   let lastVisibleElementIndex = 3
-
+  let indexLastJavaCourse = javaCourseElements.length -1
+  let currentJavaElement = 0// 1 to 4
 
   function changeVisibleJavaCourses(arrowClicked) {
 
+    currentJavaElement = 0
+
     if (arrowClicked === 'right') {
-      firstElementIndex++;
-      lastElementIndex++
+      firstVisibleElementIndex++
+      lastVisibleElementIndex++
+
+      if (lastVisibleElementIndex > indexLastJavaCourse) {
+        firstVisibleElementIndex = 0;
+        lastVisibleElementIndex = 3
+      }
+
     }
     else {
-      firstElementIndex--
-      lastElementIndex--
+      firstVisibleElementIndex--
+      lastVisibleElementIndex--
+
+      if (firstVisibleElementIndex < 0) {
+        firstVisibleElementIndex = indexLastJavaCourse - 3
+        lastVisibleElementIndex = indexLastJavaCourse
+      }
     }
 
-    javaCourseElements.forEach((element, index) => function () {
 
-      if (index < firstElementIndex) {
+    javaCourseElements.forEach((element, index) => {
+
+      if (index < firstVisibleElementIndex) {
+        hideElement(element, 0)
         return
       }
-
-      if (index > lastElementIndex) {
-        hideElement(element, 440)
+      else if (index > lastVisibleElementIndex) {
+        hideElement(element, 312)
+        return;
       }
-      else {
-        showElement(element, index)
+
+      if (index >=  firstVisibleElementIndex &&  index <= lastVisibleElementIndex) {
+        showElement(element, currentJavaElement++)
       }
 
     })
 
   }
-
-
 
 </script>
 
