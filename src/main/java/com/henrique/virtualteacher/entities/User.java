@@ -39,6 +39,12 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @OneToOne
+    @JoinTable(name = "wallets",
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "id"))
+    private Wallet wallet;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -92,7 +98,8 @@ public class User {
             return "";
         }
 
-        List<Course> sortedEnrolledCourses = getEnrolledCourses().stream().sorted(Comparator.comparing(object -> object.getTopic().name())).collect(Collectors.toList());
+        List<Course> sortedEnrolledCourses = getEnrolledCourses().stream().
+                sorted(Comparator.comparing(object -> object.getTopic().name())).collect(Collectors.toList());
 
         int maxSequence = 1;
         EnumTopic mostStudiedTopic = sortedEnrolledCourses.get(0).getTopic();

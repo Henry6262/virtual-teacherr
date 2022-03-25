@@ -26,6 +26,8 @@ public class Helpers {
         return createTeacher();
     }
 
+    public static Wallet createMockWallet(User walletOwner) { return createUserWallet(walletOwner); }
+
     public static Course createMockCourse() {
         return createCourse();
     }
@@ -208,6 +210,11 @@ public class Helpers {
     return registerModel;
     }
 
+    private static Wallet createUserWallet(User walletOwner){
+        Wallet wallet =  new Wallet(walletOwner);
+        wallet.setId(1);
+        return wallet;
+    }
 
     private static User createTeacher() {
         User teacher = new User();

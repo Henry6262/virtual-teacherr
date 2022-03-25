@@ -1,161 +1,152 @@
-create table courses
+create table teacher.courses
 (
-	id int auto_increment,
-	title varchar(50) not null,
-	topic enum('JAVA', 'JAVASCRIPT', 'PYTHON', 'C', 'RUBY') not null,
-	description varchar(1000) null,
-	difficulty int(5) not null,
-	starting_date date null,
-	enabled tinyint(1) not null,
-	constraint course_id_uindex
-		unique (id),
-	constraint course_title_uindex
-		unique (title)
+    id            int auto_increment
+        primary key,
+    title         varchar(50)                                                                             not null,
+    topic         enum ('JAVA', 'JAVASCRIPT', 'ANGULAR', 'REACT', 'PYTHON', 'C', 'RUBY', 'PHP', 'KOTLIN') not null,
+    difficulty    enum ('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'NERD')                                   not null,
+    description   varchar(1000)                                                                           null,
+    starting_date date                                                                                    null,
+    enabled       tinyint(1)                                                                              not null,
+    picture       varchar(1000)                                                                           null,
+    skill_1       varchar(250)                                                                            not null,
+    skill_2       varchar(250)                                                                            not null,
+    skill_3       varchar(250)                                                                            null,
+    constraint course_id_uindex
+        unique (id),
+    constraint course_title_uindex
+        unique (title)
 );
 
-alter table courses
-	add primary key (id);
-
-create table lectures
+create table teacher.lectures
 (
-	lecture_id int auto_increment,
-	course_id int not null,
-	entry_id int default 0 not null,
-	title varchar(50) not null,
-	description varchar(1000) default '' null,
-	video varchar(150) default '' null,
-	assignment varchar(2000) default '' null,
-	enabled tinyint(1) default 0 null,
-	constraint lectures_id_uindex
-		unique (lecture_id),
-	constraint lectures_title_uindex
-		unique (title),
-	constraint lectures_courses_id_fk
-		foreign key (course_id) references courses (id)
+    lecture_id  int auto_increment
+        primary key,
+    course_id   int                      not null,
+    entry_id    int           default 0  not null,
+    title       varchar(50)              not null,
+    description varchar(1000) default '' null,
+    video       varchar(150)  default '' null,
+    assignment  varchar(2000) default '' null,
+    enabled     tinyint(1)    default 0  null,
+    constraint lectures_id_uindex
+        unique (lecture_id),
+    constraint lectures_title_uindex
+        unique (title),
+    constraint lectures_courses_id_fk
+        foreign key (course_id) references teacher.courses (id)
 );
 
-alter table lectures
-	add primary key (lecture_id);
-
-create table roles
+create table teacher.roles
 (
-	id int auto_increment,
-	type enum('STUDENT', 'TEACHER', 'ADMIN') not null,
-	constraint roles_id_uindex
-		unique (id)
+    id   int auto_increment
+        primary key,
+    type enum ('STUDENT', 'TEACHER', 'ADMIN') not null,
+    constraint roles_id_uindex
+        unique (id)
 );
 
-alter table roles
-	add primary key (id);
-
-create table users
+create table teacher.users
 (
-	id int auto_increment,
-	first_name varchar(20) not null,
-	last_name varchar(20) not null,
-	email varchar(40) not null,
-	password varchar(100) not null,
-	profile_picture varchar(1024) null,
-	enabled tinyint(1) not null,
-	constraint user_email_uindex
-		unique (email),
-	constraint user_id_uindex
-		unique (id)
+    id              int auto_increment
+        primary key,
+    first_name      varchar(20)   not null,
+    last_name       varchar(20)   not null,
+    email           varchar(40)   not null,
+    password        varchar(100)  not null,
+    profile_picture varchar(1024) null,
+    enabled         tinyint(1)    not null,
+    constraint user_email_uindex
+        unique (email),
+    constraint user_id_uindex
+        unique (id)
 );
 
-alter table users
-	add primary key (id);
-
-create table assignments
+create table teacher.assignments
 (
-	assignment_id int auto_increment,
-	user_id int not null,
-	lecture_id int not null,
-	content text not null,
-	status enum('PENDING', 'GRADED') not null,
-	grade int null,
-	constraint lecture_assignment_grade_id_uindex
-		unique (assignment_id),
-	constraint lecture_assignment_grade_lectures_id_fk
-		foreign key (lecture_id) references lectures (lecture_id),
-	constraint lecture_assignment_grade_users_id_fk
-		foreign key (user_id) references users (id)
+    assignment_id int auto_increment
+        primary key,
+    user_id       int                        not null,
+    lecture_id    int                        not null,
+    content       text                       not null,
+    status        enum ('PENDING', 'GRADED') not null,
+    grade         int                        null,
+    constraint lecture_assignment_grade_id_uindex
+        unique (assignment_id),
+    constraint lecture_assignment_grade_lectures_id_fk
+        foreign key (lecture_id) references teacher.lectures (lecture_id),
+    constraint lecture_assignment_grade_users_id_fk
+        foreign key (user_id) references teacher.users (id)
 );
 
-alter table assignments
-	add primary key (assignment_id);
-
-create table comments
+create table teacher.comments
 (
-	id int auto_increment,
-	course_id int null,
-	user_id int null,
-	content varchar(200) not null,
-	constraint courseComments_id_uindex
-		unique (id),
-	constraint courseComments_courses_id_fk
-		foreign key (course_id) references courses (id),
-	constraint courseComments_users_id_fk
-		foreign key (user_id) references users (id)
+    id        int auto_increment
+        primary key,
+    course_id int          null,
+    user_id   int          null,
+    content   varchar(200) not null,
+    constraint courseComments_id_uindex
+        unique (id),
+    constraint courseComments_courses_id_fk
+        foreign key (course_id) references teacher.courses (id),
+    constraint courseComments_users_id_fk
+        foreign key (user_id) references teacher.users (id)
 );
 
-alter table comments
-	add primary key (id);
-
-create table course_ratings
+create table teacher.course_ratings
 (
-	id int auto_increment,
-	course_id int not null,
-	user_id int null,
-	rating int(5) not null,
-	constraint course_ratings_id_uindex
-		unique (id),
-	constraint course_ratings_courses_id_fk
-		foreign key (course_id) references courses (id),
-	constraint course_ratings_users_id_fk
-		foreign key (user_id) references users (id)
+    id        int auto_increment
+        primary key,
+    course_id int    not null,
+    user_id   int    null,
+    rating    int(5) not null,
+    constraint course_ratings_id_uindex
+        unique (id),
+    constraint course_ratings_courses_id_fk
+        foreign key (course_id) references teacher.courses (id),
+    constraint course_ratings_users_id_fk
+        foreign key (user_id) references teacher.users (id)
 );
 
-alter table course_ratings
-	add primary key (id);
-
-create table users_completed_courses
+create table teacher.users_completed_courses
 (
-	user_id int not null,
-	course_id int not null,
-	constraint users_completed_courses_courses_id_fk
-		foreign key (course_id) references courses (id),
-	constraint users_completed_courses_users_id_fk
-		foreign key (user_id) references users (id)
+    user_id   int not null,
+    course_id int not null,
+    constraint users_completed_courses_courses_id_fk
+        foreign key (course_id) references teacher.courses (id),
+    constraint users_completed_courses_users_id_fk
+        foreign key (user_id) references teacher.users (id)
 );
 
-create table users_completed_lectures
+create table teacher.users_completed_lectures
 (
-	user_id int null,
-	lecture_id int null,
-	constraint users_completed_lectures_lectures_id_fk
-		foreign key (lecture_id) references lectures (lecture_id),
-	constraint users_completed_lectures_users_id_fk
-		foreign key (user_id) references users (id)
+    user_id    int null,
+    lecture_id int null,
+    constraint users_completed_lectures_lectures_id_fk
+        foreign key (lecture_id) references teacher.lectures (lecture_id),
+    constraint users_completed_lectures_users_id_fk
+        foreign key (user_id) references teacher.users (id)
 );
 
-create table users_enrolled_courses
+create table teacher.users_enrolled_courses
 (
-	user_id int null,
-	course_id int null,
-	constraint users_enrolled_courses_courses_id_fk
-		foreign key (course_id) references courses (id),
-	constraint users_enrolled_courses_users_id_fk
-		foreign key (user_id) references users (id)
+    user_id   int        null,
+    course_id int        null,
+    completed tinyint(1) not null,
+    constraint users_enrolled_courses_courses_id_fk
+        foreign key (course_id) references teacher.courses (id),
+    constraint users_enrolled_courses_users_id_fk
+        foreign key (user_id) references teacher.users (id)
 );
 
-create table users_roles
+create table teacher.users_roles
 (
-	user_id int null,
-	role_id int null,
-	constraint users_roles_roles_id_fk
-		foreign key (role_id) references roles (id),
-	constraint users_roles_users_id_fk
-		foreign key (user_id) references users (id)
+    user_id int null,
+    role_id int null,
+    constraint users_roles_roles_id_fk
+        foreign key (role_id) references teacher.roles (id),
+    constraint users_roles_users_id_fk
+        foreign key (user_id) references teacher.users (id)
 );
 

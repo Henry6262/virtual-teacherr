@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -35,6 +36,9 @@ public class CourseModel {
 
     @NotBlank
     private double averageRating;
+
+    @NotBlank
+    private BigDecimal price;
 
     private int courseCompletionPercentage;
 

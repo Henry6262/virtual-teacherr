@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -43,6 +44,9 @@ public class Course {
     @Enumerated(EnumType.STRING)
     @Column(name = "difficulty")
     private EnumDifficulty difficulty;
+
+    @Column(name = "price")
+    private BigDecimal price;
 
     @Column(name = "starting_date")
     @DateTimeFormat(pattern = "dd/MM/yyyy")
