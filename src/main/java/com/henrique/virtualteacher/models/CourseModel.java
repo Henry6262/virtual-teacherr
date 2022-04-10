@@ -35,6 +35,9 @@ public class CourseModel {
     private String picture;
 
     @NotBlank
+    private String creatorEmail;
+
+    @NotBlank
     private double averageRating;
 
     @NotBlank

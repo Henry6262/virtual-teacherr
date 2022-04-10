@@ -17,6 +17,8 @@ public interface CourseService {
 
     List<CourseModel> mapAllToModel(List<Course> courses, User loggedUser, boolean includeCompletionAmount);
 
+    List<CourseModel> mapAllToModel(List<Course> courses);
+
     List<CourseModel> getTopTheeCoursesByRating();
 
     Course getById(int id);
@@ -43,7 +45,7 @@ public interface CourseService {
 
     void disableCourse(Course course, User loggedUser);
 
-    void enroll(Course course, User loggedUser);
+    void purchase(User loggedUser, Course courseToPurchase);
 
     void complete(Course course, User loggedUser);
 

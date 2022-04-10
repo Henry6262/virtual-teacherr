@@ -1,6 +1,8 @@
 package com.henrique.virtualteacher.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -8,17 +10,31 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@Table(name = "users_enrolled_courses")
+@NoArgsConstructor
+@Table(name = "course_enrollments")
 public class CourseEnrollment {
 
     @Id
-    @Column(name = "user_id")
-    private int userId;
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    @Column(name = "course_id")
-    private int courseId;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
 
     @Column(name = "completed")
-    private boolean isCompleted;
+    private boolean completed;
+
+    public CourseEnrollment(User enrolledUser, Course courseToEnroll) {
+        this.user = enrolledUser;
+        this.course = courseToEnroll;
+        this.completed = false;
+    }
 
 }

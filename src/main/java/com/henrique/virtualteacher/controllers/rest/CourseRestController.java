@@ -1,8 +1,10 @@
 package com.henrique.virtualteacher.controllers.rest;
 
 import com.henrique.virtualteacher.configurations.CloudinaryConfig;
-import com.henrique.virtualteacher.entities.*;
-import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
+import com.henrique.virtualteacher.entities.Assignment;
+import com.henrique.virtualteacher.entities.Course;
+import com.henrique.virtualteacher.entities.Lecture;
+import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.*;
 import com.henrique.virtualteacher.services.interfaces.*;
@@ -21,7 +23,10 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 import java.security.Principal;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -293,35 +298,35 @@ private final ModelMapper mapper;
     }
 
 
-    @PostMapping("/{id}/enroll")
+    @PostMapping("/{id}/purchase")
     public ResponseEntity<Boolean> enroll(@PathVariable int id,
                                           Principal principal) {
 
         User loggedUser = userService.getByEmail(principal.getName());
         Course course  = courseService.getById(id);
 
-        courseService.enroll(course, loggedUser);
+        courseService.purchase(loggedUser, course);
 
-        logger.info(String.format("User with id: %d, has enrolled into Course with id: %d", loggedUser.getId(), course.getId()));
+        logger.info(String.format("User with id: %d, has purchased Course with id: %d", loggedUser.getId(), course.getId()));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/enroll")
-    public ResponseEntity<Boolean> enroll(@RequestParam String courseTitle,
-                                          Principal principal) {
-
-        User loggedUser = userService.getByEmail(principal.getName());
-        Course course  = courseService.getByTitle(courseTitle);
-
-        try {
-            courseService.enroll(course, loggedUser);
-        } catch (ImpossibleOperationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-
-        logger.info(String.format("User with id: %d, has enrolled into Course with id: %d", loggedUser.getId(), course.getId()));
-        return new ResponseEntity<>(true, HttpStatus.OK);
-    }
+//    @PostMapping("/enroll")
+//    public ResponseEntity<Boolean> enroll(@RequestParam String courseTitle,
+//                                          Principal principal) {
+//
+//        User loggedUser = userService.getByEmail(principal.getName());
+//        Course course  = courseService.getByTitle(courseTitle);
+//
+//        try {
+//            courseService.enroll(course, loggedUser);
+//        } catch (ImpossibleOperationException e) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+//        }
+//
+//        logger.info(String.format("User with id: %d, has enrolled into Course with id: %d", loggedUser.getId(), course.getId()));
+//        return new ResponseEntity<>(true, HttpStatus.OK);
+//    }
 
     @PostMapping("/{id}/complete")
     public ResponseEntity<HttpStatus> complete(@PathVariable int id,

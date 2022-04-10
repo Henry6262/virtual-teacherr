@@ -1,15 +1,6 @@
 package com.henrique.virtualteacher;
 
-import com.henrique.virtualteacher.entities.Course;
-import com.henrique.virtualteacher.entities.Role;
-import com.henrique.virtualteacher.entities.User;
-import com.henrique.virtualteacher.models.EnumRoles;
-import com.henrique.virtualteacher.models.RegisterUserModel;
-import com.henrique.virtualteacher.models.UserUpdateModel;
 import com.henrique.virtualteacher.repositories.UserRepository;
-import com.henrique.virtualteacher.services.implementation.UserServiceImpl;
-import com.henrique.virtualteacher.services.interfaces.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -18,9 +9,6 @@ import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackageClasses = UserRepository.class)

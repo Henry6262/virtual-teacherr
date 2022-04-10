@@ -1,14 +1,11 @@
 package com.henrique.virtualteacher.controllers.rest;
 
-import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.User;
-import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
-import com.henrique.virtualteacher.models.RegisterUserModel;
-import com.henrique.virtualteacher.models.SearchDto;
-import com.henrique.virtualteacher.models.UserModel;
-import com.henrique.virtualteacher.models.UserUpdateModel;
+import com.henrique.virtualteacher.models.*;
 import com.henrique.virtualteacher.services.interfaces.UserService;
+import com.henrique.virtualteacher.services.interfaces.VerificationTokenService;
+import com.henrique.virtualteacher.services.interfaces.WalletService;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
@@ -30,6 +28,8 @@ import java.util.List;
 public class UserRestController {
 
     private final UserService userService;
+    private final WalletService walletService;
+    private final VerificationTokenService tokenService;
     private final ModelMapper mapper;
     private final Logger logger;
 
@@ -94,10 +94,12 @@ public class UserRestController {
 
     @PostMapping("/register")
     public ResponseEntity<Boolean> create(@RequestBody RegisterUserModel registerUserModel,
-                                        Model model) {
+                                          HttpServletRequest request,
+                                          Model model) {
 
-        userService.create(registerUserModel);
-
+        User created = userService.create(registerUserModel);
+        walletService.create(created);          //TODO: Create wallet when user has verified account -> implement
+        tokenService.create(created, request);
 
         return new ResponseEntity<>(true,HttpStatus.CREATED);
     }

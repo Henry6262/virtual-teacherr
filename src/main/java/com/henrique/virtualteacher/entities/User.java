@@ -1,9 +1,9 @@
 package com.henrique.virtualteacher.entities;
 
 
+import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.models.EnumRoles;
-import com.henrique.virtualteacher.models.EnumTopic;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -63,17 +63,23 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "lecture_id"))
     private Set<Lecture> completedLectures;
 
-    @OneToMany()
-    @JoinTable(name = "users_completed_courses",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "course_id")) //fixme -> this fixed my problem when adding
-    private List<Course> completedCourses;
+//    @OneToMany()
+//    @JoinTable(name = "users_completed_courses",
+//        joinColumns = @JoinColumn(name = "user_id"),
+//        inverseJoinColumns = @JoinColumn(name = "course_id")) //fixme -> this fixed my problem when adding
+//    private List<Course> completedCourses;
+//
+//    @ManyToMany()
+//    @JoinTable(name = "users_enrolled_courses",
+//        joinColumns = @JoinColumn(name = "user_id") ,
+//        inverseJoinColumns = @JoinColumn(name = "course_id"))
+//    private List<Course> enrolledCourses;
 
-    @ManyToMany()
-    @JoinTable(name = "users_enrolled_courses",
-        joinColumns = @JoinColumn(name = "user_id") ,
-        inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private List<Course> enrolledCourses;
+    @OneToMany
+    @JoinTable(name = "course_enrollments",
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "course_id"))
+    private List<CourseEnrollment> courseEnrollments;
 
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "assignments",
@@ -91,39 +97,17 @@ public class User {
         comments.add(comment);
     }
 
+    public List<Course> getCompletedCourses() {
+        return courseEnrollments.stream()
+                .filter(CourseEnrollment::isCompleted)
+                .map(CourseEnrollment::getCourse)
+                .collect(Collectors.toList());
+    }
 
-    public String mostStudiedCourseTopic() {
-
-        if (getEnrolledCourses().size() == 0){
-            return "";
-        }
-
-        List<Course> sortedEnrolledCourses = getEnrolledCourses().stream().
-                sorted(Comparator.comparing(object -> object.getTopic().name())).collect(Collectors.toList());
-
-        int maxSequence = 1;
-        EnumTopic mostStudiedTopic = sortedEnrolledCourses.get(0).getTopic();
-
-        int currentSequence = 1;
-        EnumTopic lastEntry = sortedEnrolledCourses.get(0).getTopic();
-
-        for (int i = 1; i < sortedEnrolledCourses.size() ; i++) {
-
-            EnumTopic currentTopic = sortedEnrolledCourses.get(i).getTopic();
-
-            if (lastEntry == currentTopic) {
-                currentSequence++;
-                if (currentSequence > maxSequence) {
-                    mostStudiedTopic = currentTopic;
-                }
-            }
-            else {
-                currentSequence = 1;
-                lastEntry = currentTopic;
-            }
-
-        }
-        return mostStudiedTopic.name();
+    public List<Course> getEnrolledCourses() {
+        return courseEnrollments.stream()
+                .map(CourseEnrollment::getCourse)
+                .collect(Collectors.toList());
     }
 
     public void enrollToCourse(Course course) {
@@ -132,7 +116,8 @@ public class User {
         } else if (hasCompletedCourse(course)) {
             throw new ImpossibleOperationException(String.format("User with id {%d}, has already completed Course with id {%d}", this.getId(), course.getId()));
         }
-        enrolledCourses.add(course);
+        CourseEnrollment newCourseEnrollment = new CourseEnrollment(this, course);
+        courseEnrollments.add(newCourseEnrollment);  //fixme: change made here
     }
 
     public void completeLecture(Lecture lecture) {
@@ -155,7 +140,16 @@ public class User {
             throw new ImpossibleOperationException(String.format("User with id: {%d}, has already completed Course with id: {%d}", this.getId(), course.getId()));
         }
 
-        completedCourses.add(course);
+//        completedCourses.add(course); //fixme change made here
+        CourseEnrollment toComplete = courseEnrollments.stream()
+                .filter(c -> c.getCourse().getId() == course.getId())
+                .collect(Collectors.toList()).get(0);
+
+        if (toComplete == null) {
+            throw new EntityNotFoundException(String.format("User with id: %d, in not enrolled to course with id: %d", this.getId(), course.getId()));
+        }
+
+        toComplete.setCompleted(true);
     }
 
     public void addAssignment(Assignment assignment) {
@@ -171,8 +165,9 @@ public class User {
     }
 
     public boolean hasCompletedCourse(Course course) {
-        return getCompletedCourses().stream()
-                .anyMatch(course1 -> course1.getId() == course.getId());
+        return this.getCourseEnrollments().stream()
+                .filter(CourseEnrollment::isCompleted)
+                .anyMatch(courseEnrollment -> courseEnrollment.getCourse().getId() == course.getId());
     }
 
     public boolean hasCompletedLecture(Lecture lecture) {
@@ -181,8 +176,8 @@ public class User {
     }
 
     public boolean isEnrolledInCourse(Course course) {
-        return getEnrolledCourses().stream()
-                .anyMatch(c -> c.getId() == course.getId());
+        return this.getCourseEnrollments().stream()
+                .anyMatch(c -> c.getCourse().getId() == course.getId());
     }
 
     public boolean isTeacher() {

@@ -1,9 +1,7 @@
 package com.henrique.virtualteacher.services.implementation;
 
 import com.henrique.virtualteacher.configurations.CloudinaryConfig;
-import com.henrique.virtualteacher.entities.Course;
-import com.henrique.virtualteacher.entities.Lecture;
-import com.henrique.virtualteacher.entities.User;
+import com.henrique.virtualteacher.entities.*;
 import com.henrique.virtualteacher.exceptions.DuplicateEntityException;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
@@ -13,14 +11,9 @@ import com.henrique.virtualteacher.models.EnumDifficulty;
 import com.henrique.virtualteacher.models.EnumTopic;
 import com.henrique.virtualteacher.repositories.CourseRepository;
 import com.henrique.virtualteacher.repositories.UserRepository;
-import com.henrique.virtualteacher.services.interfaces.CourseService;
-import com.henrique.virtualteacher.services.interfaces.LectureService;
-import com.henrique.virtualteacher.services.interfaces.RatingService;
-import com.henrique.virtualteacher.services.interfaces.UserService;
+import com.henrique.virtualteacher.services.interfaces.*;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-
-import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,13 +41,16 @@ public class CourseServiceImpl implements CourseService {
     private final LectureService lectureService;
     private final CloudinaryConfig cloudinaryConfig;
     private final RatingService ratingService;
+    private final WalletService walletService;
+    private final TransactionService transactionService;
+    private final CourseEnrollmentService courseEnrollmentService;
 
     @Override
     public List<CourseModel> mapAllToModel(List<Course> courses, User loggedUser, boolean includeCompletionAmount) {
         List<CourseModel> dtoList = new ArrayList<>();
 
         for (Course current : courses) {
-            CourseModel courseModel = mapper.map(current, new TypeToken<CourseModel>() {}.getType());
+            CourseModel courseModel = mapCourseModel(current);
             courseModel.setAverageRating(Math.round(ratingService.getAverageRatingForCourse(current) * 100.0) / 100.0);
 
             if (loggedUser != null) {
@@ -68,10 +64,21 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<CourseModel> mapAllToModel(List<Course> courses) {
+        List<CourseModel> dtoList = new ArrayList<>();
+
+        for (Course current : courses) {
+            CourseModel courseModel = mapCourseModel(current);
+            courseModel.setAverageRating(Math.round(ratingService.getAverageRatingForCourse(current) * 100.0) / 100.0);
+            dtoList.add(courseModel);
+        }
+        return dtoList;
+    }
+
+    @Override
     public void create(CourseModel course, User loggedUser) {
 
         //todo: check for invalid information will be done in js
-
         if (loggedUser.isNotTeacherOrAdmin()) {
             throw new UnauthorizedOperationException(USER_UNAUTHORIZED_ERROR_MSG);
         }
@@ -81,16 +88,43 @@ public class CourseServiceImpl implements CourseService {
 
         } catch (EntityNotFoundException e) {
 
-            Course newCourse = new Course();
-            mapCourse(course, newCourse);
-
+            Course newCourse = mapCourse(course);
             courseRepository.save(newCourse);
         }
     }
 
-    private void mapCourse(CourseModel dto, Course newCourse) {
-        mapper.map(dto, newCourse);
-        newCourse.setEnabled(false);
+    private Course mapCourse(CourseModel dto) {
+        Course course = new Course();
+        course.setTopic(dto.getTopic());
+        course.setTitle(dto.getTitle());
+        course.setCreator(userService.getByEmail(dto.getCreatorEmail()));
+        course.setPrice(dto.getPrice());
+        course.setDescription(dto.getDescription());
+        course.setDifficulty(dto.getDifficulty());
+        course.setPicture(dto.getPicture());
+        course.setStartingDate(dto.getStartingDate());
+        course.setSkill1(dto.getSkill1());
+        course.setSkill2(dto.getSkill2());
+        course.setSkill3(dto.getSkill3());
+        course.setEnabled(false);
+        return course;
+    }
+
+    private CourseModel mapCourseModel(Course course) {
+        CourseModel courseModel = new CourseModel();
+        courseModel.setId(course.getId());
+        courseModel.setTitle(course.getTitle());
+        courseModel.setCreatorEmail(course.getCreator().getEmail());
+        courseModel.setPrice(course.getPrice());
+        courseModel.setTopic(course.getTopic());
+        courseModel.setDifficulty(course.getDifficulty());
+        courseModel.setPicture(course.getPicture());
+        courseModel.setStartingDate(course.getStartingDate());
+        courseModel.setSkill1(course.getSkill1());
+        courseModel.setSkill2(course.getSkill2());
+        courseModel.setSkill3(course.getSkill3());
+        courseModel.setDescription(course.getDescription());
+        return courseModel;
     }
 
     @Override
@@ -138,7 +172,6 @@ public class CourseServiceImpl implements CourseService {
         if (loggedUser.isNotTeacherOrAdmin()) {
             throw new UnauthorizedOperationException("");
         }
-
         if (course.isEnabled()) {
             throw new ImpossibleOperationException(String.format("Course with id: {%d} is already enabled", course.getId()));
         }
@@ -162,11 +195,22 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void enroll(Course course, User loggedUser){
-        loggedUser.enrollToCourse(course);
+    public void purchase(User loggedUser, Course courseToPurchase) {
 
-        logger.info(String.format("User with id: {%d}, has enrolled into course with id: {%d}", loggedUser.getId(), course.getId()));
-        userRepository.save(loggedUser);
+        if (loggedUser.isEnrolledInCourse(courseToPurchase)) {
+            throw new DuplicateEntityException(String.format("User with id: %d, is already enrolled to course with id: %d", loggedUser.getId(), courseToPurchase.getId()));
+        }
+
+        walletService.makePurchase(courseToPurchase, loggedUser);
+        createTransaction(loggedUser, courseToPurchase);
+        courseEnrollmentService.enroll(loggedUser, courseToPurchase);
+    }
+
+    private void createTransaction(User loggedUser, Course course) {
+        Wallet senderWallet = walletService.getLoggedUserWallet(loggedUser);
+        Wallet recipientWallet = walletService.getLoggedUserWallet(course.getCreator());
+        Transaction transaction = new Transaction(senderWallet, recipientWallet, course);
+        transactionService.create(transaction, loggedUser);
     }
 
     @Override
@@ -209,7 +253,7 @@ public class CourseServiceImpl implements CourseService {
 
     public List<CourseModel> getTopTheeCoursesByRating() {
         List<Course> topThree = courseRepository.getThreeRandomCourses();
-        return mapAllToModel(topThree, null, false);
+        return mapAllToModel(topThree);
     }
 
     @Override
@@ -262,18 +306,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseModel> getAllByTopic(EnumTopic topic) {
-        return mapAllToModel(courseRepository.findByTopic(topic), null,false);
+        return mapAllToModel(courseRepository.findByTopic(topic));
     }
 
     @Override
     public List<CourseModel> getAllByEnabled(boolean isEnabled,  Optional<User> loggedUser) {
 
-        List<CourseModel> courseModels;
-        courseModels = mapAllToModel(courseRepository.findByEnabled(isEnabled)
+        return mapAllToModel(courseRepository.findByEnabled(isEnabled)
                 .stream()
-                .limit(20).collect(Collectors.toList()), null, false);
-
-        return courseModels;
+                .limit(20).collect(Collectors.toList()));
     }
 
     @Override

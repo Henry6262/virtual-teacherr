@@ -22,7 +22,7 @@ public class Wallet {
 
     @OneToOne()
     @JoinColumn(name = "user_id")
-    private User user;
+    private User owner;
 
     @Setter(AccessLevel.NONE)
     @Column(name = "balance")
@@ -37,7 +37,7 @@ public class Wallet {
     }
 
     public Wallet(User walletOwner) {
-        this.user = walletOwner;
+        this.owner = walletOwner;
         this.balance = BigDecimal.ZERO;
     }
 

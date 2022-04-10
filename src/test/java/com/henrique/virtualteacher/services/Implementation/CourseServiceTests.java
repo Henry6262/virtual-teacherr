@@ -15,6 +15,7 @@ import com.henrique.virtualteacher.repositories.LectureRepository;
 import com.henrique.virtualteacher.services.Helpers;
 import com.henrique.virtualteacher.services.implementation.CourseServiceImpl;
 import com.henrique.virtualteacher.services.implementation.LectureServiceImpl;
+import com.henrique.virtualteacher.services.interfaces.RatingService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +32,6 @@ import java.util.Set;
 @ExtendWith(MockitoExtension.class)
 public class CourseServiceTests {
 
-
     @Mock
     CourseRepository courseRepository;
     @Mock
@@ -40,6 +40,8 @@ public class CourseServiceTests {
     LectureServiceImpl lectureService;
     @Mock
     ModelMapper modelMapper;
+    @Mock
+    RatingService ratingService;
 
     @InjectMocks
     CourseServiceImpl courseService;
@@ -50,7 +52,6 @@ public class CourseServiceTests {
 
         Assertions.assertThrows(EntityNotFoundException.class, () -> courseService.getById(course.getId()));
     }
-
 
     @Test
     public void getByTitle_should_throwExceptionWhen_courseWithTitle_doesNot_exist() {
@@ -99,6 +100,8 @@ public class CourseServiceTests {
         List<Course> mockCourses = Helpers.createMockCourseList();
 
         Mockito.when(courseRepository.findByEnabled(true)).thenReturn(mockCourses);
+        Mockito.when(ratingService.getAverageRatingForCourse(Mockito.any())).thenReturn(Mockito.any(Double.class));
+
         courseService.getAllByEnabled(true, Optional.empty());
         Mockito.verify(courseRepository, Mockito.times(1))
                 .findByEnabled(true);
@@ -145,15 +148,16 @@ public class CourseServiceTests {
         Assertions.assertEquals(75.00, courseService.getPercentageOfCompletedCourseLectures(mockUser, mockCourse));
     }
 
-    @Test
-    public void enroll_shouldThrowException_when_userIsAlreadyEnrolledToCourse() {
-
-        User mockUser = Helpers.createMockUser();
-        Course mockCourse = Helpers.createMockCourse();
-        mockUser.enrollToCourse(mockCourse);
-
-        Assertions.assertThrows(ImpossibleOperationException.class, () -> courseService.enroll(mockCourse, mockUser));
-    }
+//    @Test
+//    public void enroll_shouldThrowException_when_userIsAlreadyEnrolledToCourse() {
+//
+//        User mockUser = Helpers.createMockUser();
+//        Course mockCourse = Helpers.createMockCourse();
+//        mockUser.enrollToCourse(mockCourse);
+//
+//        Assertions.assertThrows(ImpossibleOperationException.class, () -> courseService.enroll(mockCourse, mockUser));
+//        //fixme: enroll was moved to courseEnrollmentsService
+//    }
 
     @Test
     public void complete_shouldThrowException_when_userIsNotEnrolled() {
@@ -240,5 +244,18 @@ public class CourseServiceTests {
         Assertions.assertThrows(DuplicateEntityException.class, () -> courseService.create(mockCourseModel, mockUser));
     }
 
+    @Test
+    public void mapAllToModel_shouldReturn_courseModelList() {
+        User mockUser = Helpers.createMockUser();
+        List<Course> courseList = Helpers.createMockCourseList();
+
+        Mockito.when(ratingService.getAverageRatingForCourse(Mockito.any())).thenReturn(Mockito.any(Double.class));
+        List<CourseModel> resultList = courseService.mapAllToModel(courseList, mockUser, true);
+        Assertions.assertEquals(courseList.get(0).getId(), resultList.get(0).getId());
+    }
+
+    //todo: add tests for
+    // purhcase method
+    // getAllByCreator
 
 }

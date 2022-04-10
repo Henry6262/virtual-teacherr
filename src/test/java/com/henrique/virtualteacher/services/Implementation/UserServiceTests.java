@@ -1,12 +1,16 @@
 package com.henrique.virtualteacher.services.Implementation;
 
 import com.henrique.virtualteacher.entities.Course;
+import com.henrique.virtualteacher.entities.CourseEnrollment;
 import com.henrique.virtualteacher.entities.Lecture;
 import com.henrique.virtualteacher.entities.User;
+import com.henrique.virtualteacher.exceptions.DuplicateEntityException;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
+import com.henrique.virtualteacher.models.EnumTopic;
 import com.henrique.virtualteacher.models.RegisterUserModel;
+import com.henrique.virtualteacher.models.UserUpdateModel;
 import com.henrique.virtualteacher.repositories.UserRepository;
 import com.henrique.virtualteacher.services.Helpers;
 import com.henrique.virtualteacher.services.implementation.UserServiceImpl;
@@ -20,6 +24,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,6 +70,7 @@ public class UserServiceTests {
 
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> userService.getById(user.getId(), initiator));
     }
+
 
     @Test
     public void getById_shouldThrowException_when_repo_doesNotFindId() {
@@ -131,6 +138,33 @@ public class UserServiceTests {
 
 
     @Test
+    public void getAll_shouldThrowException_whenInitiator_isNotTeacherOrAdmin() {
+        User initiator = Helpers.createMockUser(21);
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> userService.getAll(initiator));
+    }
+
+    @Test
+    public void getAll_shouldCallRepository_whenInitiator_isTeacherOrAdmin() {
+        User mockTeacher = Helpers.createMockTeacher();
+
+        Mockito.when(userService.getAll(mockTeacher)).thenReturn(Helpers.createMockUserList());
+        userService.getAll(mockTeacher);
+        Mockito.verify(userRepository, Mockito.times(1)).findAll();
+    }
+
+    @Test
+    public void create_shouldThrowException_whenEmail_isAlreadyInUse() {
+        RegisterUserModel registerModel = Helpers.createUserRegisterModel();
+        User existingUser = Helpers.createMockUser();
+        existingUser.setEmail("maradona@hotmail.com");
+        registerModel.setEmail("maradona@hotmail.com");
+
+        Mockito.when(userRepository.findByEmail(registerModel.getEmail())).thenReturn(Optional.of(existingUser));
+
+        Assertions.assertThrows(DuplicateEntityException.class, () -> userService.create(registerModel));
+    }
+
+    @Test
     public void create_shouldThrow_exception_when_passwords_doesNot_meet_requirements(){
 
         RegisterUserModel registerModel = Helpers.createUserRegisterModel();
@@ -138,6 +172,27 @@ public class UserServiceTests {
         registerModel.setPasswordConfirm("123@a");
 
         Assertions.assertThrows(ImpossibleOperationException.class, () -> userService.create(registerModel));
+    }
+
+    @Test
+    public void create_shouldThrowException_whenPasswords_areNotEqual() {
+        RegisterUserModel userModel = Helpers.createUserRegisterModel();
+        userModel.setPassword("12345@Ab");
+        userModel.setPasswordConfirm("12345@Ba");
+
+        Assertions.assertThrows(ImpossibleOperationException.class, () -> userService.create(userModel));
+    }
+
+    @Test
+    public void create_shouldSaveAndReturnEntity_whenRegistration_isSuccessful() {
+        RegisterUserModel userModel = Helpers.createUserRegisterModel();
+        User createdUser = Helpers.createMockUser(21);
+
+        Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(createdUser);
+
+        User result = userService.create(userModel);
+
+        Assertions.assertEquals(createdUser.getId(), result.getId());
     }
 
     //todo: getByEmailTest
@@ -155,8 +210,138 @@ public class UserServiceTests {
                 .findByEmail(user.getEmail());
     }
 
+    @Test
+    public void getAllByVerification_should_throwException_whenUserIsNot_teacherOrAdmin() {
+        User mockUser = Helpers.createMockUser();
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> userService.getAllByVerification(false, mockUser));
+    }
 
+    @Test
+    public void getAllByVerification_shouldReturnList_whenUserAdminOrTeacher() {
+        User mockUser = Helpers.createMockTeacher();
 
+        Mockito.when(userRepository.findAllByEnabled(true)).thenReturn(Helpers.createMockUserList());
+        userService.getAllByVerification(true, mockUser);
+        Mockito.verify(userRepository, Mockito.times(1)).findAllByEnabled(true);
+    }
 
+    @Test
+    public void verifyLoginInfo_shouldThrowException_whenPasswordsAreDifferent() {
+        User mockUser = Helpers.createMockUser(21);
+        mockUser.setPassword("123123");
+
+        Mockito.when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(Optional.of(mockUser));
+
+        Assertions.assertThrows(ImpossibleOperationException.class, () -> userService.verifyLoginInfo(mockUser.getEmail(),"321321"));
+    }
+
+    @Test
+    public void update_shouldThrowException_whenInitiator_isNotAuthorized() {
+        User initiator = Helpers.createMockUser(21);
+        User userToUpdate = Helpers.createMockUser(1);
+        UserUpdateModel userBeingUpdated = Helpers.mapUserToUpdateModel(userToUpdate);
+
+        Mockito.when(userRepository.findByEmail(userBeingUpdated.getEmail())).thenReturn(Optional.of(userToUpdate));
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> userService.update(userBeingUpdated, initiator));
+    }
+
+    @Test
+    public void update_shouldThrowException_whenNewPassword_doesNotMeetRequirements() {
+        User mockUser = Helpers.createMockUser(21);
+        UserUpdateModel updateModel = Helpers.mapUserToUpdateModel(mockUser);
+        updateModel.setPassword("12345");
+
+        Mockito.when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(Optional.of(mockUser));
+        Assertions.assertThrows(ImpossibleOperationException.class, () -> userService.update(updateModel, mockUser));
+    }
+
+    @Test
+    public void update_shouldThrowException_whenPasswords_doNotMatch() {
+        User mockUser = Helpers.createMockUser(21);
+        UserUpdateModel updateModel = Helpers.mapUserToUpdateModel(mockUser);
+        updateModel.setPassword("12345@Ab");
+        updateModel.setPasswordConfirm("12345@Ba");
+
+        Mockito.when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(Optional.of(mockUser));
+        Assertions.assertThrows(ImpossibleOperationException.class, () -> userService.update(updateModel, mockUser));
+    }
+
+    @Test
+    public void update_shouldSveEntity_when_everythingIsCorrect() {
+        User mockUser = Helpers.createMockUser(21);
+        UserUpdateModel updateModel = Helpers.mapUserToUpdateModel(mockUser);
+        updateModel.setPassword("12345@Ab");
+        updateModel.setPasswordConfirm("12345@Ab");
+
+        Mockito.when(userRepository.findByEmail(mockUser.getEmail())).thenReturn(Optional.of(mockUser));
+        userService.update(updateModel, mockUser);
+        Mockito.verify(userRepository, Mockito.times(1)).save(mockUser);
+    }
+
+    @Test
+    public void update_shouldThrowException_when_newEmailIsInUse() {
+        User mockUser = Helpers.createMockTeacher();
+        UserUpdateModel updateModel = Helpers.mapUserToUpdateModel(mockUser);
+        User existingEmailUser = Helpers.createMockUser();
+        existingEmailUser.setEmail("patricky");
+        updateModel.setEmail("patricky");
+
+        Mockito.when(userRepository.findByEmail(updateModel.getEmail())).thenReturn(Optional.of(existingEmailUser));
+        Assertions.assertThrows(DuplicateEntityException.class, () -> userService.update(updateModel, mockUser));
+    }
+
+    @Test
+    public void delete_shouldThrowException_whenInitiator_isNotAuthorized() {
+        User initiator = Helpers.createMockUser(21);
+        User userToDelete = Helpers.createMockUser(1) ;
+
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> userService.delete(userToDelete, initiator));
+    }
+
+    @Test
+    public void delete_shouldCallRepository_whenInitiator_isAuthorized() {
+        User initiator = Helpers.createMockTeacher();
+        User userToDelete = Helpers.createMockUser(21);
+
+        userService.delete(userToDelete, initiator);
+        Mockito.verify(userRepository, Mockito.times(1)).delete(userToDelete);
+    }
+
+    @Test
+    public void enableUser_shouldEnableUser_whenUserExists() {
+        User userToVerify = Helpers.createMockUser();
+        userToVerify.setEnabled(false);
+
+        Mockito.when(userRepository.findById(userToVerify.getId())).thenReturn(Optional.of(userToVerify));
+        userService.enableUser(userToVerify.getId());
+
+        Assertions.assertTrue(userToVerify.isEnabled());
+    }
+
+    @Test
+    public void getMostStudiedTopic_shouldReturn_emptyString_whenUserHasNoEnrolledCourses() {
+        User mockUser = Helpers.createMockUser();
+        mockUser.setCourseEnrollments(new ArrayList<>());
+
+        String result = userService.mostStudiedCourseTopic(mockUser);
+
+        Assertions.assertEquals("", result);
+    }
+
+    @Test
+    public void getMostStudiedTopic_shouldReturn_mostStudiedCourseTopic() {
+        User mockUser = Helpers.createMockUser(21);
+        Course javaCourse = Helpers.createMockCourse(EnumTopic.JAVA);
+        Course javaScriptCourse = Helpers.createMockCourse(EnumTopic.JAVASCRIPT);
+        CourseEnrollment one = Helpers.createMockCourseEnrollment(javaCourse);
+        CourseEnrollment two = Helpers.createMockCourseEnrollment(javaCourse);
+        CourseEnrollment three = Helpers.createMockCourseEnrollment(javaScriptCourse);
+        CourseEnrollment four = Helpers.createMockCourseEnrollment(javaScriptCourse);
+        CourseEnrollment five = Helpers.createMockCourseEnrollment(javaScriptCourse);
+        mockUser.setCourseEnrollments(List.of(one, two, three, four, five));
+
+        String result = userService.mostStudiedCourseTopic(mockUser);
+        Assertions.assertEquals(result, "JAVASCRIPT");
+    }
 
 }

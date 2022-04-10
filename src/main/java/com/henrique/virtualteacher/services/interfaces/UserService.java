@@ -18,17 +18,23 @@ public interface UserService extends UserDetailsService {
 
     User getById(int id, User loggedUser);
 
+    User getLoggedUser(Principal principal);
+
     User getByEmail(String email);
 
     List<User> getAllByVerification(boolean areVerified, User loggedUser);
 
     User create(RegisterUserModel register);
 
+    void enableUser(int userToVerifyId);
+
     void verifyLoginInfo(String email, String password);
 
     void update(UserUpdateModel updateModel, User loggedUser);
 
     void delete(User toDelete,User loggedUser );
+
+    String mostStudiedCourseTopic(User loggedUser);
 
     @Override
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;

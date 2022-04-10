@@ -1,9 +1,11 @@
 package com.henrique.virtualteacher.services.Implementation;
 
+import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.entities.Wallet;
 import com.henrique.virtualteacher.exceptions.DuplicateEntityException;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
+import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.repositories.WalletRepository;
 import com.henrique.virtualteacher.services.Helpers;
@@ -16,6 +18,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+
+import java.math.BigDecimal;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class WalletServiceImplTests {
@@ -24,6 +30,8 @@ public class WalletServiceImplTests {
     UserService userService;
     @Mock
     WalletRepository walletRepository;
+    @Mock
+    Logger logger;
 
     @InjectMocks
     WalletServiceImpl walletService;
@@ -45,7 +53,7 @@ public class WalletServiceImplTests {
         User initiator = Helpers.createMockUser();
         initiator.setId(21);
 
-        Mockito.when(walletRepository.getById(mockWallet.getId())).thenReturn(mockWallet);
+        Mockito.when(walletRepository.getById(mockWallet.getId())).thenReturn(Optional.of(mockWallet));
 
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> walletService.getById(mockWallet.getId(),initiator));
     }
@@ -62,7 +70,7 @@ public class WalletServiceImplTests {
         User initiator = Helpers.createMockUser();
         initiator.setId(21);
 
-        Mockito.when(walletRepository.getByUserId(initiator.getId())).thenReturn(mockWallet);
+        Mockito.when(walletRepository.getByOwnerId(initiator.getId())).thenReturn(Optional.of(mockWallet));
 
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> walletService.getLoggedUserWallet(initiator));
     }
@@ -72,9 +80,60 @@ public class WalletServiceImplTests {
         User mockUser = Helpers.createMockUser();
         Wallet mockWallet = Helpers.createMockWallet(mockUser);
 
-        Mockito.when(walletRepository.getByUserId(mockUser.getId())).thenReturn(mockWallet);
+        Mockito.when(walletRepository.getByOwnerId(mockUser.getId())).thenReturn(Optional.of(mockWallet));
 
         Assertions.assertThrows(DuplicateEntityException.class, () -> walletService.create(mockUser));
     }
+
+    @Test
+    public void create_shouldReturnCreatedEntity() {
+        User mockUser = Helpers.createMockUser();
+        Wallet mockWallet = Helpers.createMockWallet(mockUser);
+
+        Mockito.when(walletRepository.save(Mockito.any(Wallet.class))).thenReturn(mockWallet);
+        Wallet result = walletService.create(mockUser);
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(mockWallet.getId(), result.getId()),
+                () -> Assertions.assertEquals(mockWallet.getOwner().getId(), result.getOwner().getId())
+        );
+    }
+
+    @Test
+    public void deposit_shouldThrowException_when_depositIsBelowMinimum() {
+        User mockUser = Helpers.createMockUser();
+        Wallet mockWallet = Helpers.createMockWallet(mockUser);
+
+        Mockito.when(walletRepository.getByOwnerId(mockUser.getId())).thenReturn(Optional.of(mockWallet));
+
+        Assertions.assertThrows(ImpossibleOperationException.class, () -> walletService.deposit(mockUser, BigDecimal.valueOf(7)));
+    }
+
+    @Test
+    public void deposit_shouldAddFundsToWallet_when_AmountIsValid() {
+
+        User mockUser = Helpers.createMockUser();
+        Wallet mockWallet = Helpers.createMockWallet(mockUser);
+
+        Mockito.when(walletRepository.getByOwnerId(mockUser.getId())).thenReturn(Optional.of(mockWallet));
+
+        walletService.deposit(mockUser, BigDecimal.valueOf(30));
+
+        Assertions.assertEquals(BigDecimal.valueOf(30),mockWallet.getBalance());
+    }
+
+    @Test
+    public void makePurchase_shouldThrowException_when_UserDoesNot_haveEnoughFunds() {
+        User mockUser = Helpers.createMockUser();
+        Wallet mockWallet = Helpers.createMockWallet(mockUser);
+        Course course = Helpers.createMockCourse();
+
+        Mockito.when(walletRepository.getByOwnerId(mockUser.getId())).thenReturn(Optional.of(mockWallet));
+
+        Assertions.assertThrows(ImpossibleOperationException.class, () -> walletService.makePurchase(course, mockUser));
+    }
+
+
+
 
 }

@@ -34,7 +34,7 @@ public class UserMvc {
         model.addAttribute("totalCompletedLectures", loggedUser.getCompletedLectures().size());
         model.addAttribute("totalComments", loggedUser.getComments());
         model.addAttribute("averageGradeForAllCourses", assignmentService.getStudentAverageGradeForAllCourses(loggedUser));
-        model.addAttribute("mostStudiedCourseTopic", loggedUser.mostStudiedCourseTopic());
+        model.addAttribute("mostStudiedCourseTopic", userService.mostStudiedCourseTopic(loggedUser));
 
         return "user-profile";
     }

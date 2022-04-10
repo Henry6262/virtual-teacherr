@@ -67,8 +67,13 @@ public class Course {
     @Column(name = "skill_3")
     private String skill3;
 
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private User creator;
+
+    @JsonIgnore
     @OneToMany()
-    @JoinTable(name = "users_enrolled_courses",
+    @JoinTable(name = "course_enrollments",
     inverseJoinColumns = @JoinColumn(name = "course_id"))
     private List<User> enrolledUsers;
 
