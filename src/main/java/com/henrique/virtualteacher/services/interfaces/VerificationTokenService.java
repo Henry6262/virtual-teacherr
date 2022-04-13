@@ -1,7 +1,6 @@
 package com.henrique.virtualteacher.services.interfaces;
 
 import com.henrique.virtualteacher.entities.User;
-import com.henrique.virtualteacher.entities.VerificationToken;
 import com.henrique.virtualteacher.models.VerificationTokenModel;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,5 +20,5 @@ public interface VerificationTokenService {
 
     VerificationTokenModel create(User loggedUser, HttpServletRequest request);
 
-    void delete(VerificationToken toDelete, User initiator);
+    void delete(VerificationTokenModel toDelete);
 }

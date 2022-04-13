@@ -33,7 +33,7 @@ public class UserMvc {
         model.addAttribute("totalCompletedCourses", loggedUser.getCompletedCourses().size());
         model.addAttribute("totalCompletedLectures", loggedUser.getCompletedLectures().size());
         model.addAttribute("totalComments", loggedUser.getComments());
-        model.addAttribute("averageGradeForAllCourses", assignmentService.getStudentAverageGradeForAllCourses(loggedUser));
+        model.addAttribute("averageGradeForAllCourses", assignmentService.getStudentAverageGradeForAllCourses(loggedUser.getId(), loggedUser));
         model.addAttribute("mostStudiedCourseTopic", userService.mostStudiedCourseTopic(loggedUser));
 
         return "user-profile";

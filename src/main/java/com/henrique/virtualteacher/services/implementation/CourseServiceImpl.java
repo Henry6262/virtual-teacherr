@@ -93,11 +93,18 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+    private Course mapCourse(CourseModel dto, int id) {
+        Course mappedCourse = mapCourse(dto);
+        mappedCourse.setId(id);
+        return mappedCourse;
+    }
+
     private Course mapCourse(CourseModel dto) {
         Course course = new Course();
         course.setTopic(dto.getTopic());
         course.setTitle(dto.getTitle());
-        course.setCreator(userService.getByEmail(dto.getCreatorEmail()));
+        User creator = userService.getByEmail(dto.getCreatorEmail());
+        course.setCreator(creator);
         course.setPrice(dto.getPrice());
         course.setDescription(dto.getDescription());
         course.setDifficulty(dto.getDifficulty());
@@ -108,6 +115,10 @@ public class CourseServiceImpl implements CourseService {
         course.setSkill3(dto.getSkill3());
         course.setEnabled(false);
         return course;
+    }
+
+    private void mapToCourse(CourseModel courseModel, Course courseToUpdate) {
+
     }
 
     private CourseModel mapCourseModel(Course course) {
@@ -130,15 +141,14 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void update(CourseModel courseModel, Course courseToUpdate, User loggedUser) throws ParseException {
 
-        if (loggedUser.isNotTeacherOrAdmin()) {
+        if (loggedUser.getId() != courseToUpdate.getCreator().getId() && loggedUser.isNotTeacherOrAdmin()) {
             throw new UnauthorizedOperationException("User", "username", loggedUser.getEmail(), "update", "Course", "title", courseToUpdate.getTitle());
         }
         if (titleAlreadyExists(courseModel.getTitle(), courseToUpdate.getTitle())) {
             throw new DuplicateEntityException("Course", "title", courseModel.getTitle());
         }
 
-        mapper.map(courseModel, courseToUpdate);
-
+        courseToUpdate = mapCourse(courseModel, courseToUpdate.getId());
         courseRepository.save(courseToUpdate);
     }
 
@@ -159,7 +169,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public void delete(Course course, User loggedUser) {
-        if (loggedUser.isNotTeacherOrAdmin()) {
+
+        if (loggedUser.isNotTeacherOrAdmin() && loggedUser.getId() != course.getCreator().getId()) {
             throw new UnauthorizedOperationException("User", "username", loggedUser.getEmail(), "delete", "Course", "title", course.getTitle());
         }
         course.getEnrolledUsers().clear();
@@ -200,8 +211,7 @@ public class CourseServiceImpl implements CourseService {
         if (loggedUser.isEnrolledInCourse(courseToPurchase)) {
             throw new DuplicateEntityException(String.format("User with id: %d, is already enrolled to course with id: %d", loggedUser.getId(), courseToPurchase.getId()));
         }
-
-        walletService.makePurchase(courseToPurchase, loggedUser);
+        walletService.purchaseCourse(courseToPurchase, loggedUser);
         createTransaction(loggedUser, courseToPurchase);
         courseEnrollmentService.enroll(loggedUser, courseToPurchase);
     }
@@ -229,7 +239,7 @@ public class CourseServiceImpl implements CourseService {
     public void upload(MultipartFile file, int courseId, User loggedUser) throws IOException {
 
         Course course = getById(courseId);
-        if (loggedUser.isNotTeacherOrAdmin()) {
+        if (loggedUser.getId() != course.getCreator().getId() && !loggedUser.isAdmin()) {
             throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not authorized to change Course information",loggedUser.getId()));
         }
 
@@ -281,8 +291,11 @@ public class CourseServiceImpl implements CourseService {
 
     }
 
-    public void addLectureToCourse(Lecture lecture, int courseId) {
-        Course course = getById(courseId);
+    @Override
+    public void addLectureToCourse(Lecture lecture, Course course, User loggedUser) {
+        if (loggedUser.getId() != course.getCreator().getId() && !loggedUser.isAdmin()) {
+            throw new UnauthorizedOperationException(String.format("User with id: %d, is not authorized to add lectures to course with id: %d", loggedUser.getId(), course.getId()));
+        }
         course.addLecture(lecture);
     }
 

@@ -159,19 +159,12 @@ public class TokenServiceTests {
     }
 
     @Test
-    public void delete_shouldThrowException_whenUserIsNotAuthorized() {
-        User initiator = Helpers.createMockUser();
-        VerificationToken verificationToken = Helpers.createMockVerificationToken(Helpers.createMockUser(21));
-
-        Assertions.assertThrows(UnauthorizedOperationException.class, () -> tokenService.delete(verificationToken, initiator));
-    }
-
-    @Test
     public void delete_shouldCallRepository_whenInitiator_isAuthorized() {
         User initiator = Helpers.createMockTeacher();
         VerificationToken token = Helpers.createMockVerificationToken(Helpers.createMockUser(12));
+        VerificationTokenModel tokenModel = Helpers.createVerificationTokenModel(token.getVerifier());
 
-        tokenService.delete(token, initiator);
+        tokenService.delete(tokenModel);
 
         Mockito.verify(tokenRepository, Mockito.times(1)).delete(token);
     }

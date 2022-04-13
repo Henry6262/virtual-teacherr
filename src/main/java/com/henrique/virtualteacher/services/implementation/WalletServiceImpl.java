@@ -1,12 +1,14 @@
 package com.henrique.virtualteacher.services.implementation;
 
 import com.henrique.virtualteacher.entities.*;
+import com.henrique.virtualteacher.exceptions.DuplicateEntityException;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.TransactionStatus;
 import com.henrique.virtualteacher.models.VerificationTokenModel;
 import com.henrique.virtualteacher.repositories.WalletRepository;
+import com.henrique.virtualteacher.services.interfaces.CourseEnrollmentService;
 import com.henrique.virtualteacher.services.interfaces.TransactionService;
 import com.henrique.virtualteacher.services.interfaces.WalletService;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,7 @@ public class WalletServiceImpl implements WalletService{
 
     private final WalletRepository walletRepository;
     private final TransactionService transactionService;
+    private final CourseEnrollmentService enrollmentService;
     private final Logger logger;
 
 
@@ -30,7 +33,6 @@ public class WalletServiceImpl implements WalletService{
         Wallet wallet = walletRepository.getById(walletId)
                 .orElseThrow(() -> new EntityNotFoundException("Wallet", "id", String.valueOf(walletId)));
 
-        checkWalletExists(wallet, loggedUser);
         checkUserIsWalletOwner(loggedUser, wallet);
 
         return wallet;
@@ -42,7 +44,6 @@ public class WalletServiceImpl implements WalletService{
         Wallet wallet =  walletRepository.getByOwnerEmail(loggedUser.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("Wallet", "Owner", loggedUser.getEmail()));
 
-        checkWalletExists(wallet, loggedUser);
         checkUserIsWalletOwner(loggedUser, wallet);
 
         return wallet;
@@ -87,25 +88,27 @@ public class WalletServiceImpl implements WalletService{
         addFundsToUserWallet(userWallet, amount);
     }
 
+    @Override
     public void send(User sender, User recipient, BigDecimal amount) {
         Wallet senderWallet = sender.getWallet();
         Wallet recipientWallet = recipient.getWallet();
-        TransactionStatus status = prepareTransactionBetweenUsers(senderWallet, recipientWallet, amount);
+        Transaction transaction = prepareTransactionBetweenUsers(senderWallet, recipientWallet, amount);
 
-        if (status.equals(TransactionStatus.PENDING)) {
+        if (transaction.getStatus().equals(TransactionStatus.PENDING)) {
             return; }                                       //for verification verifyPendingSendTransaction method will be used
 
-        retrieveFromWallets(senderWallet, recipientWallet, amount);
+        retrieveFromWallets(transaction);
         //todo: test
     }
 
     @Override
-    public void makePurchase(Course course, User loggedUser) {
+    public void purchaseCourse(Course course, User loggedUser) {
 
         Wallet userWallet = getLoggedUserWallet(loggedUser);
 
         checkUserWalletHasEnoughFunds(course.getPrice(), userWallet);
         userWallet.retrieveFromWallet(course.getPrice());
+        enrollmentService.enroll(loggedUser, course);
 
         logger.info(String.format("User with id: %d, has successfully purchased course with id %d",loggedUser.getId(), course.getId()));
     }
@@ -121,13 +124,16 @@ public class WalletServiceImpl implements WalletService{
 
         Wallet senderWallet = pendingTransaction.getSenderWallet();
         Wallet recipientWallet = pendingTransaction.getRecipientWallet();
-        retrieveFromWallets(senderWallet, recipientWallet, pendingTransaction.getAmount());
+        retrieveFromWallets(pendingTransaction);
         // todo : test
     }
 
-    private void retrieveFromWallets(Wallet senderWallet, Wallet recipientWallet, BigDecimal amount) {
+    private void retrieveFromWallets(Transaction transaction) {
+        BigDecimal amount = transaction.getAmount();
+        Wallet senderWallet = transaction.getSenderWallet();
+        Wallet recipientWallet = transaction.getRecipientWallet();
         senderWallet.retrieveFromWallet(amount);
-        recipientWallet.retrieveFromWallet(amount);
+        recipientWallet.addToWallet(amount);
         updateWallet(senderWallet);
         updateWallet(recipientWallet);
     }
@@ -163,11 +169,11 @@ public class WalletServiceImpl implements WalletService{
         }
     }
 
-    private TransactionStatus prepareTransactionBetweenUsers(Wallet senderWallet, Wallet recipientWallet, BigDecimal transactionAmount) {
+    private Transaction prepareTransactionBetweenUsers(Wallet senderWallet, Wallet recipientWallet, BigDecimal transactionAmount) {
         checkUserWalletHasEnoughFunds(transactionAmount, senderWallet);
         Transaction transaction = new Transaction(senderWallet, recipientWallet, transactionAmount);
         transactionService.create(transaction, senderWallet.getOwner());
-        return transaction.getStatus();
+        return transaction;
     }
 
     private TransactionStatus prepareDepositTransaction(Wallet userWallet, BigDecimal amount) {
@@ -191,14 +197,8 @@ public class WalletServiceImpl implements WalletService{
         Wallet userWallet;
         try{
             userWallet =  getLoggedUserWallet(user);
-            throw new ImpossibleOperationException(String.format("User with id: %d, already has a wallet", user.getId()));
+            throw new DuplicateEntityException(String.format("User with id: %d, already has a wallet", user.getId()));
         } catch (EntityNotFoundException ignored) {}
-    }
-
-    private void checkWalletExists(Wallet wallet, User loggedUser) {
-        if (wallet == null) {
-            throw new EntityNotFoundException(String.format("User with id: %d: does not have a wallet", loggedUser.getId()));
-        }
     }
 
     private void checkUserIsWalletOwner(User user, Wallet wallet) {

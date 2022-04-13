@@ -3,7 +3,6 @@ package com.henrique.virtualteacher.services.interfaces;
 import com.henrique.virtualteacher.entities.Assignment;
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.User;
-import com.henrique.virtualteacher.models.CourseModel;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ public interface AssignmentService {
 
     Assignment getByUserIdAndLectureId(int userId, int lectureId, User loggedUser);
 
-    List<Assignment> getAllByUserIdAndCourseId(int userId, int courseId, User loggedUser);
+    List<Assignment> getAllUserAssignmentsForCourse(int userId, int courseId, User loggedUser);
 
     List<Assignment> getAllUserGradedAssignmentsForCourse(int userId, int courseId, User loggedUser);
 
@@ -21,11 +20,9 @@ public interface AssignmentService {
 
     List<Assignment> getAllPending(User loggedUser);
 
-    int getUserCompletedCourseLectures(int userId, int courseId, User loggedUser);
+    double getUserAverageGradeForCourse(int userId, Course course, User LoggedUser);
 
-    double getUserAverageGradeForCourse(int userId, int courseId, User LoggedUser);
-
-    double getStudentAverageGradeForAllCourses(User loggedUser);
+    double getStudentAverageGradeForAllCourses(int userId, User loggedUser);
 
     void grade(Assignment assignment, User loggedUser, int grade);
 

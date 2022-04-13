@@ -6,7 +6,6 @@ import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
-import com.henrique.virtualteacher.models.CourseModel;
 import com.henrique.virtualteacher.models.Status;
 import com.henrique.virtualteacher.repositories.AssignmentRepository;
 import com.henrique.virtualteacher.repositories.UserRepository;
@@ -16,11 +15,9 @@ import com.henrique.virtualteacher.services.interfaces.RatingService;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -61,41 +58,31 @@ public class AssignmentServiceImpl implements AssignmentService {
         checkUserIsAuthorized(loggedUser, assignment);
 
         return assignment;
-
     }
 
     @Override
-    public List<Assignment> getAllByUserIdAndCourseId(int userId, int courseId, User loggedUser) {
+    public List<Assignment> getAllUserAssignmentsForCourse(int userId, int courseId, User loggedUser) {
 
-        List<Assignment> grades = assignmentRepository.getAllByUserIdAndLectureCourseId(userId, courseId);
+        List<Assignment> userAssignmentsForCourse = assignmentRepository.getAllByUserIdAndLectureCourseId(userId, courseId);
 
-        if (grades.isEmpty()) {
-            throw new EntityNotFoundException(String.format("Assignment with User with id: {%d}, and Course with id: {%d}, has not been found", userId, courseId));
+        if (userAssignmentsForCourse.isEmpty()) {
+            throw new EntityNotFoundException(String.format("Assignments with User with id: {%d}, does not have any submitted assignments to course with id: %d", userId, courseId));
         }
-        checkUserIsAuthorized(loggedUser, grades.get(0));
+        checkUserIsAuthorized(loggedUser, userAssignmentsForCourse.get(0));
 
-        return grades;
+        return userAssignmentsForCourse;
     }
 
     @Override
     public List<Assignment> getAllUserGradedAssignmentsForCourse(int userId, int courseId, User loggedUser) {
 
-        if (loggedUser.getId() != userId && !loggedUser.isTeacher()) {
-            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not authorized to access the Assignments of the User with id: {%d}", loggedUser.getId(), userId));
+        checkUserIsAuthorized(loggedUser, userId);
+
+        List<Assignment> gradedAssignments = assignmentRepository.getAllByUserIdAndLectureCourseIdAndStatus(userId, courseId, Status.GRADED);
+        if (gradedAssignments.isEmpty()) {
+            throw new EntityNotFoundException(String.format("User with id: %d, does not have any GRADED lectures for course with id: %d", userId, courseId));
         }
-
-        return assignmentRepository.getAllByUserIdAndLectureCourseIdAndStatus(userId, courseId, Status.GRADED);
-        //fixme: maybe need to check if list is empty, and throw exception
-    }
-
-    @Override
-    public int getUserCompletedCourseLectures(int userId, int courseId, User loggedUser){
-
-        if (loggedUser.getId() != userId && !loggedUser.isTeacher()) {
-            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not authorized to access the Assignments of the User with id: {%d}", loggedUser.getId(), userId));
-        }
-
-        return assignmentRepository.getAllByUserIdAndLectureCourseId(userId, courseId).size();
+        return gradedAssignments;
     }
 
     @Override
@@ -117,13 +104,11 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public double getUserAverageGradeForCourse(int userId, int courseId, User loggedUser) {
+    public double getUserAverageGradeForCourse(int userId, Course course, User loggedUser) {
 
         checkUserIsAuthorized(loggedUser, userId);
 
-        List<Assignment> userGradedAssignmentsForCourse = assignmentRepository.getAllByUserIdAndLectureCourseId(userId, courseId);
-
-        Course course = courseService.getById(courseId);
+        List<Assignment> userGradedAssignmentsForCourse = assignmentRepository.getAllByUserIdAndLectureCourseIdAndStatus(userId, course.getId(), Status.GRADED);
 
         double sum =  userGradedAssignmentsForCourse.stream()
                 .mapToDouble(Assignment::getGrade)
@@ -131,8 +116,9 @@ public class AssignmentServiceImpl implements AssignmentService {
 
         if (sum != 0) {
             return sum / userGradedAssignmentsForCourse.size();
+        } else {
+            return -1;
         }
-        return -1;
     }
 
     private void checkUserIsAuthorized(User loggedUser, int userToGetId) {
@@ -142,13 +128,13 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public double getStudentAverageGradeForAllCourses(User loggedUser) {
+    public double getStudentAverageGradeForAllCourses(int userId, User loggedUser) {
 
-        User userToGet = userService.getById(loggedUser.getId(), loggedUser);
+        User userToGet = userService.getById(userId, loggedUser);
 
         double sum = 0;
         for (Course current : userToGet.getCompletedCourses()) {
-            double averageForCurrent  = getUserAverageGradeForCourse(loggedUser.getId(), current.getId(), loggedUser);
+            double averageForCurrent  = getUserAverageGradeForCourse(loggedUser.getId(), current, loggedUser);
 
             if (averageForCurrent != -1) {
                 sum += averageForCurrent;
@@ -170,7 +156,6 @@ public class AssignmentServiceImpl implements AssignmentService {
         assignmentRepository.save(assignment);
     }
 
-
     @Override
     public void create(Assignment assignment) {
 
@@ -187,11 +172,15 @@ public class AssignmentServiceImpl implements AssignmentService {
         checkUserIsAuthorized(loggedUser, assignmentToUpdate);
 
         if (assignmentToUpdate.getStatus().equals(Status.GRADED)) {
-            assignmentToUpdate.setStatus(Status.PENDING);
-            assignmentToUpdate.setGrade(0);
+            resetAssignmentStatus(assignmentToUpdate);
         }
         assignmentToUpdate.setContent(newContent);
         assignmentRepository.save(assignmentToUpdate);
+    }
+
+    private void resetAssignmentStatus(Assignment assignmentToUpdate) {
+        assignmentToUpdate.setStatus(Status.PENDING);
+        assignmentToUpdate.setGrade(0);
     }
 
     @Override

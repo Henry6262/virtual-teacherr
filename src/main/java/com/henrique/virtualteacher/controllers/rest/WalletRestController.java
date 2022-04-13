@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -46,6 +47,19 @@ public class WalletRestController {
 
             walletService.deposit(loggedUser, amount);
             return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        @PostMapping("/transfer")
+        public ResponseEntity<HttpStatus> transfer(Principal principal,
+                                               @RequestParam("amount") BigDecimal amount,
+                                               @RequestParam("email") String recipientEmail,
+                                               Model model) {
+
+            User loggedUser = userService.getLoggedUser(principal);
+            User recipient = userService.getByEmail(recipientEmail);
+
+            walletService.send(loggedUser, recipient, amount);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }
 
 }

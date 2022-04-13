@@ -151,13 +151,9 @@ public class CourseEnrollmentServiceTests {
 
         Mockito.when(courseEnrollmentRepository.save(Mockito.any(CourseEnrollment.class))).thenReturn(courseEnrollment);
 
-        CourseEnrollment result = courseEnrollmentService.enroll(mockUser, mockCourse);
+        courseEnrollmentService.enroll(mockUser, mockCourse);
 
-        Assertions.assertAll(
-                () -> Assertions.assertEquals(courseEnrollment.getId(), result.getId()),
-                () -> Assertions.assertEquals(courseEnrollment.getCourse().getTitle(), result.getCourse().getTitle()),
-                () -> Assertions.assertEquals(courseEnrollment.getUser().getId(), result.getUser().getId())
-        );
+        Mockito.verify(courseEnrollmentRepository, Mockito.times(1)).save(Mockito.any());
     }
 
     @Test

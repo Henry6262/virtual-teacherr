@@ -10,7 +10,7 @@ import com.henrique.virtualteacher.services.interfaces.WalletService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,9 +27,10 @@ public class VerificationTokenRestController {
     private final TransactionService transactionService;
     private final WalletService walletService;
 
-    @PostMapping
+    @GetMapping
     public ResponseEntity<HttpStatus> claimToken(Principal principal,
                                                  @RequestParam("token") String token) {
+
 
         VerificationTokenModel verificationToken = tokenService.getVerificationToken(token);
 
@@ -41,6 +42,7 @@ public class VerificationTokenRestController {
             Transaction transaction = transactionService.getById(verificationToken.getTransactionId(), loggedUser);
             walletService.handleTransactionVerification(loggedUser, transaction, verificationToken);
         }
+        tokenService.delete(verificationToken);
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

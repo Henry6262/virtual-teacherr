@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
     public void enableUser(int userToVerifyId) {
         User toVerify = getById(userToVerifyId);
         toVerify.setEnabled(true);
+        userRepository.save(toVerify);
     }
 
     @Override
@@ -103,6 +104,9 @@ public class UserServiceImpl implements UserService {
         User existingUser = getByEmail(email);
         if (!encoder.matches(password, existingUser.getPassword())) {
             throw new ImpossibleOperationException("Password is incorrect");
+        }
+        else if (!existingUser.isEnabled()) {
+            throw new AuthenticationException(String.format("User with id: %d, is not email verified", existingUser.getId()));
         }
     }
 
@@ -211,7 +215,7 @@ public class UserServiceImpl implements UserService {
 
     private void checkRegistrationMailIsUnique(String email) {
         try {
-            getByEmail(email);
+            User user = getByEmail(email);
             throw new DuplicateEntityException("User", "email", email);
         } catch (EntityNotFoundException ignored) {}
 

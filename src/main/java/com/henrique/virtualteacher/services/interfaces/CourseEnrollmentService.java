@@ -20,7 +20,7 @@ public interface CourseEnrollmentService {
 
     CourseEnrollment getUserCourseEnrollment(User loggedUser, Course enrolledCourse);
 
-    CourseEnrollment enroll(User userToEnroll, Course courseToEnrollTo);
+    void enroll(User userToEnroll, Course courseToEnrollTo);
 
     void leave(User leavingUser, Course courseToLeave);
 

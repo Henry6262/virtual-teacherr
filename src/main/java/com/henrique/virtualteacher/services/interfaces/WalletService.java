@@ -20,7 +20,9 @@ public interface WalletService {
 
     void deposit(User loggedUser, BigDecimal amount);
 
-    void makePurchase(Course course, User loggedUser);
+    void send(User sender, User recipient, BigDecimal amount);
+
+    void purchaseCourse(Course course, User loggedUser);
 
     void handleTransactionVerification(User loggedUser, Transaction transaction, VerificationTokenModel verificationToken);
 

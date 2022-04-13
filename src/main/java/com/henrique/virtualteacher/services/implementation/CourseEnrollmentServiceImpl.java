@@ -66,13 +66,13 @@ public class CourseEnrollmentServiceImpl implements CourseEnrollmentService {
     }
 
     @Override
-    public CourseEnrollment enroll(User userToEnroll, Course courseToEnrollTo) {
+    public void enroll(User userToEnroll, Course courseToEnrollTo) {
         if (userToEnroll.isEnrolledInCourse(courseToEnrollTo)){
             throw new ImpossibleOperationException(String.format("User with id: {%d}, Is already enrolled in course with id: {%d}", userToEnroll.getId(), courseToEnrollTo.getId()));
         }
 
         CourseEnrollment newCourseEnrollment = new CourseEnrollment(userToEnroll, courseToEnrollTo);
-        return courseEnrollmentRepository.save(newCourseEnrollment);
+        courseEnrollmentRepository.save(newCourseEnrollment);
     }
 
     @Override

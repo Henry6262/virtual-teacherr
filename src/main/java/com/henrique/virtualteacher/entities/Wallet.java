@@ -1,6 +1,5 @@
 package com.henrique.virtualteacher.entities;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +23,6 @@ public class Wallet {
     @JoinColumn(name = "user_id")
     private User owner;
 
-    @Setter(AccessLevel.NONE)
     @Column(name = "balance")
     private BigDecimal balance;
 

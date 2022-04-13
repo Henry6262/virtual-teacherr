@@ -12,6 +12,7 @@ import com.henrique.virtualteacher.utils.MailSender;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,16 +26,19 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
     private final UserService userService;
     private final Logger logger;
     private final ModelMapper mapper;
+    private final MailSender mailSender;
 
     @Autowired
     public VerificationTokenServiceImpl(VerificationTokenRepository tokenRepository,
                                         UserService userService,
                                         Logger logger,
-                                        ModelMapper modelMapper) {
+                                        ModelMapper modelMapper,
+                                        MailSender mailSender) {
         this.tokenRepository  = tokenRepository;
         this.userService = userService;
         this.logger = logger;
         this.mapper = modelMapper;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -113,16 +117,21 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
     }
 
     private void sendVerificationMail(User recipient, VerificationToken token, HttpServletRequest request) {
-        MailSender.createRegistrationMail(recipient, token, request);
+        SimpleMailMessage mailMessage = MailSender.createRegistrationMail(recipient, token, request);
+        mailSender.sendMail(mailMessage);
         logger.info(String.format("Email has been sent successfully to the user mail: {%s}", recipient.getEmail()));
     }
 
     @Override
-    public void delete(VerificationToken toDelete, User initiator) {
-        if (initiator.getId() != toDelete.getVerifier().getId() && initiator.isNotTeacherOrAdmin()) {
-            throw new UnauthorizedOperationException(String.format("User with id: %d, does not have authorities to delete Verification token with id: %d", initiator.getId(), toDelete.getId()));
-        }
-        tokenRepository.delete(toDelete);
+    public void delete(VerificationTokenModel toDelete) {
+        VerificationToken token = getByToken(toDelete.getToken());
+        tokenRepository.delete(token);
+        logger.info(String.format("Verification token with id: %s, has been deleted", toDelete.getToken()));
+    }
+
+    private VerificationToken getByToken(String token) {
+        return tokenRepository.findByToken(token)
+                .orElseThrow(() -> new EntityNotFoundException("Verification Token", "token", token));
     }
 
 }

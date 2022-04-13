@@ -289,9 +289,8 @@ private final ModelMapper mapper;
         Course course = courseService.getById(id);
         Lecture lecture = lectureService.mapModelToEntity(lectureModel, course);
 
-        lectureService.create(lecture, loggedUser);
-        lecture = lectureService.getByTitle(lecture.getTitle());
-        courseService.addLectureToCourse(lecture, id);
+        lecture = lectureService.create(lecture, loggedUser);
+        courseService.addLectureToCourse(lecture, course, loggedUser);
 
         logger.info(String.format("Lecture with id: %d, has been added to the course with id: %d", lecture.getId(), course.getId()));
         return new ResponseEntity<>(HttpStatus.ACCEPTED);

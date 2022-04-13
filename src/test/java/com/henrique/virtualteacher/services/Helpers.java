@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Helpers {
 
@@ -63,6 +64,12 @@ public class Helpers {
 
     public static Wallet createMockWallet(User walletOwner) { return createUserWallet(walletOwner); }
 
+    public static Wallet createMockWallet(User walletOwner, BigDecimal initialAmount) {
+        Wallet wallet = createUserWallet(walletOwner);
+        wallet.setBalance(initialAmount);
+        return wallet;
+    }
+
     public static Course createMockCourse() {
         return createCourse();
     }
@@ -88,7 +95,7 @@ public class Helpers {
     }
 
     public static Transaction createMockTransaction(User sender, User recipient) {
-        return createTransaction();
+        return createTransaction(sender, recipient);
     }
 
     public static CourseEnrollment createMockCourseEnrollment() { return  createCourseEnrollment();}
@@ -105,9 +112,21 @@ public class Helpers {
         return tokenModel;
     }
 
+    public static VerificationTokenModel createTransactionTokenModel(Transaction transaction) {
+        VerificationToken token  = createTransactionVerificationToken(transaction);
+        VerificationTokenModel model = new VerificationTokenModel();
+        model.setToken(token.getToken());
+        model.setId(token.getId());
+        model.setVerifierId(token.getVerifier().getId());
+        model.setExpirationTime(token.getExpirationTime());
+        model.setTransactionId(token.getTransaction().getId());
+        return model;
+    }
+
     public static VerificationTokenModel createVerificationTokenModel() {
         return mapper.map(createVerificationToken(), new TypeToken<VerificationTokenModel>() {}.getType());
     }
+
 
     private static VerificationToken createVerificationToken(User verifier) {
         VerificationToken verificationToken = createVerificationToken();
@@ -117,6 +136,12 @@ public class Helpers {
 
     private static VerificationToken createVerificationToken() {
         VerificationToken token =  new VerificationToken(createUser());
+        token.setId(1);
+        return token;
+    }
+
+    private static VerificationToken createTransactionVerificationToken(Transaction transaction) {
+        VerificationToken token = new VerificationToken(transaction);
         token.setId(1);
         return token;
     }
@@ -143,7 +168,7 @@ public class Helpers {
     private static CourseEnrollment createCourseEnrollment() {
         CourseEnrollment courseEnrollment = new CourseEnrollment();
         courseEnrollment.setCourse(createCourse());
-        courseEnrollment.setCompleted(false);
+        courseEnrollment.setCompleted(true);
         courseEnrollment.setId(1);
         courseEnrollment.setUser(createUser());
         return courseEnrollment;
@@ -157,10 +182,24 @@ public class Helpers {
         return transaction;
     }
 
+    public static Transaction createTransaction(Wallet senderWallet, Wallet recipientWallet, BigDecimal amount) {
+        Transaction transaction = new Transaction(senderWallet, recipientWallet, amount);
+        transaction.setId(1);
+        return transaction;
+    }
+
+    public static Transaction createDepositTransaction(Wallet wallet, BigDecimal amount) {
+        User walletOwner = wallet.getOwner();
+        Transaction transaction = new Transaction(wallet, amount);
+        transaction.setId(1);
+        return transaction;
+    }
+
     private static void addTransactionBasicInfo(Transaction transaction) {
         transaction.setId(1);
         transaction.setCreationTime(LocalDate.now());
         transaction.setPurchasedCourse(createCourse());
+        transaction.setAmount(BigDecimal.valueOf(15.99));
     }
 
     private static Transaction createTransaction(){
@@ -184,6 +223,18 @@ public class Helpers {
 
     public static Assignment createMockGradedAssignment() {
         return createAssignment(Status.GRADED);
+    }
+
+    public static Assignment createMockGradedAssignment(User user) {
+        Assignment assignment = createAssignment(Status.GRADED);
+        assignment.setUser(user);
+        return assignment;
+    }
+
+    public static Assignment createMockPendingAssignment(User user) {
+        Assignment assignment = createAssignment(Status.PENDING);
+        assignment.setUser(user);
+        return assignment;
     }
 
     public static Comment createMockComment () {
@@ -317,6 +368,32 @@ public class Helpers {
         return mockLectureList;
     }
 
+    public static List<Assignment> createMockAssignmentList(User student) {
+       return createMockAssignmentList().stream()
+               .peek(assignment -> assignment.setUser(student))
+               .collect(Collectors.toList());
+    }
+
+    public static List<Assignment> createGradedAssignmentList(User student) {
+        return createMockAssignmentList().stream()
+                .peek(assignment -> assignment.setStatus(Status.GRADED))
+                .collect(Collectors.toList());
+    }
+
+    public static List<Assignment> createGradedAssignmentList(Course course, User student) {
+        int indexCurrentCourseLecture = 0;
+        return createMockAssignmentList().stream()
+                .peek(assignment -> assignment.setLecture(course.getCourseLectures().get(indexCurrentCourseLecture)))
+                .peek(assignment -> assignment.setUser(student))
+                .collect(Collectors.toList());
+    }
+
+    public static List<Assignment> createPendingAssignmentList(User student) {
+        return createMockAssignmentList().stream()
+                .peek(assignment -> assignment.setUser(student))
+                .collect(Collectors.toList());
+    }
+
     public static List<Assignment> createMockAssignmentList(){
         List<Assignment> assignments = new ArrayList<>();
         for (int i = 0; i < 5 ; i++) {
@@ -337,7 +414,7 @@ public class Helpers {
         assignment.setContent("content");
         assignment.setStatus(status);
         assignment.setLecture(createLecture());
-        int grade = status == Status.GRADED ? 100 : 0;
+        int grade = status == Status.GRADED ? 70 : 0;
         assignment.setGrade(grade);
         assignment.setUser(createUser());
         return assignment;
@@ -351,6 +428,7 @@ public class Helpers {
         lecture.setDescription("description");
         lecture.setAssignmentText("do a megatask");
         lecture.setEntryId(1);
+        lecture.setUsersCompleted(createMockUserList());
         lecture.setEnabled(true);
         lecture.setVideoLink("http//goHome.com");
         return lecture;
@@ -365,6 +443,7 @@ public class Helpers {
         lecture.setAssignmentText("do a megatask");
         lecture.setEntryId(1);
         lecture.setEnabled(true);
+        lecture.setUsersCompleted(createMockUserList());
         lecture.setVideoLink("http//goHome.com");
         return lecture;
     }
@@ -377,9 +456,11 @@ public class Helpers {
         course.setDescription("description");
         course.setDifficulty(EnumDifficulty.INTERMEDIATE);
         course.setPrice(BigDecimal.valueOf(15.99));
+        course.setEnrolledUsers(new ArrayList<>());
+        course.setRatings(new ArrayList<>());
         course.setTopic(EnumTopic.JAVA);
         course.setEnabled(true);
-        course.setCourseLectures(new ArrayList<>());
+        course.setCourseLectures(createMockLectureList(course));
         course.setStartingDate(LocalDate.now());
         course.setSkill2("skill2");
         course.setSkill1("skill1");
@@ -404,7 +485,7 @@ public class Helpers {
 
     private static Wallet createUserWallet(User walletOwner){
         Wallet wallet =  new Wallet(walletOwner);
-        wallet.setId(1);
+        wallet.setId(walletOwner.getId());
         return wallet;
     }
 

@@ -51,7 +51,7 @@ public interface CourseService {
 
     void upload (MultipartFile file, int courseId, User loggedUser) throws IOException;
 
-    void addLectureToCourse(Lecture lecture, int courseId);
+    void addLectureToCourse(Lecture lecture, Course course, User loggedUser);
 
     void verifyUserHasCompletedAllCourseLectures(User user, Course course);
 

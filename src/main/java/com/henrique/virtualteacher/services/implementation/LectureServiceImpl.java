@@ -74,18 +74,24 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public Lecture create(Lecture lecture, User loggedUser) {
 
-        if (loggedUser.isNotTeacherOrAdmin()) {
-            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not authorized to create lectures",loggedUser.getId()));
+        User courseCreator = lecture.getCourse().getCreator();
+
+        if (loggedUser.getId() != courseCreator.getId() && !loggedUser.isAdmin()) {
+            throw new UnauthorizedOperationException(String.format("User with id: {%d}, is not authorized to create lectures", loggedUser.getId()));
+
         }
         checkIfTitleIsUnique(lecture.getTitle());
 
-        lectureRepository.save(lecture);
-        return lecture;
+        return lectureRepository.save(lecture);
     }
 
     public Lecture mapModelToEntity(LectureModel lectureModel, Course course) {
         Lecture lecture = new Lecture();
-        modelMapper.map(lectureModel,lecture);
+        lecture.setTitle(lectureModel.getTitle());
+        lecture.setTitle(lectureModel.getTitle());
+        lecture.setDescription(lectureModel.getDescription());
+        lecture.setAssignmentText(lectureModel.getAssignmentText());
+        lecture.setVideoLink(lectureModel.getVideoLink());
         lecture.setEntryId(course.getCourseLectures().size() +1);
         lecture.setCourse(course);
         lecture.setEnabled(false);
@@ -117,7 +123,8 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public void delete(Lecture lecture, User loggedUser) {
 
-        if (loggedUser.isNotTeacherOrAdmin()) {
+        User courseCreator = lecture.getCourse().getCreator();
+        if (loggedUser.getId() != courseCreator.getId() && !loggedUser.isAdmin()) {
             throw new UnauthorizedOperationException(String.format("User with the id: {%d}, does not have permission to delete Lecture with id: {%d}", loggedUser.getId(), lecture.getId()));
         }
 

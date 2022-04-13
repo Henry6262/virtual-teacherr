@@ -1,7 +1,9 @@
 package com.henrique.virtualteacher.services.Implementation;
 
+import com.henrique.virtualteacher.configurations.CloudinaryConfig;
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.Lecture;
+import com.henrique.virtualteacher.entities.Transaction;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.DuplicateEntityException;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
@@ -12,10 +14,11 @@ import com.henrique.virtualteacher.models.EnumDifficulty;
 import com.henrique.virtualteacher.models.EnumTopic;
 import com.henrique.virtualteacher.repositories.CourseRepository;
 import com.henrique.virtualteacher.repositories.LectureRepository;
+import com.henrique.virtualteacher.repositories.UserRepository;
 import com.henrique.virtualteacher.services.Helpers;
 import com.henrique.virtualteacher.services.implementation.CourseServiceImpl;
 import com.henrique.virtualteacher.services.implementation.LectureServiceImpl;
-import com.henrique.virtualteacher.services.interfaces.RatingService;
+import com.henrique.virtualteacher.services.interfaces.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +27,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -32,6 +39,8 @@ import java.util.Set;
 @ExtendWith(MockitoExtension.class)
 public class CourseServiceTests {
 
+    @Mock
+    UserRepository userRepository;
     @Mock
     CourseRepository courseRepository;
     @Mock
@@ -42,6 +51,18 @@ public class CourseServiceTests {
     ModelMapper modelMapper;
     @Mock
     RatingService ratingService;
+    @Mock
+    UserService userService;
+    @Mock
+    WalletService walletService;
+    @Mock
+    TransactionService transactionService;
+    @Mock
+    CourseEnrollmentService enrollmentService;
+    @Mock
+    Logger logger;
+    @Mock
+    CloudinaryConfig cloudinaryConfig;
 
     @InjectMocks
     CourseServiceImpl courseService;
@@ -197,6 +218,17 @@ public class CourseServiceTests {
     }
 
     @Test
+    public void disableCourse_shouldDisableCourse() {
+        User initiator = Helpers.createMockTeacher();
+        Course course = Helpers.createMockCourse(initiator);
+        course.setEnabled(true);
+
+        courseService.disableCourse(course, initiator);
+
+        Assertions.assertFalse(course.isEnabled());
+    }
+
+    @Test
     public void enableCourse_shouldThrowException_when_InitiatorIsNot_teacherOrAdmin() {
         User mockUser = Helpers.createMockUser();
         Course mockCourse = Helpers.createMockCourse();
@@ -213,11 +245,31 @@ public class CourseServiceTests {
     }
 
     @Test
+    public void enableCourse_shouldEnableCourse() {
+        User initiator = Helpers.createMockTeacher();
+        Course course = Helpers.createMockCourse(initiator);
+        course.setEnabled(false);
+
+        courseService.enableCourse(course, initiator);
+        Assertions.assertTrue(course.isEnabled());
+    }
+
+    @Test
     public void delete_shouldThrowException_when_initiatorIsNot_teacherOrAdmin() {
         User mockUser = Helpers.createMockUser();
         Course mockCourse = Helpers.createMockCourse();
 
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> courseService.delete(mockCourse, mockUser));
+    }
+
+    @Test
+    public void delete_shouldCallRepository_whenInitiatorIsCreator() {
+        User courseCreator = Helpers.createMockTeacher();
+        Course courseToDelete = Helpers.createMockCourse(courseCreator);
+
+        courseService.delete(courseToDelete, courseCreator);
+
+        Mockito.verify(courseRepository,Mockito.times(1)).delete(courseToDelete);
     }
 
     @Test
@@ -230,6 +282,43 @@ public class CourseServiceTests {
 
         Mockito.when(courseRepository.findByTitle(courseModel.getTitle())).thenReturn(Optional.of(existingCourse));
         Assertions.assertThrows(DuplicateEntityException.class, () -> courseService.update(courseModel,mockToUpdate,mockTeacher));
+    }
+
+    @Test
+    public void update_shouldThrowException_whenInitiatorIsNotTeacherOrAdminOrCreator() {
+        User initiator = Helpers.createMockUser();
+        Course courseToUpdate = Helpers.createMockCourse();
+        CourseModel courseModel = Helpers.createMockCourseModel("wakanda");
+
+        Assertions.assertThrows(UnauthorizedOperationException.class,  () -> courseService.update(courseModel, courseToUpdate, initiator));
+    }
+
+    @Test
+    public void update_shouldCallRepository_whenInitiator_isAuthorized() throws ParseException {
+        User initiator = Helpers.createMockUser(21);
+        Course courseToUpdate = Helpers.createMockCourse(initiator);
+        CourseModel courseModel = Helpers.createMockCourseModel("wakanda");
+
+        courseService.update(courseModel, courseToUpdate, initiator);
+
+        Mockito.verify(courseRepository, Mockito.times(1)).save(Mockito.any());
+    }
+
+    @Test
+    public void create_shouldThrowException_whenInitiatorIsNot_teacherOrAdmin() {
+        User initiator = Helpers.createMockUser(12);
+        CourseModel mockCourse = Helpers.createMockCourseModel("java_lol");
+
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> courseService.create(new CourseModel(), initiator));
+    }
+
+    @Test
+    public void create_shouldCallRepository_when_TitleIsUnique() {
+        User initiator = Helpers.createMockTeacher();
+        CourseModel courseModel = Helpers.createMockCourseModel("java_101");
+
+        courseService.create(courseModel, initiator);
+        Mockito.verify(courseRepository, Mockito.times(1)).save(Mockito.any(Course.class));
     }
 
     @Test
@@ -252,6 +341,102 @@ public class CourseServiceTests {
         Mockito.when(ratingService.getAverageRatingForCourse(Mockito.any())).thenReturn(Mockito.any(Double.class));
         List<CourseModel> resultList = courseService.mapAllToModel(courseList, mockUser, true);
         Assertions.assertEquals(courseList.get(0).getId(), resultList.get(0).getId());
+    }
+
+    @Test
+    public void titleAlreadyExists_shouldReturnFalse_when_newAndOldTitles_areTheSame() {
+        Course mockCourse = Helpers.createMockCourse();
+        String newTitle = mockCourse.getTitle();
+
+        Assertions.assertFalse(courseService.titleAlreadyExists(mockCourse.getTitle(), newTitle));
+    }
+
+    @Test
+    public void purchaseShouldThrowException_when_UserIsAlreadyEnrolledToCourse() {
+        User mockUser = Helpers.createMockUser(21);
+        Course course = Helpers.createMockCourse();
+
+        mockUser.enrollToCourse(course);
+        Assertions.assertThrows(DuplicateEntityException.class, () -> courseService.purchase(mockUser, course));
+    }
+
+    @Test
+    public void purchase_shouldCallAllOtherServiceMethods() {
+        User mockUser = Helpers.createMockUser(21);
+        Course mockCourse = Helpers.createMockCourse();
+
+        Mockito.doNothing().when(walletService).purchaseCourse(mockCourse, mockUser);
+        Mockito.doNothing().when(transactionService).create(Mockito.any(Transaction.class), Mockito.any());
+        Mockito.doNothing().when(enrollmentService).enroll(mockUser, mockCourse);
+        courseService.purchase(mockUser, mockCourse);
+
+        Mockito.verify(walletService, Mockito.times(1)).purchaseCourse(mockCourse, mockUser);
+        Mockito.verify(transactionService, Mockito.times(1)).create(Mockito.any(), Mockito.any());
+        Mockito.verify(enrollmentService, Mockito.times(1)).enroll(mockUser, mockCourse);
+    }
+
+    @Test
+    void complete_shouldCallUserRepository_andUpdateUserCompletedCourses() {
+        User mockUser = Helpers.createMockUser(21);
+        Course mockCourse = Helpers.createMockCourse();
+
+        mockUser.enrollToCourse(mockCourse);
+
+        courseService.complete(mockCourse, mockUser);
+
+        Mockito.verify(userRepository, Mockito.times(1)).save(mockUser);
+    }
+
+    @Test
+    public void upload_ShouldThrowException_whenInitiator_isNotCreatorNeitherAdmin() throws IOException {
+        User initiator = Helpers.createMockUser(21);
+        Course mockCourse = Helpers.createMockCourse();
+
+        Mockito.when(courseRepository.findById(1)).thenReturn(Optional.of(mockCourse));
+
+        Assertions.assertThrows(UnauthorizedOperationException.class,() -> courseService.upload(Mockito.any(),1, initiator));
+    }
+
+    @Test
+    public void upload_ShouldCallRepository_and_updateEntity() throws IOException {
+        User initiator = Helpers.createMockTeacher();
+        Course courseToUpdate = Helpers.createMockCourse(initiator);
+
+        Mockito.when(courseRepository.findById(courseToUpdate.getId())).thenReturn(Optional.of(courseToUpdate));
+
+        courseService.upload(Mockito.any(), courseToUpdate.getId(), initiator);
+
+        Mockito.verify(courseRepository, Mockito.times(1)).save(courseToUpdate);
+    }
+
+    @Test
+    public void getTopThreeCoursesByRating_ShouldReturnEntityList() {
+
+        Mockito.when(courseRepository.getThreeRandomCourses()).thenReturn(Helpers.createMockCourseList());
+
+        List<CourseModel> courseList = courseService.getTopTheeCoursesByRating();
+        Assertions.assertFalse(courseList.isEmpty());
+    }
+
+    @Test
+    public void addLectureToCourse_shouldThrowException_whenInitiatorIsNotCourseCreator() {
+        User initiator = Helpers.createMockUser();
+        Course mockCourse = Helpers.createMockCourse(Helpers.createMockTeacher());
+        Lecture lectureToAdd = Helpers.createMockLecture(mockCourse);
+
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> courseService.addLectureToCourse(lectureToAdd, mockCourse, initiator));
+    }
+
+    @Test
+    public void addLectureToCourse_shouldAddLectureToCourse() {
+        User initiator = Helpers.createMockTeacher();
+        Course mockCourse = Helpers.createMockCourse(initiator);
+        mockCourse.setCourseLectures(new ArrayList<>());
+        Lecture mockLecture = Helpers.createMockLecture(mockCourse);
+
+        courseService.addLectureToCourse(mockLecture, mockCourse, initiator);
+
+        Assertions.assertEquals(mockCourse.getCourseLectures().get(0).getId(), mockLecture.getId());
     }
 
     //todo: add tests for

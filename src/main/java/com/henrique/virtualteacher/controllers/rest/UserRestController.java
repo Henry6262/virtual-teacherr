@@ -86,7 +86,7 @@ public class UserRestController {
         try {
             userService.verifyLoginInfo(email.getKeyword(), password.getKeyword());
         } catch (ImpossibleOperationException e) {
-            return new ResponseEntity<>("failure", HttpStatus.CONFLICT);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
          return new ResponseEntity<>("success", HttpStatus.ACCEPTED);
     }

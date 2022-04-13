@@ -1,7 +1,6 @@
 package com.henrique.virtualteacher.entities;
 
 import com.henrique.virtualteacher.models.TransactionStatus;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,7 +35,6 @@ public class Transaction {
     @JoinColumn(name = "purchased_course_id")
     private Course purchasedCourse;
 
-    @Setter(AccessLevel.NONE)
     @Column(name = "amount")
     private BigDecimal amount;
 
@@ -59,7 +57,7 @@ public class Transaction {
     public Transaction (Wallet senderWallet, Wallet recipientWallet, BigDecimal amount) {
         this.senderWallet = senderWallet;
         this.recipientWallet = recipientWallet;
-        this.amount = purchasedCourse.getPrice();
+        this.amount = amount;
         this.purchasedCourse = null;
         this.creationTime = LocalDate.now();
         setStatus(amount);
@@ -89,7 +87,7 @@ public class Transaction {
     }
 
     public boolean isDeposit() {
-        return getRecipientWallet().getId() == getSenderWallet().getOwner().getId();
+        return getRecipientWallet().getId() == getSenderWallet().getId();
     }
 
     public boolean isBetweenUsers() {
