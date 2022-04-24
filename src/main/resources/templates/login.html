@@ -24,9 +24,6 @@
 
 
 
-
-
-
     <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
     <div id='stars'></div>
     <div id='stars2'></div>
@@ -54,7 +51,7 @@
                 <small></small>
             </div>
             <div class="form-control">
-                <input  class="emailAddress"  placeholder="email address" autocomplete="chrome-off"/>
+                <input  class="emailAddress" type="email"  placeholder="email address" autocomplete="chrome-off"/>
                 <small></small>
             </div>
             <div class="content">
@@ -345,7 +342,11 @@
 
                 error: function(error) {
                     if (error.responseText !== "success") {
-                        setErrorFor(passwordSelector,'username or password incorrect')
+                        if (error.status === 409) {
+                            setErrorFor(passwordSelector, "please check your email and verify your account")
+                        } else {
+                            setErrorFor(passwordSelector,'username or password incorrect')
+                        }
                         return
                     }
                     checkForEmptyInput(passwordSelector, password, 'password')
@@ -372,6 +373,7 @@
                 contentType: 'application/json',
                 data: JSON.stringify(RegisterUserModel),
 
+
                 error: function () {
                     changeActiveFormView();
                     console.log("error function activated in register")
@@ -379,8 +381,28 @@
                 },
 
                 success: function (data){
-                    changeActiveFormView()
+                    changeActiveFormView();
+                    showEmailSentPage(RegisterUserModel.email)
                 }
+            })
+        }
+
+        function showEmailSentPage(email) {
+            $.ajax({
+                type: "GET",
+                url: "/auth/register/verify",
+                dataType: "html",
+                contentType: "application/json",
+                data: {email: email},
+
+                success: function (response) {
+                    $('html').html(response);
+                },
+
+                error: function(response) {
+                    console.log(response)
+                }
+
             })
         }
 

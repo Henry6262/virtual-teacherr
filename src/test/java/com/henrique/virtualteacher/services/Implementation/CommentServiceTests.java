@@ -1,6 +1,7 @@
 package com.henrique.virtualteacher.services.Implementation;
 
 import com.henrique.virtualteacher.entities.Comment;
+import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
@@ -76,6 +77,17 @@ public class CommentServiceTests {
     }
 
     @Test
+    public void create_shouldCallRepository() {
+        User initiator = Helpers.createMockUser();
+        Course course = Helpers.createMockCourse();
+        Comment comment = Helpers.createMockComment();
+
+        commentService.create(initiator, course, "amazing ");
+
+        Mockito.verify(commentRepository, Mockito.times(1)).save(Mockito.any());
+    }
+
+    @Test
     public void getByCourseIdAndUserId_shouldCallRepository() {
         Comment comment = Helpers.createMockComment();
         Set<Comment> mockComments = Helpers.createMockCommentModelList();
@@ -92,10 +104,9 @@ public class CommentServiceTests {
     @Test
     public void update_shouldThrowException_whenUserIsNotAllowed() {
         Comment comment = Helpers.createMockComment();
-        User commentCreator = comment.getUser();
 
         User otherMockUser = Helpers.createMockUser();
-        otherMockUser.setId(21);
+        otherMockUser.setId(123);
 
         Mockito.when(commentRepository.getById(comment.getId())).thenReturn(Optional.of(comment));
 

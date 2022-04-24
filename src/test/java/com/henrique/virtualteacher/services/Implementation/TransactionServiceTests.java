@@ -6,6 +6,7 @@ import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.entities.Wallet;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
+import com.henrique.virtualteacher.models.TransactionModel;
 import com.henrique.virtualteacher.models.TransactionStatus;
 import com.henrique.virtualteacher.repositories.TransactionRepository;
 import com.henrique.virtualteacher.services.Helpers;
@@ -20,6 +21,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +62,6 @@ public class TransactionServiceTests {
         User initiator = Helpers.createMockUser();
         Transaction mockTransaction = Helpers.createMockTransaction();
 
-
         Mockito.when(transactionRepository.getById(mockTransaction.getId())).thenReturn(Optional.of(mockTransaction));
 
         Transaction response = transactionService.getById(mockTransaction.getId(), initiator);
@@ -76,6 +79,36 @@ public class TransactionServiceTests {
 
         Mockito.when(userService.getById(userToGet.getId(), mockUser)).thenReturn(userToGet);
         Assertions.assertThrows(UnauthorizedOperationException.class, () -> transactionService.getAllForUser(mockUser, userToGet.getId()));
+    }
+
+    @Test
+    public void getAllForUser_ShouldThrowException_whenInitiatorIsNotAuthorized() {
+        User initiator = Helpers.createMockUser(21);
+        User beingAccessed = Helpers.createMockUser(1);
+
+        LocalDate minDate = LocalDate.now();
+        LocalDate maxDate = LocalDate.now().plus(1, ChronoUnit.DAYS);
+
+        Mockito.when(userService.getById(beingAccessed.getId(), initiator)).thenReturn(beingAccessed);
+
+        Assertions.assertThrows(UnauthorizedOperationException.class, () ->  transactionService.getAllForUser(initiator, beingAccessed.getId(), minDate, maxDate));
+    }
+
+    @Test
+    public void getAllForUser_shouldReturnList() {
+        User initiator = Helpers.createMockTeacher();
+        User beingAccessed = Helpers.createMockUser(1);
+        List<Transaction> transactions = Helpers.createMockTransactionList(beingAccessed, Helpers.createMockUser(65));
+
+        LocalDate minDate = LocalDate.now();
+        LocalDate maxDate = LocalDate.now().plus(1, ChronoUnit.DAYS);
+
+        Mockito.when(userService.getById(beingAccessed.getId(), initiator)).thenReturn(beingAccessed);
+        Mockito.when(transactionRepository.getAllBySenderWalletOwnerIdAndCreationTimeBetween(beingAccessed.getId(), minDate, maxDate)).thenReturn(transactions);
+
+        List<Transaction> transaction = transactionService.getAllForUser(initiator, beingAccessed.getId(), minDate, maxDate);
+
+        Assertions.assertEquals(transactions.size(), transaction.size());
     }
 
     @Test
@@ -179,6 +212,53 @@ public class TransactionServiceTests {
         transactionService.create(mockTransaction, initiator);
 
         Mockito.verify(transactionRepository, Mockito.times(1)).save(Mockito.any(Transaction.class));
+    }
+
+    @Test
+    public void update_shouldThrowException_whenInitiatorIsNotAdmin() {
+        User initiator = Helpers.createMockTeacher();
+        Transaction transaction = Helpers.createMockTransaction();
+        TransactionModel model = Helpers.createTransactionModel(transaction);
+
+        Mockito.when(transactionRepository.getById(transaction.getId())).thenReturn(Optional.of(transaction));
+
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> transactionService.update(transaction.getId(), model,  initiator));
+    }
+
+    @Test
+    public void update_shouldCallRepository_andUpdateTransaction() {
+        User initiator = Helpers.createMockAdmin();
+        Transaction transaction = Helpers.createMockTransaction();
+        TransactionModel model = Helpers.createTransactionModel(transaction);
+        model.setAmount(BigDecimal.valueOf(666));
+
+        Mockito.when(transactionRepository.getById(transaction.getId())).thenReturn(Optional.of(transaction));
+
+        transactionService.update(transaction.getId(), model, initiator);
+
+        Assertions.assertEquals(model.getAmount(), transaction.getAmount());
+    }
+
+    @Test
+    public void delete_shouldThrowException_whenInitiatorIsNotAdmin() {
+        User initiator = Helpers.createMockUser(21);
+        Transaction transaction = Helpers.createMockTransaction();
+
+        Mockito.when(transactionRepository.getById(transaction.getId())).thenReturn(Optional.of(transaction));
+
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> transactionService.delete(transaction.getId(), initiator));
+    }
+
+    @Test
+    public void delete_ShouldCallRepository() {
+        User initiator = Helpers.createMockAdmin();
+        Transaction transaction = Helpers.createMockTransaction();
+
+        Mockito.when(transactionRepository.getById(transaction.getId())).thenReturn(Optional.of(transaction));
+
+        transactionService.delete(transaction.getId(), initiator);
+
+        Mockito.verify(transactionRepository, Mockito.times(1)).delete(transaction);
     }
 
     //todo: do update and delete method tests -> not done as i believe they will not be needed

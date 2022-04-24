@@ -26,7 +26,7 @@ public class MailSender {
 
     private final static String REGISTRATION_MAIL_SUBJECT = "Virtual-Teacher Account Verification";
     private final static String SUPPORT_TEAM_MAIL = "virtual-teacher.help@gmail.com";
-    private final static String REGISTRATION_VERIFICATION_URL = "/api/auth/verify";
+    private final static String REGISTRATION_VERIFICATION_URL = "/auth/verify";
 
     private final JavaMailSender mailSender;
 

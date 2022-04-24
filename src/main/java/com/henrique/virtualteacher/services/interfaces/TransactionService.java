@@ -4,6 +4,7 @@ import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.Transaction;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.entities.Wallet;
+import com.henrique.virtualteacher.models.TransactionModel;
 import com.henrique.virtualteacher.models.TransactionStatus;
 
 import java.time.LocalDate;
@@ -25,7 +26,7 @@ public interface TransactionService {
 
     void create(Transaction Transaction, User loggedUser);
 
-    void update(int transactionId, User loggedUser);
+    void update(int transactionId, TransactionModel model, User loggedUser);
 
     void delete(int transactionId, User loggedUser);
 

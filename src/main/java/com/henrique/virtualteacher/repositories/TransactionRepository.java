@@ -2,6 +2,7 @@ package com.henrique.virtualteacher.repositories;
 
 import com.henrique.virtualteacher.entities.Transaction;
 import com.henrique.virtualteacher.models.TransactionStatus;
+import com.henrique.virtualteacher.models.TransactionType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
@@ -15,6 +16,12 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     List<Transaction> getAllBySenderWalletOwnerId(int userId);
 
     List<Transaction> getAllByPurchasedCourseId(int courseId);
+
+    List<Transaction> getAllByTransactionType(TransactionType transactionType);
+
+    List<Transaction> getAllByTransactionTypeAndRecipientWalletId(TransactionType transactionType, int recipientWalletId);
+
+    List<Transaction> getAllByTransactionTypeAndSenderWalletId(TransactionType transactionType, int senderWalletId);
 
     List<Transaction> getAllBySenderWalletId(int senderWalletId);
 

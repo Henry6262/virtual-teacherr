@@ -98,6 +98,29 @@ public class Helpers {
         return createTransaction(sender, recipient);
     }
 
+    public static TransactionModel createTransactionModel() {
+        Transaction transaction = createTransaction();
+        TransactionModel transactionModel = new TransactionModel();
+        transactionModel.setAmount(transaction.getAmount());
+        transactionModel.setCreationTime(LocalDate.now());
+        transactionModel.setStatus(TransactionStatus.COMPLETED);
+        transactionModel.setPurchasedCourse(createCourse());
+        transactionModel.setRecipientWallet(createMockWallet(createMockUser(21)));
+        transactionModel.setSenderWallet(createMockWallet(createMockUser(99)));
+        return transactionModel;
+    }
+
+    public static TransactionModel createTransactionModel(Transaction transaction) {
+        TransactionModel transactionModel = new TransactionModel();
+        transactionModel.setSenderWallet(transaction.getSenderWallet());
+        transactionModel.setRecipientWallet(transaction.getRecipientWallet());
+        transactionModel.setStatus(TransactionStatus.COMPLETED);
+        transactionModel.setAmount(transaction.getAmount());
+        transactionModel.setCreationTime(LocalDate.now());
+        transactionModel.setPurchasedCourse(transaction.getPurchasedCourse());
+        return transactionModel;
+    }
+
     public static CourseEnrollment createMockCourseEnrollment() { return  createCourseEnrollment();}
 
     public static VerificationToken createMockVerificationToken() { return createVerificationToken();}

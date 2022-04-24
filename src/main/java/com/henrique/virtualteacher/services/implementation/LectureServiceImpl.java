@@ -128,20 +128,21 @@ public class LectureServiceImpl implements LectureService {
             throw new UnauthorizedOperationException(String.format("User with the id: {%d}, does not have permission to delete Lecture with id: {%d}", loggedUser.getId(), lecture.getId()));
         }
 
-        orderCourseLectures(lecture);
+        deleteAndOrderCourseLectures(lecture);
 
         lecture.getUsersCompleted().clear();
         lectureRepository.delete(lecture);
     }
 
-    private void orderCourseLectures(Lecture lecture) {
+    private void deleteAndOrderCourseLectures(Lecture lecture) {
 
         int entryId = lecture.getEntryId();
-        List<Lecture> courseLectures = lecture.getCourse().getCourseLectures();
+        Course course = lecture.getCourse();
+        List<Lecture> courseLectures = course.getCourseLectures();
 
         for (int index = entryId +1 ; index <= courseLectures.size() ; index++) {
 
-            Lecture currentLecture = getByEntryIdAndCourseId(index, lecture.getCourse().getId());
+            Lecture currentLecture = getByEntryIdAndCourseId(index, course.getId());
             currentLecture.setEntryId(currentLecture.getEntryId() -1);
         }
 

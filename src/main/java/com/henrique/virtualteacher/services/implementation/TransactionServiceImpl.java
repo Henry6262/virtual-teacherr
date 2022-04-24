@@ -6,6 +6,7 @@ import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.entities.Wallet;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
+import com.henrique.virtualteacher.models.TransactionModel;
 import com.henrique.virtualteacher.models.TransactionStatus;
 import com.henrique.virtualteacher.repositories.TransactionRepository;
 import com.henrique.virtualteacher.services.interfaces.TransactionService;
@@ -118,13 +119,23 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void update(int transactionId, User loggedUser) {
+    public void update(int transactionId, TransactionModel transactionModel, User loggedUser) {
         Transaction toUpdate = getById(transactionId, loggedUser);
         if (!loggedUser.isAdmin()){
             throw new UnauthorizedOperationException(String.format("User with id: %d, is not authorized to delete transaction with id: %d", loggedUser.getId(), transactionId));
         }
+
+        mapModelToEntity(transactionModel, toUpdate);
         transactionRepository.save(toUpdate);
         logger.info(String.format("User with id: %d, has successfully updated transaction with id; %d", loggedUser.getId(), transactionId));
+    }
+
+    private void mapModelToEntity(TransactionModel model, Transaction transaction) {
+        transaction.setRecipientWallet(model.getRecipientWallet());
+        transaction.setSenderWallet(model.getSenderWallet());
+        transaction.setCreationTime(model.getCreationTime());
+        transaction.setPurchasedCourse(model.getPurchasedCourse());
+        transaction.setAmount(model.getAmount());
     }
 
     @Override

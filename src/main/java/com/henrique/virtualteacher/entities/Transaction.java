@@ -1,6 +1,7 @@
 package com.henrique.virtualteacher.entities;
 
 import com.henrique.virtualteacher.models.TransactionStatus;
+import com.henrique.virtualteacher.models.TransactionType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,6 +38,9 @@ public class Transaction {
 
     @Column(name = "amount")
     private BigDecimal amount;
+
+    @Column(name = "type")
+    private TransactionType transactionType;
 
     @Column(name = "pending")
     private TransactionStatus status;

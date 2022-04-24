@@ -1,4 +1,5 @@
-package com.henrique.virtualteacher.controllers.rest;
+package com.henrique.virtualteacher.controllers.mvc;
+
 
 import com.henrique.virtualteacher.entities.Transaction;
 import com.henrique.virtualteacher.entities.User;
@@ -8,28 +9,27 @@ import com.henrique.virtualteacher.services.interfaces.UserService;
 import com.henrique.virtualteacher.services.interfaces.VerificationTokenService;
 import com.henrique.virtualteacher.services.interfaces.WalletService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
-@RestController
+@Controller
 @AllArgsConstructor
-@RequestMapping("api/auth/verify")
-public class VerificationTokenRestController {
+@RequestMapping("/auth/verify")
+public class VerificationTokenMvcController {
 
     private final VerificationTokenService tokenService;
     private final UserService userService;
     private final TransactionService transactionService;
     private final WalletService walletService;
 
+
     @GetMapping
-    public ResponseEntity<Boolean> claimToken(Principal principal,
-                                                 @RequestParam("token") String token) {
+    public String claimToken(Principal principal,
+                                              @RequestParam("token") String token) {
 
 
         VerificationTokenModel verificationToken = tokenService.getVerificationToken(token);
@@ -44,7 +44,7 @@ public class VerificationTokenRestController {
         }
         tokenService.delete(verificationToken);
 
-        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+        return "redirect:/auth/login";
     }
 
 }

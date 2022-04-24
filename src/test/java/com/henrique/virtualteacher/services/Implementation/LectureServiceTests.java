@@ -21,6 +21,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -169,12 +170,52 @@ public class LectureServiceTests {
     }
 
     @Test
+    public void delete_shouldClearUserCompletedLectures() {
+        User initiator = Helpers.createMockAdmin();
+
+        User user1 = Helpers.createMockUser(21);
+        User user2 = Helpers.createMockUser(20);
+        User user3 = Helpers.createMockUser(13);
+
+        Course course = Helpers.createMockCourse();
+        List<Lecture> courseLectures = course.getCourseLectures();
+        Lecture lectureToDelete = courseLectures.get(0);
+
+
+        List<User> completed = new ArrayList<>(List.of(user1,user2,user3));
+        lectureToDelete.setUsersCompleted(completed);
+
+        Mockito.when(lectureRepository.findByEntryIdAndCourseId(courseLectures.get(1).getEntryId(), course.getId())).thenReturn(Optional.of(courseLectures.get(1)));
+        Mockito.when(lectureRepository.findByEntryIdAndCourseId(courseLectures.get(2).getEntryId(), course.getId())).thenReturn(Optional.of(courseLectures.get(2)));
+        Mockito.when(lectureRepository.findByEntryIdAndCourseId(courseLectures.get(3).getEntryId(), course.getId())).thenReturn(Optional.of(courseLectures.get(3)));
+
+
+
+        lectureService.delete(courseLectures.get(0), initiator);
+
+
+        Assertions.assertAll(
+                () -> Assertions.assertFalse(lectureToDelete.getUsersCompleted().contains(user1)),
+                () -> Assertions.assertFalse(lectureToDelete.getUsersCompleted().contains(user2)),
+                () -> Assertions.assertFalse(lectureToDelete.getUsersCompleted().contains(user3))
+        );
+
+    }
+
+    @Test
     public void delete_shouldCallRepository_andClearUsersCompleted() {
         User initiator = Helpers.createMockTeacher();
         Course mockCourse = Helpers.createMockCourse(initiator);
-        Lecture mockLecture = Helpers.createMockLecture(mockCourse);
+        List<Lecture> courseLectures = Helpers.createMockLectureList(mockCourse);
+        Lecture mockLecture = courseLectures.get(0);
+
+
+        Mockito.when(lectureRepository.findByEntryIdAndCourseId(courseLectures.get(1).getEntryId(), mockCourse.getId())).thenReturn(Optional.of(courseLectures.get(1)));
+        Mockito.when(lectureRepository.findByEntryIdAndCourseId(courseLectures.get(2).getEntryId(), mockCourse.getId())).thenReturn(Optional.of(courseLectures.get(2)));
+        Mockito.when(lectureRepository.findByEntryIdAndCourseId(courseLectures.get(3).getEntryId(), mockCourse.getId())).thenReturn(Optional.of(courseLectures.get(3)));
 
         lectureService.delete(mockLecture, initiator);
+
 
         Mockito.verify(lectureRepository, Mockito.times(1)).delete(mockLecture);
         Assertions.assertEquals(0, mockLecture.getUsersCompleted().size());

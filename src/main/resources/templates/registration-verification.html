@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Email sent</title>
+    <link href="../static/css/registration-verification-styles.css" th:href="@{/css/registration-verification-styles.css}" rel="stylesheet">
+</head>
+<body>
+
+<div style="text-align: center">
+
+    <div class="Flex-sc-12n1bmd-0 dyYhBs">
+        <div class="Step__Container-sc-1dk5pql-0 iWCkir Flex-sc-12n1bmd-0 dyYhBs" name="email">
+            <div class="Step__Header-sc-1dk5pql-1 btnjUF Flex-sc-12n1bmd-0 dyYhBs"><span class="Step__Title-sc-1dk5pql-2 dvikSt Text__Font-sc-1pl1mx2-0 hldRYZ" color="slateDark"><span>Verify your email</span></span>
+            </div>
+            <div class="Step__Content-sc-1dk5pql-3 kGDNfS Card-zm8gu9-0 cwXwuQ Flex-sc-12n1bmd-0 jonMIN">
+                <div class="ConfirmEmail__Content-sc-1ijmmqy-0 ixzXkk Flex-sc-12n1bmd-0 hiXLVN">
+                    <div class="ConfirmEmail__VerifyImageContainer-sc-1ijmmqy-1 hpLkdE Flex-sc-12n1bmd-0 fPHrRF"><svg class="ConfirmEmail__Spinner-sc-1ijmmqy-5 irbyrt Circle-cw5xla-0 jvXzrY" width="160" height="160"><circle r="75" cx="80" cy="80" width="160" stroke-width="2.5" fill="rgba(0,0,0,0)" stroke-dasharray="471.23889803846896 471.23889803846896" stroke="#BCD1EE"></circle><circle r="75" cx="80" cy="80" width="160" stroke-width="2.5" fill="rgba(0,0,0,0)" stroke-dasharray="306.3052837250048 471.23889803846896" stroke="#0667D0"></circle></svg><svg class="ConfirmEmail__VerifyImage-sc-1ijmmqy-2 isJriN" xmlns="http://www.w3.org/2000/svg" width="67" height="49" viewBox="0 0 67 49"><g fill="none" fill-rule="evenodd" stroke="#0667D0" stroke-linecap="square" stroke-width="2.4"><path d="M9.997 10.309l22.937 18.246 22.938-18.246"></path><path d="M2 6.09v36.82C2 45.167 3.88 47 6.2 47h54.6c2.32 0 4.2-1.832 4.2-4.09V6.09C65 3.833 63.12 2 60.8 2H6.2C3.88 2 2 3.832 2 6.09zm7.997 30.574l8.34-10.137m37.535 10.137l-8.34-10.137"></path></g></svg></div><span class="Text__Font-sc-1pl1mx2-0 haKgOL" color="slateDark">
+                    <span>We sent a verification email to
+                        <span class="Text__Font-sc-1pl1mx2-0 bJFRBi" style="color: #0667d0;" th:text="${email}">1624455319@qq.com</span>
+                        . Click the link inside to get started!</span>
+                </span>
+
+                </div>
+            </div></div>
+    </div>
+
+    <a href="https://mail.google.com"><button class="deposit-button" type="button">Verify</button></a>
+
+    <h6><a class="return-to-homepage" th:href="@{/auth/login}">Click here to go login</a></h6>
+</div>
+</body>
+</html>

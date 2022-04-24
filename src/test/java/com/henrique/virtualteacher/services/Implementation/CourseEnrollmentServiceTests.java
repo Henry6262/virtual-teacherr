@@ -52,6 +52,29 @@ public class CourseEnrollmentServiceTests {
     }
 
     @Test
+    public void getAllForUser_ShouldThrowException_when_initiatorIsNotAuthorized() {
+        User initiator = Helpers.createMockUser(21);
+        User userBeingAccessed = Helpers.createMockUser(99);
+
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> courseEnrollmentService.getAllForUser(initiator, userBeingAccessed.getId(),false));
+    }
+
+    @Test
+    public void getAllForUser_shouldReturnEntityList() {
+        User initiator = Helpers.createMockTeacher();
+        User beingAccessed = Helpers.createMockUser(21);
+        List<CourseEnrollment> enrollments = Helpers.createCourseEnrollmentList(beingAccessed);
+
+        Mockito.when(courseEnrollmentRepository.getAllByUserIdAndCompleted(beingAccessed.getId(), false)).thenReturn(enrollments);
+
+        List<CourseEnrollment> result = courseEnrollmentService.getAllForUser(initiator, beingAccessed.getId(), false);
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(enrollments.get(0).getId(), result.get(0).getId()),
+                () -> Assertions.assertEquals(enrollments.size(), result.size()));
+    }
+
+    @Test
     public void getAllForUser_shouldReturnCorrectList_whenInitiatorIsOwner() {
         User initiator = Helpers.createMockUser();
         List<CourseEnrollment> mockCourseEnrollments = Helpers.createCourseEnrollmentList(initiator);
@@ -106,6 +129,25 @@ public class CourseEnrollmentServiceTests {
                 () -> Assertions.assertEquals(resultList.get(2).getCourse().getTitle(), courseEnrollments.get(2).getCourse().getTitle()),
                 () -> Assertions.assertEquals(resultList.get(3).getUser().getId(), courseEnrollments.get(3).getUser().getId())
         );
+    }
+
+    @Test
+    public void getAllForCourse_shouldThrowException_when_initiatorIsNotAuthorized() {
+        User initiator = Helpers.createMockUser(21);
+        Course course = Helpers.createMockCourse();
+
+        Assertions.assertThrows(UnauthorizedOperationException.class, () -> courseEnrollmentService.getAllForCourse(initiator, course.getId(), false));
+    }
+
+    @Test
+    public void getAllForCourse_shouldReturnEntityList() {
+        User initiator = Helpers.createMockTeacher();
+        Course beingAccessed = Helpers.createMockCourse();
+        List<CourseEnrollment> enrollments = Helpers.createCourseEnrollmentList(Helpers.createMockUser());
+
+        Mockito.when(courseEnrollmentRepository.getAllByCourseIdAndCompleted(beingAccessed.getId(), false)).thenReturn(enrollments);
+
+        List<CourseEnrollment> result = courseEnrollmentService.getAllForCourse(initiator, beingAccessed.getId(), false);
     }
 
     @Test

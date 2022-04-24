@@ -21,6 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
+import org.springframework.mail.SimpleMailMessage;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -76,6 +77,14 @@ public class TokenServiceTests {
     }
 
     @Test
+    public void getByTransactionId_shouldThrowException_when_EntityNotFound() {
+        User initiator = Helpers.createMockUser();
+        VerificationToken verificationToken = Helpers.createMockVerificationToken();
+
+        Assertions.assertThrows(EntityNotFoundException.class, () -> tokenService.getTransactionVerificationToken(verificationToken.getToken(), initiator));
+    }
+
+    @Test
     public void getByVerificationToken_should_throwException_when_entityNotFound() {
         User initiator = Helpers.createMockUser(21);
         VerificationToken verificationToken = Helpers.createMockVerificationToken(initiator);
@@ -89,6 +98,7 @@ public class TokenServiceTests {
         VerificationToken token = Helpers.createMockVerificationToken(initiator);
 
         Mockito.when(tokenRepository.findByToken(token.getToken())).thenReturn(Optional.of(token));
+
 
         tokenService.getVerificationToken(token.getToken());
 
@@ -150,9 +160,13 @@ public class TokenServiceTests {
         User loggedUser = Helpers.createMockUser(21);
         VerificationToken verificationToken = Helpers.createMockVerificationToken(loggedUser);
 
-        Mockito.when(tokenRepository.save(Mockito.any(VerificationToken.class))).thenReturn(verificationToken);
-        Mockito.when(MailSender.createRegistrationMail(loggedUser, verificationToken, null)).thenReturn(Mockito.any());
+        SimpleMailMessage mailMessage = Mockito.mock(SimpleMailMessage.class);
+        HttpServletRequest mockServlet = Mockito.mock(HttpServletRequest.class);
 
+        MailSender mailSender = Mockito.spy(MailSender.class);
+
+
+        Mockito.when(tokenRepository.save(Mockito.any(VerificationToken.class))).thenReturn(verificationToken);
         VerificationTokenModel result = tokenService.create(loggedUser,null);
 
         Assertions.assertEquals(verificationToken.getToken(), result.getToken());
