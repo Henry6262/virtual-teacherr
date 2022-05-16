@@ -3,6 +3,7 @@ package com.henrique.virtualteacher.services.interfaces;
 import com.henrique.virtualteacher.entities.Assignment;
 import com.henrique.virtualteacher.entities.Course;
 import com.henrique.virtualteacher.entities.User;
+import com.henrique.virtualteacher.models.UserModel;
 
 import java.util.List;
 
@@ -23,6 +24,8 @@ public interface AssignmentService {
     double getUserAverageGradeForCourse(int userId, Course course, User LoggedUser);
 
     double getStudentAverageGradeForAllCourses(int userId, User loggedUser);
+
+    double getStudentAverageGradeForAllCourses(int userId, UserModel initiator);
 
     void grade(Assignment assignment, User loggedUser, int grade);
 

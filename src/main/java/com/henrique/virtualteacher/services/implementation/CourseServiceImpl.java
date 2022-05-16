@@ -43,7 +43,7 @@ public class CourseServiceImpl implements CourseService {
     private final RatingService ratingService;
     private final WalletService walletService;
     private final TransactionService transactionService;
-    private final CourseEnrollmentService courseEnrollmentService;
+    private final NFTCourseService nftCourseService;
 
     @Override
     public List<CourseModel> mapAllToModel(List<Course> courses, User loggedUser, boolean includeCompletionAmount) {
@@ -78,7 +78,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void create(CourseModel course, User loggedUser) {
 
-        //todo: check for invalid information will be done in js
         if (loggedUser.isNotTeacherOrAdmin()) {
             throw new UnauthorizedOperationException(USER_UNAUTHORIZED_ERROR_MSG);
         }
@@ -89,7 +88,8 @@ public class CourseServiceImpl implements CourseService {
         } catch (EntityNotFoundException e) {
 
             Course newCourse = mapCourse(course);
-            courseRepository.save(newCourse);
+            newCourse = courseRepository.save(newCourse);
+            nftCourseService.createCourseNFTItems(newCourse, loggedUser);
         }
     }
 
@@ -173,7 +173,7 @@ public class CourseServiceImpl implements CourseService {
         if (loggedUser.isNotTeacherOrAdmin() && loggedUser.getId() != course.getCreator().getId()) {
             throw new UnauthorizedOperationException("User", "username", loggedUser.getEmail(), "delete", "Course", "title", course.getTitle());
         }
-        course.getEnrolledUsers().clear();
+        course.getNfts().clear();
         course.getRatings().clear();
         courseRepository.delete(course);
     }
@@ -206,20 +206,23 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void purchase(User loggedUser, Course courseToPurchase) {
+    public void mint(User loggedUser, Course courseToPurchase) {
 
-        if (loggedUser.isEnrolledInCourse(courseToPurchase)) {
+        if (loggedUser.hasPurchasedCourse(courseToPurchase)) {
             throw new DuplicateEntityException(String.format("User with id: %d, is already enrolled to course with id: %d", loggedUser.getId(), courseToPurchase.getId()));
         }
-        walletService.purchaseCourse(courseToPurchase, loggedUser);
-        createTransaction(loggedUser, courseToPurchase);
-        courseEnrollmentService.enroll(loggedUser, courseToPurchase);
+
+        nftCourseService.checkCourseHasAvailableMints(loggedUser, courseToPurchase.getId());
+        NFTCourse mintedCourse = walletService.purchaseCourse(courseToPurchase, loggedUser);
+        createTransaction(loggedUser, mintedCourse);
     }
 
-    private void createTransaction(User loggedUser, Course course) {
+    private void createTransaction(User loggedUser, NFTCourse nftCourse) {
         Wallet senderWallet = walletService.getLoggedUserWallet(loggedUser);
-        Wallet recipientWallet = walletService.getLoggedUserWallet(course.getCreator());
-        Transaction transaction = new Transaction(senderWallet, recipientWallet, course);
+        Wallet recipientWallet = walletService.getLoggedUserWallet(nftCourse.getOwner());
+        Transaction transaction = new Transaction(senderWallet, recipientWallet, nftCourse);
+
+        nftCourseService.purchase(loggedUser, nftCourse.getCourse());
         transactionService.create(transaction, loggedUser);
     }
 
@@ -285,10 +288,9 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void verifyUserIsEnrolledToCourse(User loggedUser, Course course) {
 
-        if (!loggedUser.isEnrolledInCourse(course)) {
+        if (!loggedUser.hasPurchasedCourse(course)) {
             throw new ImpossibleOperationException(String.format("User with id: %d, is not enrolled into Course with id %d", loggedUser.getId(), course.getId()));
         }
-
     }
 
     @Override

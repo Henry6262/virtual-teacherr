@@ -226,7 +226,7 @@ public class LectureServiceTests {
         User mockUser = Helpers.createMockUser();
         Course course = Helpers.createMockCourse();
         Lecture lecture = Helpers.createMockLecture(course);
-        mockUser.enrollToCourse(course);
+        mockUser.purchaseCourse(course);
 
         lectureService.completeLectureForUser(mockUser, lecture);
 

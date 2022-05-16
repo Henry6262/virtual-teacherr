@@ -1,20 +1,21 @@
 package com.henrique.virtualteacher.services.implementation;
 
-import com.henrique.virtualteacher.entities.Course;
-import com.henrique.virtualteacher.entities.Transaction;
-import com.henrique.virtualteacher.entities.User;
-import com.henrique.virtualteacher.entities.Wallet;
+import com.henrique.virtualteacher.entities.*;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.TransactionModel;
 import com.henrique.virtualteacher.models.TransactionStatus;
+import com.henrique.virtualteacher.models.TransactionType;
 import com.henrique.virtualteacher.repositories.TransactionRepository;
 import com.henrique.virtualteacher.services.interfaces.TransactionService;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -37,6 +38,11 @@ public class TransactionServiceImpl implements TransactionService {
         return transaction;
     }
 
+    @Override
+    public Page<Transaction> getWalletTransactionPage(Pageable pageable, int walletId) {
+        return transactionRepository.findAllByRecipientWalletIdOrSenderWalletIdOrderByCreationTimeDesc(walletId, walletId, pageable);
+    }
+
     private void checkUserIsAuthorized(User loggedUser, Transaction transaction) {
 
         User transactionRecipient = transaction.getRecipientWallet().getOwner();
@@ -54,7 +60,7 @@ public class TransactionServiceImpl implements TransactionService {
         User userToGet = userService.getById(toGetId, loggedUser);
         checkUserIsAuthorized(loggedUser, toGetId);
 
-        return transactionRepository.getAllByRecipientWalletOwnerId(toGetId);
+        return transactionRepository.getAllBySenderWalletOwnerId(loggedUser.getId()); //fixme wrong
     }
 
     private void checkUserIsAuthorized(User loggedUser, int toGetId) {
@@ -94,9 +100,8 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public List<Transaction> getAllByWallet(Wallet wallet, User loggedUser) {
         checkUserIsAuthorized(loggedUser, wallet.getOwner().getId());
-        return transactionRepository.getAllBySenderWalletOwnerId(wallet.getId());
+        return transactionRepository.getAllByRecipientWalletIdOrSenderWalletId(wallet.getId(), wallet.getId());
     }
-
 
 
     @Override
@@ -105,6 +110,14 @@ public class TransactionServiceImpl implements TransactionService {
         checkUserHasAccessToTransaction(loggedUser, transaction);
         Transaction createdTransaction = transactionRepository.save(transaction);
         logger.info(String.format("Transaction with id: %d, has been created successfully by user with id: %d", createdTransaction.getId(),loggedUser.getId()));
+    }
+
+    @Override
+    public void createExchangeTransaction(Wallet initiatorWallet, Wallet ownerWallet,BigDecimal offer, NFTCourse courseToMakeOffer) {
+
+        Transaction transaction = new Transaction(initiatorWallet, ownerWallet, offer, courseToMakeOffer);
+        transaction.setTransactionType(TransactionType.EXCHANGE);
+        Transaction createdTransaction = transactionRepository.save(transaction);
     }
 
     private void checkUserHasAccessToTransaction(User loggedUser, Transaction transaction) {

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<table>
+    <thead>
+    <tr class="head-row">
+        <th class="th first-th">Type</th>
+        <th class="th">Direction</th>
+        <th class="th">Amount</th>
+        <th class="th">Date</th>
+        <th class="th last-th">Status</th>
+    </tr>
+    </thead>
+
+    <tbody class="transactions" th:each="transaction : ${walletTransactions}">
+    <tr class="row">
+        <td class="col first-col">
+            <small th:text="${transaction.getTransactionType()}"></small>
+        </td>
+
+        <td class="col">
+            <small class="incoming" th:if="${transaction.getSenderWallet().getOwner().getId()} == ${loggedUserWallet.getUserId()}" th:text="Incoming"></small>
+            <small class="outgoing" th:unless="${transaction.getSenderWallet().getOwner().getId()} == ${loggedUserWallet.getUserId()}" th:text="Outgoing"></small>
+        </td>
+
+        <td class="col">
+            <small th:text="${transaction.getAmount()} + '$'"></small>
+        </td>
+        <td class="col">
+            <small th:text="${transaction.getCreationTime()}"></small>
+        </td>
+        <td class="col last-col">
+            <small th:if="${transaction.getStatus().name().equals('COMPLETED')}" style="color: #10c76b;" th:text="${transaction.getStatus()}"></small>
+            <small th:if="${transaction.getStatus().name()} == PENDING" style="color: #ffff03;" th:text="${transaction.getStatus()}"></small>
+            <small th:if="${transaction.getStatus().name()} == 'REJECTED'" style="color: #d92a2a;" th:text="${transaction.getStatus()}"></small> <!--Todo: depending on status, make one color or another -->
+        </td>
+    </tr>
+    </tbody>
+
+</table>
+
+</body>
+</html>

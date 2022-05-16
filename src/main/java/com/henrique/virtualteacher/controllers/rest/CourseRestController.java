@@ -45,14 +45,12 @@ private final Logger logger;
 private final ModelMapper mapper;
 
 
-
-
     @GetMapping("/enrolled")
     public ResponseEntity<Model> enrolledCourses(Principal principal,
                                                         Model model) {
 
         User loggedUser = userService.getByEmail(principal.getName());
-        List<CourseModel> courseModels = courseService.mapAllToModel(loggedUser.getEnrolledCourses(), loggedUser, true);
+        List<CourseModel> courseModels = courseService.mapAllToModel(loggedUser.getPurchasedCourses(), loggedUser, true);
 
         model.addAttribute("enrolledCourses", courseModels);
 
@@ -77,12 +75,9 @@ private final ModelMapper mapper;
 
         Course course = courseService.getById(id);
         CourseModel courseModel = new CourseModel();
-//        double averageRating = ratingService.getAverageRatingForCourse(course);
-
         mapper.map(course, courseModel);
 
         model.addObject("course", course);
-//        model.addObject("courseAverageRating", averageRating);
         model.addObject("courseComments", commentService.getAllForCourse(id));
 
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
@@ -101,7 +96,6 @@ private final ModelMapper mapper;
         }
 
         List<CourseModel> enabledCourses = courseService.getAllByEnabled(true, loggedUser);
-
         return new ResponseEntity<>(enabledCourses,HttpStatus.ACCEPTED);
     }
 
@@ -109,12 +103,10 @@ private final ModelMapper mapper;
     ResponseEntity<Model> getAllDisabled(Principal principal,
                                                      Model model) {
 
-
         User loggedUser = userService.getByEmail(principal.getName());
 
         List<CourseModel> disabledCourses = courseService.getAllByEnabled(false, Optional.of(loggedUser));
         model.addAttribute("disabledCourses", disabledCourses);
-
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
     }
 
@@ -304,28 +296,12 @@ private final ModelMapper mapper;
         User loggedUser = userService.getByEmail(principal.getName());
         Course course  = courseService.getById(id);
 
-        courseService.purchase(loggedUser, course);
+        courseService.mint(loggedUser, course);
 
         logger.info(String.format("User with id: %d, has purchased Course with id: %d", loggedUser.getId(), course.getId()));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @PostMapping("/enroll")
-//    public ResponseEntity<Boolean> enroll(@RequestParam String courseTitle,
-//                                          Principal principal) {
-//
-//        User loggedUser = userService.getByEmail(principal.getName());
-//        Course course  = courseService.getByTitle(courseTitle);
-//
-//        try {
-//            courseService.enroll(course, loggedUser);
-//        } catch (ImpossibleOperationException e) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-//        }
-//
-//        logger.info(String.format("User with id: %d, has enrolled into Course with id: %d", loggedUser.getId(), course.getId()));
-//        return new ResponseEntity<>(true, HttpStatus.OK);
-//    }
 
     @PostMapping("/{id}/complete")
     public ResponseEntity<HttpStatus> complete(@PathVariable int id,

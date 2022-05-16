@@ -25,20 +25,21 @@ create table users
 
 create table courses
 (
-    id            int auto_increment
+    id              int auto_increment
         primary key,
-    title         varchar(50)                                                                             not null,
-    creator_id    int                                                                                     null,
-    topic         enum ('JAVA', 'JAVASCRIPT', 'ANGULAR', 'REACT', 'PYTHON', 'C', 'RUBY', 'PHP', 'KOTLIN') not null,
-    difficulty    enum ('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'NERD')                                   not null,
-    price         double                                                                                  not null,
-    description   varchar(1000)                                                                           null,
-    starting_date date                                                                                    null,
-    enabled       tinyint(1)                                                                              not null,
-    picture       varchar(1000)                                                                           null,
-    skill_1       varchar(250)                                                                            not null,
-    skill_2       varchar(250)                                                                            not null,
-    skill_3       varchar(250)                                                                            null,
+    title           varchar(50)                                                                             not null,
+    creator_id      int                                                                                     null,
+    topic           enum ('JAVA', 'JAVASCRIPT', 'ANGULAR', 'REACT', 'PYTHON', 'C', 'RUBY', 'PHP', 'KOTLIN') not null,
+    difficulty      enum ('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'NERD')                                   not null,
+    price           double                                                                                  not null,
+    description     varchar(1000)                                                                           null,
+    starting_date   date                                                                                    null,
+    enabled         tinyint(1)                                                                              not null,
+    picture         varchar(1000)                                                                           null,
+    skill_1         varchar(250)                                                                            not null,
+    skill_2         varchar(250)                                                                            not null,
+    skill_3         varchar(250)                                                                            null,
+    available_mints int(30)                                                                                 not null,
     constraint course_id_uindex
         unique (id),
     constraint course_title_uindex
@@ -59,21 +60,6 @@ create table comments
     constraint courseComments_courses_id_fk
         foreign key (course_id) references courses (id),
     constraint courseComments_users_id_fk
-        foreign key (user_id) references users (id)
-);
-
-create table course_enrollments
-(
-    id        int auto_increment
-        primary key,
-    user_id   int        null,
-    course_id int        null,
-    completed tinyint(1) not null,
-    constraint course_enrollments_id_uindex
-        unique (id),
-    constraint course_enrollments_courses_id_fk
-        foreign key (course_id) references courses (id),
-    constraint course_enrollments_users_id_fk
         foreign key (user_id) references users (id)
 );
 
@@ -128,6 +114,23 @@ create table assignments
         foreign key (user_id) references users (id)
 );
 
+create table nft_courses
+(
+    id          int auto_increment
+        primary key,
+    owner_id    int        null,
+    course_id   int        null,
+    minted      tinyint(1) not null,
+    drop_number int        not null,
+    completed   tinyint(1) not null,
+    constraint course_enrollments_id_uindex
+        unique (id),
+    constraint course_enrollments_courses_id_fk
+        foreign key (course_id) references courses (id),
+    constraint course_enrollments_users_id_fk
+        foreign key (owner_id) references users (id)
+);
+
 create table users_completed_lectures
 (
     user_id    int null,
@@ -164,12 +167,13 @@ create table transactions
 (
     id                  int auto_increment
         primary key,
-    purchased_course_id int        null,
-    recipient_wallet_id int        null,
-    sender_wallet_id    int        null,
-    amount              int        not null,
-    pending             tinyint(1) not null,
-    creation_time       datetime   not null,
+    purchased_course_id int                                                  null,
+    recipient_wallet_id int                                                  null,
+    sender_wallet_id    int                                                  null,
+    amount              int                                                  not null,
+    type                enum ('EXCHANGE', 'DEPOSIT', 'PURCHASE', 'TRANSFER') not null,
+    pending             tinyint(1)                                           not null,
+    creation_time       datetime                                             not null,
     constraint transactions_id_uindex
         unique (id),
     constraint transactions_courses_id_fk

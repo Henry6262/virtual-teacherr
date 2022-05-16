@@ -7,6 +7,7 @@ import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.Status;
+import com.henrique.virtualteacher.models.UserModel;
 import com.henrique.virtualteacher.repositories.AssignmentRepository;
 import com.henrique.virtualteacher.repositories.UserRepository;
 import com.henrique.virtualteacher.services.interfaces.AssignmentService;
@@ -143,6 +144,12 @@ public class AssignmentServiceImpl implements AssignmentService {
 
         return sum == 0 ? 0 : sum /userToGet.getCompletedCourses().size();
 
+    }
+
+    @Override
+    public double getStudentAverageGradeForAllCourses(int userId, UserModel initiator) {
+        User initiatorEntity = userService.getByEmail(initiator.getEmail());
+        return getStudentAverageGradeForAllCourses(userId, initiatorEntity);
     }
 
     @Override

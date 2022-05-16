@@ -121,7 +121,7 @@ public class Helpers {
         return transactionModel;
     }
 
-    public static CourseEnrollment createMockCourseEnrollment() { return  createCourseEnrollment();}
+    public static NFTCourse createMockCourseEnrollment() { return  createCourseEnrollment();}
 
     public static VerificationToken createMockVerificationToken() { return createVerificationToken();}
 
@@ -169,32 +169,32 @@ public class Helpers {
         return token;
     }
 
-    public static CourseEnrollment createMockCourseEnrollment(User enrolledUser) {
-        CourseEnrollment courseEnrollment = createCourseEnrollment();
-        courseEnrollment.setUser(enrolledUser);
-        return courseEnrollment;
+    public static NFTCourse createMockCourseEnrollment(User enrolledUser) {
+        NFTCourse NFTCourse = createCourseEnrollment();
+        NFTCourse.setOwner(enrolledUser);
+        return NFTCourse;
     }
 
-    public static CourseEnrollment createMockCourseEnrollment(Course courseToEnroll) {
-        CourseEnrollment courseEnrollment = createCourseEnrollment();
-        courseEnrollment.setCourse(courseToEnroll);
-        return courseEnrollment;
+    public static NFTCourse createMockCourseEnrollment(Course courseToEnroll) {
+        NFTCourse NFTCourse = createCourseEnrollment();
+        NFTCourse.setCourse(courseToEnroll);
+        return NFTCourse;
     }
 
-    public static CourseEnrollment createMockCourseEnrollment(User userToEnroll, Course course) {
-        CourseEnrollment courseEnrollment = createCourseEnrollment();
-        courseEnrollment.setCourse(course);
-        courseEnrollment.setUser(userToEnroll);
-        return courseEnrollment;
+    public static NFTCourse createMockCourseEnrollment(User userToEnroll, Course course) {
+        NFTCourse NFTCourse = createCourseEnrollment();
+        NFTCourse.setCourse(course);
+        NFTCourse.setOwner(userToEnroll);
+        return NFTCourse;
     }
 
-    private static CourseEnrollment createCourseEnrollment() {
-        CourseEnrollment courseEnrollment = new CourseEnrollment();
-        courseEnrollment.setCourse(createCourse());
-        courseEnrollment.setCompleted(true);
-        courseEnrollment.setId(1);
-        courseEnrollment.setUser(createUser());
-        return courseEnrollment;
+    private static NFTCourse createCourseEnrollment() {
+        NFTCourse NFTCourse = new NFTCourse();
+        NFTCourse.setCourse(createCourse());
+        NFTCourse.setCompleted(true);
+        NFTCourse.setId(1);
+        NFTCourse.setOwner(createUser());
+        return NFTCourse;
     }
 
     private static Transaction createTransaction(User sender, User recipient) {
@@ -311,15 +311,15 @@ public class Helpers {
         return users;
     }
 
-    public static List<CourseEnrollment> createCourseEnrollmentList(User enrolledUser) {
-        List<CourseEnrollment> courseEnrollments = new ArrayList<>();
+    public static List<NFTCourse> createCourseEnrollmentList(User enrolledUser) {
+        List<NFTCourse> NFTCourses = new ArrayList<>();
         for (int i = 1; i < 5 ; i++) {
-            CourseEnrollment current = createCourseEnrollment();
+            NFTCourse current = createCourseEnrollment();
             current.setId(i);
-            current.setUser(enrolledUser);
-            courseEnrollments.add(current);
+            current.setOwner(enrolledUser);
+            NFTCourses.add(current);
         }
-        return courseEnrollments;
+        return NFTCourses;
     }
 
     public static List<VerificationToken> createMockTokenList(User verifier) {
@@ -479,7 +479,7 @@ public class Helpers {
         course.setDescription("description");
         course.setDifficulty(EnumDifficulty.INTERMEDIATE);
         course.setPrice(BigDecimal.valueOf(15.99));
-        course.setEnrolledUsers(new ArrayList<>());
+        course.setNfts(new ArrayList<>());
         course.setRatings(new ArrayList<>());
         course.setTopic(EnumTopic.JAVA);
         course.setEnabled(true);
@@ -532,7 +532,7 @@ public class Helpers {
     private static User createUser() {
         User user = new User();
         addBasicInfo(user);
-        user.setCourseEnrollments(new ArrayList<>());
+        user.setNftCourses(new ArrayList<>());
         user.setAssignments(new ArrayList<>());
         user.setCompletedLectures(new HashSet<>());
         user.setRoles(List.of(new Role(1,EnumRoles.STUDENT)));

@@ -1,13 +1,10 @@
 package com.henrique.virtualteacher.services.implementation;
 
-import com.henrique.virtualteacher.entities.CourseEnrollment;
+import com.henrique.virtualteacher.entities.NFTCourse;
 import com.henrique.virtualteacher.entities.Role;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.*;
-import com.henrique.virtualteacher.models.EnumRoles;
-import com.henrique.virtualteacher.models.EnumTopic;
-import com.henrique.virtualteacher.models.RegisterUserModel;
-import com.henrique.virtualteacher.models.UserUpdateModel;
+import com.henrique.virtualteacher.models.*;
 import com.henrique.virtualteacher.repositories.UserRepository;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import org.modelmapper.ModelMapper;
@@ -71,7 +68,31 @@ public class UserServiceImpl implements UserService {
                  .orElseThrow(() -> new EntityNotFoundException("User", "Id", String.valueOf(id)));
     }
 
+    @Override
+    public UserModel getModelByUsername(String username) {
+        User userToGet = getByEmail(username);
+        return mapToModel(userToGet);
+    }
 
+    @Override
+    public UserModel getModelById(int id) {
+        User userToGet = getById(id);
+        return mapToModel(userToGet);
+    }
+
+    private UserModel mapToModel(User user) {
+        UserModel usermodel = new UserModel();
+        usermodel.setRolesList(user.getRoles());
+        usermodel.setLastname(user.getLastName());
+        usermodel.setFirstname(user.getFirstName());
+        usermodel.setEmail(user.getEmail());
+        usermodel.setAssignments(user.getAssignments());
+        usermodel.setCompletedLectures(user.getCompletedLectures());
+        usermodel.setCompletedCourses(user.getCompletedCourses());
+        usermodel.setNFTCourses(user.getNftCourses());
+        usermodel.setProfilePicture(user.getProfilePicture());
+        return usermodel;
+    }
 
     @Override
     public User getByEmail(String email) {
@@ -131,19 +152,19 @@ public class UserServiceImpl implements UserService {
         verifyUserIsAllowed(toDelete, loggedUser);
 
         toDelete.getCompletedLectures().clear();
-        toDelete.getCourseEnrollments().clear();
+        toDelete.getNftCourses().clear();
 
         //fixme -> will need to delete also the comments, ratings and assignments
         userRepository.delete(toDelete);
     }
 
-    public String mostStudiedCourseTopic(User loggedUser) {
+    public String getMostStudiedCourseTopic(User loggedUser) {
 
-        if (loggedUser.getCourseEnrollments().size() == 0){
+        if (loggedUser.getNftCourses().size() == 0){
             return "";
         }
 
-        List<CourseEnrollment> sortedEnrolledCourses = loggedUser.getCourseEnrollments().stream().
+        List<NFTCourse> sortedEnrolledCourses = loggedUser.getNftCourses().stream().
                 sorted(Comparator.comparing(object -> object.getCourse().getTopic().name())).collect(Collectors.toList());
 
         int maxSequence = 1;
@@ -168,6 +189,12 @@ public class UserServiceImpl implements UserService {
             }
         }
         return mostStudiedTopic.name();
+    }
+
+    @Override
+    public String getMostStudiedCourseTopic(UserModel userModel) {
+        User user = getByEmail(userModel.getEmail());
+        return getMostStudiedCourseTopic(user);
     }
 
     private User mapFromRegisterModel(RegisterUserModel register) {

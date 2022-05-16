@@ -67,22 +67,20 @@ public class Course {
     @Column(name = "skill_3")
     private String skill3;
 
+    @Column(name = "available_mints")
+    private int availableMints;
+
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "creator_id")
     private User creator;
 
     @JsonIgnore
     @OneToMany()
-    @JoinTable(name = "course_enrollments",
+    @JoinTable(name = "nft_courses",
+    joinColumns = @JoinColumn(name =  "id"),
     inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private List<User> enrolledUsers;
-
-    @ManyToMany()
-    @JsonIgnore
-    @JoinTable(name = "users_completed_courses",
-    joinColumns = @JoinColumn(name = "course_id"),
-    inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> usersCompletedCourse;
+    private List<NFTCourse> nfts;
 
     @Cascade(value = DELETE)
     @OneToMany()

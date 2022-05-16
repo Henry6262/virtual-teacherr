@@ -1,7 +1,7 @@
 package com.henrique.virtualteacher.services.Implementation;
 
 import com.henrique.virtualteacher.entities.Course;
-import com.henrique.virtualteacher.entities.CourseEnrollment;
+import com.henrique.virtualteacher.entities.NFTCourse;
 import com.henrique.virtualteacher.entities.Lecture;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.DuplicateEntityException;
@@ -55,7 +55,7 @@ public class UserServiceTests {
         User mockUser = Helpers.createMockUser();
         Course mockCourse = Helpers.createMockCourse();
         Lecture mockLecture = Helpers.createMockLecture(mockCourse);
-        mockUser.enrollToCourse(mockCourse);
+        mockUser.purchaseCourse(mockCourse);
         mockUser.completeLecture(mockLecture);
 
         Assertions.assertThrows(ImpossibleOperationException.class,() -> mockUser.completeLecture(mockLecture));
@@ -321,9 +321,9 @@ public class UserServiceTests {
     @Test
     public void getMostStudiedTopic_shouldReturn_emptyString_whenUserHasNoEnrolledCourses() {
         User mockUser = Helpers.createMockUser();
-        mockUser.setCourseEnrollments(new ArrayList<>());
+        mockUser.setNftCourses(new ArrayList<>());
 
-        String result = userService.mostStudiedCourseTopic(mockUser);
+        String result = userService.getMostStudiedCourseTopic(mockUser);
 
         Assertions.assertEquals("", result);
     }
@@ -333,14 +333,14 @@ public class UserServiceTests {
         User mockUser = Helpers.createMockUser(21);
         Course javaCourse = Helpers.createMockCourse(EnumTopic.JAVA);
         Course javaScriptCourse = Helpers.createMockCourse(EnumTopic.JAVASCRIPT);
-        CourseEnrollment one = Helpers.createMockCourseEnrollment(javaCourse);
-        CourseEnrollment two = Helpers.createMockCourseEnrollment(javaCourse);
-        CourseEnrollment three = Helpers.createMockCourseEnrollment(javaScriptCourse);
-        CourseEnrollment four = Helpers.createMockCourseEnrollment(javaScriptCourse);
-        CourseEnrollment five = Helpers.createMockCourseEnrollment(javaScriptCourse);
-        mockUser.setCourseEnrollments(List.of(one, two, three, four, five));
+        NFTCourse one = Helpers.createMockCourseEnrollment(javaCourse);
+        NFTCourse two = Helpers.createMockCourseEnrollment(javaCourse);
+        NFTCourse three = Helpers.createMockCourseEnrollment(javaScriptCourse);
+        NFTCourse four = Helpers.createMockCourseEnrollment(javaScriptCourse);
+        NFTCourse five = Helpers.createMockCourseEnrollment(javaScriptCourse);
+        mockUser.setNftCourses(List.of(one, two, three, four, five));
 
-        String result = userService.mostStudiedCourseTopic(mockUser);
+        String result = userService.getMostStudiedCourseTopic(mockUser);
         Assertions.assertEquals(result, "JAVASCRIPT");
     }
 

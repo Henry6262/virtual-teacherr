@@ -63,7 +63,7 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public void completeLectureForUser(User loggedUser, Lecture lecture) {
 
-        if (!loggedUser.isEnrolledInCourse(lecture.getCourse())) {
+        if (!loggedUser.hasPurchasedCourse(lecture.getCourse())) {
             throw new ImpossibleOperationException(String.format("User with id: %d, is not enrolled into course with id %d", loggedUser.getId(), lecture.getCourse().getId()));
         }
 

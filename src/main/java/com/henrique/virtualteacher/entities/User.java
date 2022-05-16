@@ -1,6 +1,7 @@
 package com.henrique.virtualteacher.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.models.EnumRoles;
@@ -39,11 +40,11 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToOne
-    @JoinTable(name = "wallets",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "id"))
-    private Wallet wallet;
+//    @OneToOne
+//    @JoinTable(name = "wallets",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "id"))  //fixme -> was not able to fix
+//    private Wallet wallet;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
@@ -57,6 +58,7 @@ public class User {
     @Column(name = "enabled")
     private boolean enabled;
 
+    @JsonIgnore
     @OneToMany()
     @JoinTable(name = "users_completed_lectures",
         joinColumns = @JoinColumn(name = "user_id"),
@@ -76,11 +78,12 @@ public class User {
 //    private List<Course> enrolledCourses;
 
     @OneToMany
-    @JoinTable(name = "course_enrollments",
-    joinColumns = @JoinColumn(name = "user_id"),
+    @JoinTable(name = "nft_courses",
+    joinColumns = @JoinColumn(name = "owner_id"),
     inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private List<CourseEnrollment> courseEnrollments;
+    private List<NFTCourse> nftCourses;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "assignments",
     joinColumns = @JoinColumn(name = "user_id"),
@@ -98,30 +101,30 @@ public class User {
     }
 
     public List<Course> getCompletedCourses() {
-        return courseEnrollments.stream()
-                .filter(CourseEnrollment::isCompleted)
-                .map(CourseEnrollment::getCourse)
+        return nftCourses.stream()
+                .filter(NFTCourse::isCompleted)
+                .map(NFTCourse::getCourse)
                 .collect(Collectors.toList());
     }
 
-    public List<Course> getEnrolledCourses() {
-        return courseEnrollments.stream()
-                .map(CourseEnrollment::getCourse)
+    public List<Course> getPurchasedCourses() {
+        return nftCourses.stream()
+                .map(NFTCourse::getCourse)
                 .collect(Collectors.toList());
     }
 
-    public void enrollToCourse(Course course) {
-        if (isEnrolledInCourse(course)){
+    public void purchaseCourse(Course course) {
+        if (hasPurchasedCourse(course)){
             throw new ImpossibleOperationException(String.format("User with id: {%d}, Is already enrolled in course with id: {%d}", this.getId(), course.getId()));
         } else if (hasCompletedCourse(course)) {
             throw new ImpossibleOperationException(String.format("User with id {%d}, has already completed Course with id {%d}", this.getId(), course.getId()));
         }
-        CourseEnrollment newCourseEnrollment = new CourseEnrollment(this, course);
-        courseEnrollments.add(newCourseEnrollment);  //fixme: change made here
+        NFTCourse newNFTCourse = new NFTCourse(this, course);
+        nftCourses.add(newNFTCourse);  //fixme: change made here
     }
 
     public void completeLecture(Lecture lecture) {
-        if (!isEnrolledInCourse(lecture.getCourse())) {
+        if (!hasPurchasedCourse(lecture.getCourse())) {
             throw new ImpossibleOperationException(String.format("User with id: {%d}, is not enrolled in Course with id: {%d}", this.getId(), lecture.getCourse().getId()));
         }
         if (hasCompletedLecture(lecture)) {
@@ -132,7 +135,7 @@ public class User {
 
     public void completeCourse(Course course) {
 
-        if (!isEnrolledInCourse(course)) {
+        if (!hasPurchasedCourse(course)) {
             throw new ImpossibleOperationException(String.format("User with id: {%d},cannot complete Course with id: {%d}, because he is not enrolled", this.getId(), course.getId()));
         }
 
@@ -141,7 +144,7 @@ public class User {
         }
 
 //        completedCourses.add(course); //fixme change made here
-        CourseEnrollment toComplete = courseEnrollments.stream()
+        NFTCourse toComplete = nftCourses.stream()
                 .filter(c -> c.getCourse().getId() == course.getId())
                 .collect(Collectors.toList()).get(0);
 
@@ -165,8 +168,8 @@ public class User {
     }
 
     public boolean hasCompletedCourse(Course course) {
-        return this.getCourseEnrollments().stream()
-                .filter(CourseEnrollment::isCompleted)
+        return this.getNftCourses().stream()
+                .filter(NFTCourse::isCompleted)
                 .anyMatch(courseEnrollment -> courseEnrollment.getCourse().getId() == course.getId());
     }
 
@@ -175,8 +178,8 @@ public class User {
                 .anyMatch(l -> l.getId() == lecture.getId());
     }
 
-    public boolean isEnrolledInCourse(Course course) {
-        return this.getCourseEnrollments().stream()
+    public boolean hasPurchasedCourse(Course course) {
+        return this.getNftCourses().stream()
                 .anyMatch(c -> c.getCourse().getId() == course.getId());
     }
 

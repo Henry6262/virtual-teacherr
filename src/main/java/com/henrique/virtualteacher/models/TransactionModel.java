@@ -1,15 +1,11 @@
 package com.henrique.virtualteacher.models;
 
-import com.henrique.virtualteacher.entities.Course;
+import com.henrique.virtualteacher.entities.NFTCourse;
 import com.henrique.virtualteacher.entities.Wallet;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,7 +22,7 @@ public class TransactionModel {
     private Wallet recipientWallet;
 
    @NotBlank
-    private Course purchasedCourse;
+    private NFTCourse purchasedCourse;
 
    @NotBlank
     private BigDecimal amount;
@@ -34,14 +30,16 @@ public class TransactionModel {
     @NotBlank
     private TransactionStatus status;
 
+    private TransactionType type;
+
    @NotBlank
     private LocalDate creationTime;
 
 
-    public TransactionModel(Wallet senderWallet, Wallet recipientWallet, Course purchasedCourse) {
+    public TransactionModel(Wallet senderWallet, Wallet recipientWallet, NFTCourse purchasedCourse) {
         this.senderWallet = senderWallet;
         this.recipientWallet = recipientWallet;
-        this.amount = purchasedCourse.getPrice();
+        this.amount = purchasedCourse.getCourse().getPrice();
         this.purchasedCourse = purchasedCourse;
         this.creationTime = LocalDate.now();
     }

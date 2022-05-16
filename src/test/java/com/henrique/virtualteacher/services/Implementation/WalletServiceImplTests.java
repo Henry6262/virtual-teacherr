@@ -9,11 +9,11 @@ import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.VerificationTokenModel;
-import com.henrique.virtualteacher.repositories.CourseEnrollmentRepository;
+import com.henrique.virtualteacher.repositories.NFTCourseRepository;
 import com.henrique.virtualteacher.repositories.WalletRepository;
 import com.henrique.virtualteacher.services.Helpers;
 import com.henrique.virtualteacher.services.implementation.WalletServiceImpl;
-import com.henrique.virtualteacher.services.interfaces.CourseEnrollmentService;
+import com.henrique.virtualteacher.services.interfaces.NFTCourseService;
 import com.henrique.virtualteacher.services.interfaces.TransactionService;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -40,9 +40,9 @@ public class WalletServiceImplTests {
     @Mock
     TransactionService transactionService;
     @Mock
-    CourseEnrollmentRepository courseEnrollmentRepository;
+    NFTCourseRepository NFTCourseRepository;
     @Mock
-    CourseEnrollmentService courseEnrollmentService;
+    NFTCourseService NFTCourseService;
 
     @InjectMocks
     WalletServiceImpl walletService;
@@ -182,7 +182,7 @@ public class WalletServiceImplTests {
         VerificationTokenModel tokenModel = Helpers.createVerificationTokenModel(tokenOwner);
 
         Assertions.assertThrows(UnauthorizedOperationException.class, () ->
-                walletService.handleTransactionVerification(initiator, transaction, tokenModel));
+                walletService.verifyPendingDepositOrTransfer(initiator, transaction, tokenModel));
     }
 
     @Test
@@ -203,7 +203,7 @@ public class WalletServiceImplTests {
 
         Mockito.when(transactionService.getById(transaction.getId(), initiator)).thenReturn(transaction);
 
-        walletService.handleTransactionVerification(initiator,transaction, tokenModel);
+        walletService.verifyPendingDepositOrTransfer(initiator,transaction, tokenModel);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(75.0, senderWallet.getBalance().doubleValue()),
@@ -221,7 +221,7 @@ public class WalletServiceImplTests {
         VerificationTokenModel tokenModel = Helpers.createVerificationTokenModel(tokenOwner);
 
         Assertions.assertThrows(UnauthorizedOperationException.class, () ->
-                walletService.handleTransactionVerification(initiator, transaction, tokenModel));
+                walletService.verifyPendingDepositOrTransfer(initiator, transaction, tokenModel));
     }
 
     @Test
@@ -237,7 +237,7 @@ public class WalletServiceImplTests {
         Mockito.when(transactionService.getById(transaction.getId(), initiator)).thenReturn(transaction);
         Mockito.when(walletRepository.getByOwnerEmail(initiator.getEmail())).thenReturn(Optional.of(userWallet));
 
-        walletService.handleTransactionVerification(initiator, transaction, tokenModel);
+        walletService.verifyPendingDepositOrTransfer(initiator, transaction, tokenModel);
 
         Assertions.assertEquals(50.0, userWallet.getBalance().doubleValue());
     }

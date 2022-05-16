@@ -2,6 +2,7 @@ package com.henrique.virtualteacher.entities;
 
 import com.henrique.virtualteacher.models.TransactionStatus;
 import com.henrique.virtualteacher.models.TransactionType;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Data
 @Entity
 @Getter
 @Setter
@@ -29,34 +31,65 @@ public class Transaction {
     private Wallet senderWallet;
 
     @ManyToOne
+
     @JoinColumn(name = "recipient_wallet_id")
     private Wallet recipientWallet;
 
     @ManyToOne
-    @JoinColumn(name = "purchased_course_id")
-    private Course purchasedCourse;
+    @JoinColumn(name = "purchased_nft_course_id")
+    private NFTCourse purchasedCourse;
 
     @Column(name = "amount")
     private BigDecimal amount;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "type")
     private TransactionType transactionType;
 
-    @Column(name = "pending")
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "status")
     private TransactionStatus status;
 
     @Column(name = "creation_time")
     private LocalDate creationTime;
 
-
-    public Transaction (Wallet senderWallet, Wallet recipientWallet, Course purchasedCourse) {
+    /**
+     * @Description Constructor for Exchange Transaction
+     * @param senderWallet
+     * @param offer
+     * @param purchasedCourse
+     */
+    public Transaction (Wallet senderWallet,Wallet recipientWallet , BigDecimal offer, NFTCourse purchasedCourse) {
         this.senderWallet = senderWallet;
         this.recipientWallet = recipientWallet;
-        this.amount = purchasedCourse.getPrice();
+        this.amount = offer;
         this.purchasedCourse = purchasedCourse;
         this.creationTime = LocalDate.now();
-        setStatus(amount);
+        this.status = TransactionStatus.PENDING;
+        initializeType(TransactionType.EXCHANGE);
     }
+
+    /**
+     * @Description Constructor for Purchase Transaction
+     * @param senderWallet
+     * @param purchasedCourse
+     */
+    public Transaction (Wallet senderWallet,Wallet recipientWallet , NFTCourse purchasedCourse) {
+        this.senderWallet = senderWallet;
+        this.recipientWallet = recipientWallet;
+        this.amount = purchasedCourse.getCourse().getPrice();
+        this.purchasedCourse = purchasedCourse;
+        this.creationTime = LocalDate.now();
+        setStatus();
+        initializeType(TransactionType.PURCHASE);
+    }
+
+    /**
+     * @Description Constructor for Transfer transactions (wallet to wallet)
+     * @param senderWallet
+     * @param recipientWallet
+     * @param amount
+     */
 
     public Transaction (Wallet senderWallet, Wallet recipientWallet, BigDecimal amount) {
         this.senderWallet = senderWallet;
@@ -64,25 +97,36 @@ public class Transaction {
         this.amount = amount;
         this.purchasedCourse = null;
         this.creationTime = LocalDate.now();
-        setStatus(amount);
+        setStatus();
+        initializeType(TransactionType.TRANSFER);
     }
 
-
+    /**
+     * @Description constructor for deposit transactions
+     * @param depositorWallet
+     * @param amount
+     */
     public Transaction (Wallet depositorWallet, BigDecimal amount) {
         this.senderWallet = depositorWallet;
         this.recipientWallet = depositorWallet;
         this.amount = amount;
         this.purchasedCourse = null;
         this.creationTime = LocalDate.now();
-        setStatus(amount);
+        setStatus();
+        initializeType(TransactionType.DEPOSIT);
     }
 
-    private void setStatus(BigDecimal amount) {
-        if (amount.doubleValue() > PENDING_STATUS_THRESHOLD) {
-            this.status = TransactionStatus.PENDING;
+    private void setStatus() {
+        if (amount != null) {
+            checkAmountIsAboveThreshold();
         }
-        else {
-            this.status = TransactionStatus.COMPLETED;
+    }
+
+    private void checkAmountIsAboveThreshold() {
+        if (this.amount.doubleValue() > PENDING_STATUS_THRESHOLD) {
+            status = TransactionStatus.PENDING;
+        }else{
+            status = TransactionStatus.COMPLETED;
         }
     }
 
@@ -90,12 +134,26 @@ public class Transaction {
         this.status = TransactionStatus.COMPLETED;
     }
 
-    public boolean isDeposit() {
-        return getRecipientWallet().getId() == getSenderWallet().getId();
+    public boolean isDeposit() {  // user adds funds to wallet -> sender == recipient
+        return getTransactionType() == TransactionType.DEPOSIT;
     }
 
-    public boolean isBetweenUsers() {
-        return getRecipientWallet().getOwner().getId() == getSenderWallet().getOwner().getId();
+    public boolean isExchange() { // money for course or the other way around
+        return getTransactionType() == TransactionType.EXCHANGE;
     }
+
+    public boolean isTransfer() { // user sends money to another user, not expecting anything back.
+        return getTransactionType() == TransactionType.TRANSFER;
+    }
+
+    public boolean isPurchase() { //when user has minted a course
+        return getTransactionType() == TransactionType.PURCHASE;
+    }
+
+    private void initializeType(TransactionType type) {
+        this.transactionType = type;
+    }
+
+
 
 }

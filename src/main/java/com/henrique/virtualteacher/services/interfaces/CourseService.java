@@ -45,7 +45,7 @@ public interface CourseService {
 
     void disableCourse(Course course, User loggedUser);
 
-    void purchase(User loggedUser, Course courseToPurchase);
+    void mint(User loggedUser, Course courseToPurchase);
 
     void complete(Course course, User loggedUser);
 

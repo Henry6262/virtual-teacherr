@@ -25,6 +25,8 @@ public class UserModel {
 
     private String profilePicture;
 
+    private int walledId;
+
     @NotBlank
     private List<Role> rolesList;
 
@@ -32,9 +34,14 @@ public class UserModel {
     private Set<Lecture> completedLectures;
 
     @NotBlank
-    private List<CourseEnrollment> courseEnrollments;
+    private List<NFTCourse> NFTCourses;
 
     @NotBlank
     private List<Assignment> assignments;
+
+    private List<Course> completedCourses;
+
+    private List<Comment> comments;
+
 
 }

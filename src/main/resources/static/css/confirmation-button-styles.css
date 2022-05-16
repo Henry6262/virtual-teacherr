@@ -1,0 +1,81 @@
+body {
+    background: #25283D;
+    height: 10em;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.confirm-button {
+    bottom: -22%;
+    font-family: "Open Sans", sans-serif;
+    font-size: 15px;
+    position: absolute;
+    padding: 0.5em 1.5em 0.5em 1.5em;
+    color: #135959;
+    border-radius: 13px;
+    overflow: hidden;
+    text-decoration: none;
+    text-align: center;
+    box-shadow: 5px 10px 30px 0px black;
+    background-size: 205% 100%;
+    background-position: 99% 0;
+    background-image: linear-gradient(to right, #7DD181 50%, white 50%);
+    transition: background-position 0.4s, color 0.4s ease-in-out;
+}
+.confirm-button.confirm {
+    background-position: 0 0;
+    color: white;
+}
+.confirm-button.confirm:before {
+    top: 0.7em;
+}
+.confirm-button.confirm:after {
+    animation: waiting 4s linear;
+}
+.confirm-button.done {
+    color: white;
+    background-size: 100% 200%;
+    background-image: linear-gradient(to bottom, #7DD181 50%, #6D98BA 50%);
+    background-position: 0 100%;
+}
+.confirm-button.done:before {
+    top: -2em;
+}
+.confirm-button:after {
+    content: "";
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    display: block;
+    position: absolute;
+    background: white;
+}
+
+
+/** Material icon defs for SCSS compiling */
+@font-face {
+    font-family: "Material Icons";
+    font-style: normal;
+    font-weight: 400;
+    src: local("Material Icons"), local("MaterialIcons-Regular"), url(https://fonts.gstatic.com/s/materialicons/v19/2fcrYFNaTjcS6g4U3t-Y5RV6cRhDpPC5P4GCEJpqGoc.woff) format("woff");
+}
+.material-icons, .confirm-button:before {
+    font-family: "Material Icons";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}

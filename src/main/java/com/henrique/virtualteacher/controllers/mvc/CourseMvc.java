@@ -36,7 +36,7 @@ public class CourseMvc {
         }
 
         User loggedUser = userService.getByEmail(principal.getName());
-        List<CourseModel> userCourses = courseService.mapAllToModel(loggedUser.getEnrolledCourses(), loggedUser, true);
+        List<CourseModel> userCourses = courseService.mapAllToModel(loggedUser.getPurchasedCourses(), loggedUser, true);
 
         model.addAttribute("userCourses", userCourses);
         model.addAttribute("userPicture", loggedUser.getProfilePicture());

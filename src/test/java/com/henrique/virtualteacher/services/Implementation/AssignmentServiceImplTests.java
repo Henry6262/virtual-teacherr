@@ -293,14 +293,14 @@ public class AssignmentServiceImplTests {
     @Test
     public void getStudentAverageGradeForAllCourses_shouldReturnCorrectGrade() {
         User initiator = Helpers.createMockUser(21);
-        List<CourseEnrollment> enrollments = Helpers.createCourseEnrollmentList(initiator);
+        List<NFTCourse> enrollments = Helpers.createCourseEnrollmentList(initiator);
 
         List<Assignment> assignments = Helpers.createGradedAssignmentList(enrollments.get(0).getCourse(), initiator);
         List<Assignment> assignments2 = Helpers.createGradedAssignmentList(enrollments.get(1).getCourse(), initiator);
         List<Assignment> assignments3 = Helpers.createGradedAssignmentList(enrollments.get(2).getCourse(), initiator);
 
         initiator.setAssignments(assignments);
-        initiator.setCourseEnrollments(enrollments);
+        initiator.setNftCourses(enrollments);
 
         Mockito.when(userService.getById(initiator.getId(), initiator)).thenReturn(initiator);
         Mockito.when(assignmentRepository.getAllByUserIdAndLectureCourseIdAndStatus(initiator.getId(), enrollments.get(0).getId(), Status.GRADED)).thenReturn(assignments);

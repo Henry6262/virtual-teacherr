@@ -58,7 +58,7 @@ public class CourseServiceTests {
     @Mock
     TransactionService transactionService;
     @Mock
-    CourseEnrollmentService enrollmentService;
+    NFTCourseService enrollmentService;
     @Mock
     Logger logger;
     @Mock
@@ -132,7 +132,7 @@ public class CourseServiceTests {
     public void verifyUserIsEnrolledToCourse_shouldThrowException_when_userIsNotEnrolledToCourse() {
         User mockUser = Helpers.createMockUser();
         Course course = Helpers.createMockCourse();
-        mockUser.enrollToCourse(course);
+        mockUser.purchaseCourse(course);
 
         Course otherCourse = Helpers.createMockCourse();
         otherCourse.setId(2);
@@ -148,7 +148,7 @@ public class CourseServiceTests {
 
         mockCourse.setCourseLectures(List.copyOf(mockCourseLectures));
         mockCourseLectures.remove(0);
-        mockUser.enrollToCourse(mockCourse);
+        mockUser.purchaseCourse(mockCourse);
         mockUser.setCompletedLectures(Set.copyOf(mockCourseLectures));
 
         Assertions.assertThrows(ImpossibleOperationException.class, () -> courseService.verifyUserHasCompletedAllCourseLectures(mockUser, mockCourse));
@@ -194,7 +194,7 @@ public class CourseServiceTests {
 
         User mockUser = Helpers.createMockUser();
         Course mockCourse = Helpers.createMockCourse();
-        mockUser.enrollToCourse(mockCourse);
+        mockUser.purchaseCourse(mockCourse);
         mockUser.completeCourse(mockCourse);
 
         Assertions.assertThrows(ImpossibleOperationException.class, () -> courseService.complete(mockCourse, mockUser));
@@ -356,8 +356,8 @@ public class CourseServiceTests {
         User mockUser = Helpers.createMockUser(21);
         Course course = Helpers.createMockCourse();
 
-        mockUser.enrollToCourse(course);
-        Assertions.assertThrows(DuplicateEntityException.class, () -> courseService.purchase(mockUser, course));
+        mockUser.purchaseCourse(course);
+        Assertions.assertThrows(DuplicateEntityException.class, () -> courseService.mint(mockUser, course));
     }
 
     @Test
@@ -367,12 +367,12 @@ public class CourseServiceTests {
 
         Mockito.doNothing().when(walletService).purchaseCourse(mockCourse, mockUser);
         Mockito.doNothing().when(transactionService).create(Mockito.any(Transaction.class), Mockito.any());
-        Mockito.doNothing().when(enrollmentService).enroll(mockUser, mockCourse);
-        courseService.purchase(mockUser, mockCourse);
+        Mockito.doNothing().when(enrollmentService).purchase(mockUser, mockCourse);
+        courseService.mint(mockUser, mockCourse);
 
         Mockito.verify(walletService, Mockito.times(1)).purchaseCourse(mockCourse, mockUser);
         Mockito.verify(transactionService, Mockito.times(1)).create(Mockito.any(), Mockito.any());
-        Mockito.verify(enrollmentService, Mockito.times(1)).enroll(mockUser, mockCourse);
+        Mockito.verify(enrollmentService, Mockito.times(1)).purchase(mockUser, mockCourse);
     }
 
     @Test
@@ -380,7 +380,7 @@ public class CourseServiceTests {
         User mockUser = Helpers.createMockUser(21);
         Course mockCourse = Helpers.createMockCourse();
 
-        mockUser.enrollToCourse(mockCourse);
+        mockUser.purchaseCourse(mockCourse);
 
         courseService.complete(mockCourse, mockUser);
 

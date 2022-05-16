@@ -40,7 +40,7 @@ public class VerificationTokenMvcController {
         } else {
             User loggedUser = userService.getLoggedUser(principal);
             Transaction transaction = transactionService.getById(verificationToken.getTransactionId(), loggedUser);
-            walletService.handleTransactionVerification(loggedUser, transaction, verificationToken);
+            walletService.verifyPendingDepositOrTransfer(loggedUser, transaction, verificationToken);
         }
         tokenService.delete(verificationToken);
 

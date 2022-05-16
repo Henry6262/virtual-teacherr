@@ -1,9 +1,6 @@
 package com.henrique.virtualteacher.services.interfaces;
 
-import com.henrique.virtualteacher.entities.Course;
-import com.henrique.virtualteacher.entities.Transaction;
-import com.henrique.virtualteacher.entities.User;
-import com.henrique.virtualteacher.entities.Wallet;
+import com.henrique.virtualteacher.entities.*;
 import com.henrique.virtualteacher.models.VerificationTokenModel;
 
 import java.math.BigDecimal;
@@ -22,8 +19,13 @@ public interface WalletService {
 
     void send(User sender, User recipient, BigDecimal amount);
 
-    void purchaseCourse(Course course, User loggedUser);
+    NFTCourse purchaseCourse(Course course, User loggedUser);
 
-    void handleTransactionVerification(User loggedUser, Transaction transaction, VerificationTokenModel verificationToken);
+    void createExchangeRequest(User initiator, BigDecimal offer, NFTCourse nftCourseToBuy); //todo: this can be course for course or money for course;
+
+    void createExchangeRequest(User initiator, NFTCourse courseOffered, NFTCourse courseWanted);
+
+    void verifyPendingDepositOrTransfer(User loggedUser, Transaction transaction, VerificationTokenModel verificationToken);
+
 
 }

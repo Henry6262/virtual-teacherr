@@ -198,3 +198,10 @@ text-align: -webkit-left;
     width: 200%;
     height: 200%;
 }
+
+@media only screen and(max-width: 960px) {
+    .works {
+        transform: scale(0.7);
+        width: 73rem;
+    }
+}

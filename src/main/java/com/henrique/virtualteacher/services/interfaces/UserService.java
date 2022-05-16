@@ -2,6 +2,7 @@ package com.henrique.virtualteacher.services.interfaces;
 
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.models.RegisterUserModel;
+import com.henrique.virtualteacher.models.UserModel;
 import com.henrique.virtualteacher.models.UserUpdateModel;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,6 +12,10 @@ import java.security.Principal;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
+
+    UserModel getModelByUsername(String username);
+
+    UserModel getModelById(int id);
 
     boolean UserIsLogged(Principal principal);
 
@@ -34,7 +39,9 @@ public interface UserService extends UserDetailsService {
 
     void delete(User toDelete,User loggedUser );
 
-    String mostStudiedCourseTopic(User loggedUser);
+    String getMostStudiedCourseTopic(User loggedUser);
+
+    String getMostStudiedCourseTopic(UserModel userModel);
 
     @Override
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;

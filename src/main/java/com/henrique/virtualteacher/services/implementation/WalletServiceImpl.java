@@ -8,7 +8,7 @@ import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.TransactionStatus;
 import com.henrique.virtualteacher.models.VerificationTokenModel;
 import com.henrique.virtualteacher.repositories.WalletRepository;
-import com.henrique.virtualteacher.services.interfaces.CourseEnrollmentService;
+import com.henrique.virtualteacher.services.interfaces.NFTCourseService;
 import com.henrique.virtualteacher.services.interfaces.TransactionService;
 import com.henrique.virtualteacher.services.interfaces.WalletService;
 import lombok.AllArgsConstructor;
@@ -23,7 +23,7 @@ public class WalletServiceImpl implements WalletService{
 
     private final WalletRepository walletRepository;
     private final TransactionService transactionService;
-    private final CourseEnrollmentService enrollmentService;
+    private final NFTCourseService nftCourseService;
     private final Logger logger;
 
 
@@ -34,7 +34,6 @@ public class WalletServiceImpl implements WalletService{
                 .orElseThrow(() -> new EntityNotFoundException("Wallet", "id", String.valueOf(walletId)));
 
         checkUserIsWalletOwner(loggedUser, wallet);
-
         return wallet;
     }
 
@@ -45,7 +44,6 @@ public class WalletServiceImpl implements WalletService{
                 .orElseThrow(() -> new EntityNotFoundException("Wallet", "Owner", loggedUser.getEmail()));
 
         checkUserIsWalletOwner(loggedUser, wallet);
-
         return wallet;
     }
 
@@ -65,14 +63,14 @@ public class WalletServiceImpl implements WalletService{
     }
 
     @Override
-    public void handleTransactionVerification(User loggedUser, Transaction transaction, VerificationTokenModel verificationToken) {
+    public void verifyPendingDepositOrTransfer(User loggedUser, Transaction transaction, VerificationTokenModel verificationToken) {
 
         if (transaction.isDeposit()) {
             verifyPendingDeposit(loggedUser, verificationToken);
-        } else {
+        }
+        else if (transaction.isTransfer()) {
             verifyPendingSendTransaction(loggedUser, verificationToken);
         }
-        //todo: test
     }
 
     @Override
@@ -90,8 +88,8 @@ public class WalletServiceImpl implements WalletService{
 
     @Override
     public void send(User sender, User recipient, BigDecimal amount) {
-        Wallet senderWallet = sender.getWallet();
-        Wallet recipientWallet = recipient.getWallet();
+        Wallet senderWallet = getLoggedUserWallet(sender);
+        Wallet recipientWallet = getLoggedUserWallet(recipient);
         Transaction transaction = prepareTransactionBetweenUsers(senderWallet, recipientWallet, amount);
 
         if (transaction.getStatus().equals(TransactionStatus.PENDING)) {
@@ -102,16 +100,51 @@ public class WalletServiceImpl implements WalletService{
     }
 
     @Override
-    public void purchaseCourse(Course course, User loggedUser) {
+    public NFTCourse purchaseCourse(Course course, User loggedUser) {
 
         Wallet userWallet = getLoggedUserWallet(loggedUser);
 
         checkUserWalletHasEnoughFunds(course.getPrice(), userWallet);
         userWallet.retrieveFromWallet(course.getPrice());
-        enrollmentService.enroll(loggedUser, course);
+        NFTCourse nftCourse = nftCourseService.purchase(loggedUser, course);
 
         logger.info(String.format("User with id: %d, has successfully purchased course with id %d",loggedUser.getId(), course.getId()));
+        return  nftCourse;
     }
+
+    @Override
+    public void createExchangeRequest(User initiator, BigDecimal offer, NFTCourse wantedMintedCourse) {
+
+        Wallet initiatorWallet = getLoggedUserWallet(initiator);
+        Wallet nftOwnerWallet = getLoggedUserWallet(wantedMintedCourse.getOwner());
+        checkUserWalletHasEnoughFunds(offer, nftOwnerWallet);
+
+        transactionService.createExchangeTransaction(initiatorWallet, nftOwnerWallet,offer, wantedMintedCourse);
+    }
+
+    @Override
+    public void createExchangeRequest(User initiatorW, NFTCourse courseOffered, NFTCourse courseWanted) {
+        //todo;
+    }
+
+    public void handleExchangeRequestResponse(User loggedUser, TransactionStatus response, Transaction transaction) {
+
+        if (loggedUser.getId() != transaction.getPurchasedCourse().getOwner().getId())
+
+        if (response == TransactionStatus.REJECTED) {
+            transaction.setStatus(TransactionStatus.REJECTED);
+            return;
+        }
+
+        Wallet buyerWallet = transaction.getSenderWallet();
+        Wallet sellerWallet = transaction.getRecipientWallet();
+        NFTCourse boughtCourse = transaction.getPurchasedCourse();
+
+        transaction.setStatus(TransactionStatus.COMPLETED);
+        boughtCourse.setOwner(buyerWallet.getOwner());
+        retrieveFromWallets(transaction);
+    }
+
 
     private void verifyPendingSendTransaction(User loggedUser, VerificationTokenModel tokenModel) {
 
@@ -125,7 +158,6 @@ public class WalletServiceImpl implements WalletService{
         Wallet senderWallet = pendingTransaction.getSenderWallet();
         Wallet recipientWallet = pendingTransaction.getRecipientWallet();
         retrieveFromWallets(pendingTransaction);
-        // todo : test
     }
 
     private void retrieveFromWallets(Transaction transaction) {
