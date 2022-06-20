@@ -1,7 +1,7 @@
 package com.henrique.virtualteacher.services.Implementation;
 
 import com.henrique.virtualteacher.entities.Course;
-import com.henrique.virtualteacher.entities.NFTCourse;
+import com.henrique.virtualteacher.entities.NFT;
 import com.henrique.virtualteacher.entities.Lecture;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.DuplicateEntityException;
@@ -321,7 +321,7 @@ public class UserServiceTests {
     @Test
     public void getMostStudiedTopic_shouldReturn_emptyString_whenUserHasNoEnrolledCourses() {
         User mockUser = Helpers.createMockUser();
-        mockUser.setNftCourses(new ArrayList<>());
+        mockUser.setNftCours(new ArrayList<>());
 
         String result = userService.getMostStudiedCourseTopic(mockUser);
 
@@ -333,12 +333,12 @@ public class UserServiceTests {
         User mockUser = Helpers.createMockUser(21);
         Course javaCourse = Helpers.createMockCourse(EnumTopic.JAVA);
         Course javaScriptCourse = Helpers.createMockCourse(EnumTopic.JAVASCRIPT);
-        NFTCourse one = Helpers.createMockCourseEnrollment(javaCourse);
-        NFTCourse two = Helpers.createMockCourseEnrollment(javaCourse);
-        NFTCourse three = Helpers.createMockCourseEnrollment(javaScriptCourse);
-        NFTCourse four = Helpers.createMockCourseEnrollment(javaScriptCourse);
-        NFTCourse five = Helpers.createMockCourseEnrollment(javaScriptCourse);
-        mockUser.setNftCourses(List.of(one, two, three, four, five));
+        NFT one = Helpers.createMockCourseEnrollment(javaCourse);
+        NFT two = Helpers.createMockCourseEnrollment(javaCourse);
+        NFT three = Helpers.createMockCourseEnrollment(javaScriptCourse);
+        NFT four = Helpers.createMockCourseEnrollment(javaScriptCourse);
+        NFT five = Helpers.createMockCourseEnrollment(javaScriptCourse);
+        mockUser.setNftCours(List.of(one, two, three, four, five));
 
         String result = userService.getMostStudiedCourseTopic(mockUser);
         Assertions.assertEquals(result, "JAVASCRIPT");

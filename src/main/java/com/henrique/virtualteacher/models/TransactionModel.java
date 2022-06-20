@@ -1,6 +1,6 @@
 package com.henrique.virtualteacher.models;
 
-import com.henrique.virtualteacher.entities.NFTCourse;
+import com.henrique.virtualteacher.entities.NFT;
 import com.henrique.virtualteacher.entities.Wallet;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ public class TransactionModel {
     private Wallet recipientWallet;
 
    @NotBlank
-    private NFTCourse purchasedCourse;
+    private NFT purchasedCourse;
 
    @NotBlank
     private BigDecimal amount;
@@ -36,7 +36,7 @@ public class TransactionModel {
     private LocalDate creationTime;
 
 
-    public TransactionModel(Wallet senderWallet, Wallet recipientWallet, NFTCourse purchasedCourse) {
+    public TransactionModel(Wallet senderWallet, Wallet recipientWallet, NFT purchasedCourse) {
         this.senderWallet = senderWallet;
         this.recipientWallet = recipientWallet;
         this.amount = purchasedCourse.getCourse().getPrice();

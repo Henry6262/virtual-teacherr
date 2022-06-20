@@ -205,3 +205,26 @@ text-align: -webkit-left;
         width: 73rem;
     }
 }
+
+@media only screen and (max-width: 1334.22px) {
+    .browse-courses {
+        transform: scale(0.9);
+        position: relative;
+        right: 6%;
+    }
+}
+
+@media only screen and (max-width: 1212.93px) {
+    .browse-courses {
+        transform: scale(0.9);
+        position: relative;
+        right: 16%;
+    }
+    .arrow.left {
+        left: -80px;
+    }
+    .arrow.right {
+        right: -76px;
+    }
+}
+

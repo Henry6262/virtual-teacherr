@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 @Service
@@ -74,20 +75,31 @@ public class WalletServiceImpl implements WalletService{
     }
 
     @Override
-    public void deposit(User loggedUser, BigDecimal amount) {
+    @Transactional
+    public TransactionStatus deposit(User loggedUser, BigDecimal amount) {
         verifyDepositAmountIsAboveMinimum(amount);
 
         Wallet userWallet = getLoggedUserWallet(loggedUser);
         TransactionStatus status = prepareDepositTransaction(userWallet, amount);
 
         if (status.equals(TransactionStatus.PENDING)) {
-            return; }
+            return TransactionStatus.PENDING;
+        }
 
         addFundsToUserWallet(userWallet, amount);
+        return TransactionStatus.COMPLETED;
+    }
+
+    private void checkSenderIsNotRecipient(User sender, User recipient) {
+        if (sender.getEmail().equals(recipient.getEmail())) {
+            throw new ImpossibleOperationException(String.format("User with email: %s, cannot send money to himself !!", sender.getEmail()));
+        }
     }
 
     @Override
     public void send(User sender, User recipient, BigDecimal amount) {
+
+        checkSenderIsNotRecipient(sender, recipient);
         Wallet senderWallet = getLoggedUserWallet(sender);
         Wallet recipientWallet = getLoggedUserWallet(recipient);
         Transaction transaction = prepareTransactionBetweenUsers(senderWallet, recipientWallet, amount);
@@ -96,24 +108,23 @@ public class WalletServiceImpl implements WalletService{
             return; }                                       //for verification verifyPendingSendTransaction method will be used
 
         retrieveFromWallets(transaction);
-        //todo: test
     }
 
     @Override
-    public NFTCourse purchaseCourse(Course course, User loggedUser) {
+    public NFT purchaseCourse(Course course, User loggedUser) {
 
         Wallet userWallet = getLoggedUserWallet(loggedUser);
 
         checkUserWalletHasEnoughFunds(course.getPrice(), userWallet);
         userWallet.retrieveFromWallet(course.getPrice());
-        NFTCourse nftCourse = nftCourseService.purchase(loggedUser, course);
+        NFT nft = nftCourseService.purchase(loggedUser, course);
 
         logger.info(String.format("User with id: %d, has successfully purchased course with id %d",loggedUser.getId(), course.getId()));
-        return  nftCourse;
+        return nft;
     }
 
     @Override
-    public void createExchangeRequest(User initiator, BigDecimal offer, NFTCourse wantedMintedCourse) {
+    public void createExchangeRequest(User initiator, BigDecimal offer, NFT wantedMintedCourse) {
 
         Wallet initiatorWallet = getLoggedUserWallet(initiator);
         Wallet nftOwnerWallet = getLoggedUserWallet(wantedMintedCourse.getOwner());
@@ -123,7 +134,7 @@ public class WalletServiceImpl implements WalletService{
     }
 
     @Override
-    public void createExchangeRequest(User initiatorW, NFTCourse courseOffered, NFTCourse courseWanted) {
+    public void createExchangeRequest(User initiatorW, NFT courseOffered, NFT courseWanted) {
         //todo;
     }
 
@@ -138,7 +149,7 @@ public class WalletServiceImpl implements WalletService{
 
         Wallet buyerWallet = transaction.getSenderWallet();
         Wallet sellerWallet = transaction.getRecipientWallet();
-        NFTCourse boughtCourse = transaction.getPurchasedCourse();
+        NFT boughtCourse = transaction.getPurchasedCourse();
 
         transaction.setStatus(TransactionStatus.COMPLETED);
         boughtCourse.setOwner(buyerWallet.getOwner());
@@ -200,6 +211,7 @@ public class WalletServiceImpl implements WalletService{
             throw new ImpossibleOperationException("Minimum Deposit is 10");
         }
     }
+
 
     private Transaction prepareTransactionBetweenUsers(Wallet senderWallet, Wallet recipientWallet, BigDecimal transactionAmount) {
         checkUserWalletHasEnoughFunds(transactionAmount, senderWallet);

@@ -1,7 +1,7 @@
 package com.henrique.virtualteacher.services.Implementation;
 
 import com.henrique.virtualteacher.entities.Course;
-import com.henrique.virtualteacher.entities.NFTCourse;
+import com.henrique.virtualteacher.entities.NFT;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class NFTCourseServiceTests {
+public class NFTServiceTests {
 
     @Mock
     NFTCourseRepository NFTCourseRepository;
@@ -32,14 +32,14 @@ public class NFTCourseServiceTests {
 
     @Test
     public void getById_shouldCallRepository() {
-        NFTCourse NFTCourse = Helpers.createMockCourseEnrollment();
-        Mockito.when(NFTCourseRepository.getById(1)).thenReturn(Optional.of(NFTCourse));
+        NFT NFT = Helpers.createMockCourseEnrollment();
+        Mockito.when(NFTCourseRepository.getById(1)).thenReturn(Optional.of(NFT));
 
-        NFTCourse result = courseEnrollmentService.getById(NFTCourse.getId());
+        NFT result = courseEnrollmentService.getById(NFT.getId());
         Assertions.assertAll(
-                () -> Assertions.assertEquals(result.getId(), NFTCourse.getId()),
-                () -> Assertions.assertEquals(result.getCourse().getId(), NFTCourse.getCourse().getId()),
-                () -> Assertions.assertEquals(result.getOwner().getId(), NFTCourse.getOwner().getId())
+                () -> Assertions.assertEquals(result.getId(), NFT.getId()),
+                () -> Assertions.assertEquals(result.getCourse().getId(), NFT.getCourse().getId()),
+                () -> Assertions.assertEquals(result.getOwner().getId(), NFT.getOwner().getId())
         );
     }
 
@@ -63,11 +63,11 @@ public class NFTCourseServiceTests {
     public void getAllForUser_shouldReturnEntityList() {
         User initiator = Helpers.createMockTeacher();
         User beingAccessed = Helpers.createMockUser(21);
-        List<NFTCourse> enrollments = Helpers.createCourseEnrollmentList(beingAccessed);
+        List<NFT> enrollments = Helpers.createCourseEnrollmentList(beingAccessed);
 
         Mockito.when(NFTCourseRepository.getAllByOwnerIdAndCompleted(beingAccessed.getId(), false)).thenReturn(enrollments);
 
-        List<NFTCourse> result = courseEnrollmentService.getAllForUser(initiator, beingAccessed.getId(), false);
+        List<NFT> result = courseEnrollmentService.getAllForUser(initiator, beingAccessed.getId(), false);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(enrollments.get(0).getId(), result.get(0).getId()),
@@ -77,15 +77,15 @@ public class NFTCourseServiceTests {
     @Test
     public void getAllForUser_shouldReturnCorrectList_whenInitiatorIsOwner() {
         User initiator = Helpers.createMockUser();
-        List<NFTCourse> mockNFTCourses = Helpers.createCourseEnrollmentList(initiator);
+        List<NFT> mockNFTCours = Helpers.createCourseEnrollmentList(initiator);
 
-        Mockito.when(NFTCourseRepository.getAllByOwnerId(initiator.getId())).thenReturn(mockNFTCourses);
+        Mockito.when(NFTCourseRepository.getAllByOwnerId(initiator.getId())).thenReturn(mockNFTCours);
 
-        List<NFTCourse> resultList = courseEnrollmentService.getAllForUser(initiator, initiator.getId());
+        List<NFT> resultList = courseEnrollmentService.getAllForUser(initiator, initiator.getId());
 
         Assertions.assertAll(
-                () -> Assertions.assertEquals(resultList.get(1).getId(), mockNFTCourses.get(1).getId()),
-                () -> Assertions.assertEquals(resultList.get(2).getId(), mockNFTCourses.get(2).getId())
+                () -> Assertions.assertEquals(resultList.get(1).getId(), mockNFTCours.get(1).getId()),
+                () -> Assertions.assertEquals(resultList.get(2).getId(), mockNFTCours.get(2).getId())
         );
     }
 
@@ -93,15 +93,15 @@ public class NFTCourseServiceTests {
     public void getAllForUser_shouldReturnCorrectList_whenInitiatorIsTeacher() {
         User initiator = Helpers.createMockTeacher();
         User enrolledUser = Helpers.createMockUser(21);
-        List<NFTCourse> mockNFTCourses = Helpers.createCourseEnrollmentList(enrolledUser);
+        List<NFT> mockNFTCours = Helpers.createCourseEnrollmentList(enrolledUser);
 
-        Mockito.when(NFTCourseRepository.getAllByOwnerId(enrolledUser.getId())).thenReturn(mockNFTCourses);
+        Mockito.when(NFTCourseRepository.getAllByOwnerId(enrolledUser.getId())).thenReturn(mockNFTCours);
 
-        List<NFTCourse> resultList = courseEnrollmentService.getAllForUser(initiator, enrolledUser.getId());
+        List<NFT> resultList = courseEnrollmentService.getAllForUser(initiator, enrolledUser.getId());
 
         Assertions.assertAll(
-                () -> Assertions.assertEquals(resultList.get(1).getId(), mockNFTCourses.get(1).getId()),
-                () -> Assertions.assertEquals(resultList.get(2).getId(), mockNFTCourses.get(2).getId())
+                () -> Assertions.assertEquals(resultList.get(1).getId(), mockNFTCours.get(1).getId()),
+                () -> Assertions.assertEquals(resultList.get(2).getId(), mockNFTCours.get(2).getId())
         );
     }
 
@@ -118,16 +118,16 @@ public class NFTCourseServiceTests {
         User mockTeacher = Helpers.createMockTeacher();
         User courseCreator = Helpers.createMockUser(21);
         Course courseToGet = Helpers.createMockCourse(courseCreator);
-        List<NFTCourse> NFTCourses = Helpers.createCourseEnrollmentList(courseCreator);
+        List<NFT> NFTCours = Helpers.createCourseEnrollmentList(courseCreator);
 
-        Mockito.when(courseEnrollmentService.getAllForCourse(mockTeacher, courseToGet.getId())).thenReturn(NFTCourses);
+        Mockito.when(courseEnrollmentService.getAllForCourse(mockTeacher, courseToGet.getId())).thenReturn(NFTCours);
 
-        List<NFTCourse> resultList = courseEnrollmentService.getAllForCourse(mockTeacher, courseToGet.getId());
+        List<NFT> resultList = courseEnrollmentService.getAllForCourse(mockTeacher, courseToGet.getId());
 
         Assertions.assertAll(
-                () -> Assertions.assertEquals(resultList.get(1).getId(), NFTCourses.get(1).getId()),
-                () -> Assertions.assertEquals(resultList.get(2).getCourse().getTitle(), NFTCourses.get(2).getCourse().getTitle()),
-                () -> Assertions.assertEquals(resultList.get(3).getOwner().getId(), NFTCourses.get(3).getOwner().getId())
+                () -> Assertions.assertEquals(resultList.get(1).getId(), NFTCours.get(1).getId()),
+                () -> Assertions.assertEquals(resultList.get(2).getCourse().getTitle(), NFTCours.get(2).getCourse().getTitle()),
+                () -> Assertions.assertEquals(resultList.get(3).getOwner().getId(), NFTCours.get(3).getOwner().getId())
         );
     }
 
@@ -143,11 +143,11 @@ public class NFTCourseServiceTests {
     public void getAllForCourse_shouldReturnEntityList() {
         User initiator = Helpers.createMockTeacher();
         Course beingAccessed = Helpers.createMockCourse();
-        List<NFTCourse> enrollments = Helpers.createCourseEnrollmentList(Helpers.createMockUser());
+        List<NFT> enrollments = Helpers.createCourseEnrollmentList(Helpers.createMockUser());
 
         Mockito.when(NFTCourseRepository.getAllByCourseIdAndCompleted(beingAccessed.getId(), false)).thenReturn(enrollments);
 
-        List<NFTCourse> result = courseEnrollmentService.getAllForCourse(initiator, beingAccessed.getId(), false);
+        List<NFT> result = courseEnrollmentService.getAllForCourse(initiator, beingAccessed.getId(), false);
     }
 
     @Test
@@ -162,16 +162,16 @@ public class NFTCourseServiceTests {
     public void getUserCourseEnrollment_shouldReturnEntity_whenExisting() {
         User enrolledUser = Helpers.createMockUser(21);
         Course mockCourse = Helpers.createMockCourse();
-        NFTCourse NFTCourse =  Helpers.createMockCourseEnrollment(enrolledUser, mockCourse);
+        NFT NFT =  Helpers.createMockCourseEnrollment(enrolledUser, mockCourse);
 
-        Mockito.when(NFTCourseRepository.getByOwnerIdAndCourseId(enrolledUser.getId(), mockCourse.getId())).thenReturn(Optional.of(NFTCourse));
+        Mockito.when(NFTCourseRepository.getByOwnerIdAndCourseId(enrolledUser.getId(), mockCourse.getId())).thenReturn(Optional.of(NFT));
 
-        NFTCourse result = courseEnrollmentService.getUserOwnedNFTCourse(enrolledUser, mockCourse);
+        NFT result = courseEnrollmentService.getUserOwnedNFTCourse(enrolledUser, mockCourse);
 
         Assertions.assertAll(
-                () -> Assertions.assertEquals(result.getId(), NFTCourse.getId()),
-                () -> Assertions.assertEquals(result.getOwner().getId(), NFTCourse.getOwner().getId()),
-                () -> Assertions.assertEquals(result.getCourse().getTitle(), NFTCourse.getCourse().getTitle())
+                () -> Assertions.assertEquals(result.getId(), NFT.getId()),
+                () -> Assertions.assertEquals(result.getOwner().getId(), NFT.getOwner().getId()),
+                () -> Assertions.assertEquals(result.getCourse().getTitle(), NFT.getCourse().getTitle())
         );
     }
 
@@ -189,9 +189,9 @@ public class NFTCourseServiceTests {
     public void enroll_shouldSaveEntity_whenUserIsNotEnrolled() {
         User mockUser = Helpers.createMockUser();
         Course mockCourse = Helpers.createMockCourse();
-        NFTCourse NFTCourse = Helpers.createMockCourseEnrollment(mockUser, mockCourse);
+        NFT NFT = Helpers.createMockCourseEnrollment(mockUser, mockCourse);
 
-        Mockito.when(NFTCourseRepository.save(Mockito.any(NFTCourse.class))).thenReturn(NFTCourse);
+        Mockito.when(NFTCourseRepository.save(Mockito.any(NFT.class))).thenReturn(NFT);
 
         courseEnrollmentService.purchase(mockUser, mockCourse);
 
@@ -210,14 +210,14 @@ public class NFTCourseServiceTests {
     public void leave_shouldCallRepository_when_userIsEnrolledToCourse() {
         User mockUser = Helpers.createMockUser();
         Course mockCourse = Helpers.createMockCourse();
-        NFTCourse NFTCourse = Helpers.createMockCourseEnrollment(mockUser, mockCourse);
+        NFT NFT = Helpers.createMockCourseEnrollment(mockUser, mockCourse);
         mockUser.purchaseCourse(mockCourse);
 
-        Mockito.when(NFTCourseRepository.getByOwnerIdAndCourseId(mockUser.getId(), mockCourse.getId())).thenReturn(Optional.of(NFTCourse));
+        Mockito.when(NFTCourseRepository.getByOwnerIdAndCourseId(mockUser.getId(), mockCourse.getId())).thenReturn(Optional.of(NFT));
 
         courseEnrollmentService.leave(mockUser, mockCourse);
 
-        Mockito.verify(NFTCourseRepository, Mockito.times(1)).delete(NFTCourse);
+        Mockito.verify(NFTCourseRepository, Mockito.times(1)).delete(NFT);
     }
 
 

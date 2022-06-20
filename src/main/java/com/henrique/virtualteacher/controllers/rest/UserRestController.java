@@ -1,6 +1,7 @@
 package com.henrique.virtualteacher.controllers.rest;
 
 import com.henrique.virtualteacher.entities.User;
+import com.henrique.virtualteacher.exceptions.EntityNotFoundException;
 import com.henrique.virtualteacher.exceptions.ImpossibleOperationException;
 import com.henrique.virtualteacher.models.*;
 import com.henrique.virtualteacher.services.interfaces.UserService;
@@ -66,16 +67,21 @@ public class UserRestController {
 
 
     @GetMapping("/search")
-    public ResponseEntity<Boolean> searchByUsername(@RequestParam("keyword") SearchDto searchDto,
+    public Boolean searchByUsername(@RequestParam("keyword") SearchDto searchDto,
                                       Model model){
 
         model.addAttribute("name",searchDto);
 
-        User toFind = userService.getByEmail(searchDto.getKeyword());
+        User toFind;
+        try {
+            toFind = userService.getByEmail(searchDto.getKeyword());
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
 
         UserModel usermodel = new UserModel();
         mapper.map(toFind, usermodel);
-        return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
+        return true;
     }
 
     @GetMapping("/login")

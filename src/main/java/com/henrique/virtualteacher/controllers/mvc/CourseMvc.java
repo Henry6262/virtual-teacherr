@@ -22,7 +22,12 @@ public class CourseMvc {
     private final CourseService courseService;
 
     @GetMapping("/create")
-    public String showCreateCoursePage() {
+    public String showCreateCoursePage(Principal principal) {
+
+        if (principal == null) {
+            //fixme -> needs to be only accessible by teachers.
+        }
+
         return "courses-create";
     }
 

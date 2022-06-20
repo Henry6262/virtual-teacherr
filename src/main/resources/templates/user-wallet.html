@@ -178,20 +178,21 @@
                 <div class="modal-deposit-info info-active">
                     <div class="title">amount</div>
                     <div class="modal-content">
-                        <input class="input" id="deposit-amount">
+                        <input class="input modal-input" type="number" id="deposit-amount" required>
                     </div>
                 </div>
 
                 <div class="modal-send-info">
                     <div class="modal-content">
                         <div class="title">username</div>
-                        <input class="input" id="recipient-email">
+                        <input class="input modal-input" type="email" id="recipient-email">
                         <div class="title">amount</div>
-                        <input class="input" id="amount-to-send">
+                        <input class="input modal-input" type="number" id="amount-to-send">
 
                     </div>
                 </div>
 
+                <p class="error-input-msg"></p>
 
                 <div class="circle-loader hidden">
                     <div class="checkmark draw"></div>
@@ -206,6 +207,8 @@
                 <div class="dismiss-btn">
                     <button id="dismiss-popup-btn">X</button>
                 </div>
+
+
             </div>
         </section>
 
@@ -235,274 +238,7 @@
     </main>
 </div>
 
-
-<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-
-<script>
-
-    const loggedUserId = Number (document.querySelector("#user-id").textContent);
-    const pageSize = 10;
-    let totalTransactionPages;
-
-    getAndLoadContent(pageSize, 1).then(
-        response => initializePaginationArrows())
-
-    $("#page-buttons").on('click', function (e) {
-        e.preventDefault();
-        let pageNumber = Number (e.target.innerHTML);
-
-        const activePage = $(".active-page").element
-
-        getAndLoadContent(pageSize, pageNumber)
-    })
-
-    function getAndLoadContent(size, page) {
-        return $.ajax({
-            url: `/api/transactions/my-wallet`,
-            type: "GET",
-            dataType: "json",
-            data: {size: size, page: page},
-
-            success: function (response) {
-
-                totalTransactionPages = response.totalPages
-                const tableContent = $(".transactions").empty();
-
-                response.content.forEach( function (transaction) {
-
-                    let transactionType = lowercaseWord(transaction.transactionType)
-                    let senderName;
-                    let recipientName;
-                    let transactionDirection;
-                    let transactionAmount = transaction.amount;
-                    let transactionCreationTime = transaction.creationTime;
-                    let transactionStatus = lowercaseWord(transaction.status);
-
-                    if (transaction.senderWallet.owner.id === loggedUserId) {
-                        senderName = 'me'
-                        recipientName = transaction.recipientWallet.owner.firstName;
-                        transactionDirection =  'outgoing'
-                    } else {
-                        senderName = transaction.senderWallet.owner.firstName;
-                        recipientName = "me"
-                        transactionDirection = "incoming";
-                    }
-
-                    let statusClass;
-                    if (transactionStatus === "completed") {
-                        statusClass = 'status-completed'
-                    }
-                    else if (transactionStatus === "pending") {
-                        statusClass = 'status-pending'
-                    }
-                    else {
-                        statusClass = 'status-rejected'
-                    }
-
-                    let toAppend = "<small" + " class=`" + transactionDirection + "'>" +
-                         transactionDirection +
-                        "</small>"
-                    let toAppendSender = "<small>" + senderName + "</small>"
-                    let toAppendRecipient = "<small>" + recipientName + "</small>"
-                    let toAppendStatus = "<small" + " class='" + statusClass + "'>" + transactionStatus +"</small>"
-
-                    tableContent.append(
-                        " <tr class='row'>" +
-                            ' <td class="col first-col">' +
-                                '<small>' + transactionType + '</small>' +
-                            '</td>' +
-                            '<td class="col">' + toAppendSender +  "</td>" +
-                            '<td class="col"' + toAppendRecipient +
-                            '<td class="col">' +
-                                toAppend +
-                            '</td>' +
-
-                            '<td class="col">' +
-                                '<small>' + transactionAmount + '</small> ' +
-                            '</td>' +
-                            '<td class="col">' +
-                                '<small class="transaction-creation-date">' + transactionCreationTime +'</small>' +
-                            '</td>' +
-                            '<td class="col last-col">' +
-                                toAppendStatus +
-                            '</td>' +
-                         '</tr>'
-                    )
-
-                })
-
-            },
-
-            error: function (response) {
-                console.log("error")
-            }
-
-        })
-    }
-
-    function lowercaseWord(string) {
-        return string.toLowerCase()
-    }
-
-
-    var pr = document.querySelector( '.paginate.left' );
-    var pl = document.querySelector( '.paginate.right' );
-
-    function initializePaginationArrows() {
-
-
-        pr.onclick = slide.bind( this, -1 );
-        pl.onclick = slide.bind( this, 1 );
-
-        var index = 0, total = totalTransactionPages;
-
-        function slide(offset) {
-            index = Math.min( Math.max( index + offset, 0 ), total - 1 );
-
-            document.querySelector( '.counter' ).innerHTML = ( index + 1 ) + ' / ' + total;
-
-            getAndLoadContent(10, index + 1);
-
-            pr.setAttribute( 'data-state', index === 0 ? 'disabled' : '' );
-            pl.setAttribute( 'data-state', index === total - 1 ? 'disabled' : '' );
-        }
-        slide(0);
-    }
-
-</script>
-
-<script>
-    const $depositButton = document.querySelector("#deposit-button");
-    const $modalContainer = document.querySelector("#section1-content")
-    const $depositInfo = document.querySelector(".modal-deposit-info")
-    const $sendInfo = document.querySelector(".modal-send-info")
-    const $transactionButtons = document.querySelector(".buttons")
-    let $activeModalBody = document.querySelector(".info-active");
-    const $completedLoadMessage = document.querySelector(".successful-transaction-req")
-    const $modalTitle = document.querySelector("#modal-header-title")
-
-    const activeClass = 'info-active'
-
-    $transactionButtons.addEventListener("click", e => {
-        e.preventDefault();
-        let buttonClicked = e.target
-
-        $activeModalBody.classList.remove(activeClass)
-        $modalContainer.classList.add("blur")
-        document.getElementsByClassName("popup")[0].classList.add("active")
-
-        let classList = buttonClicked.classList;
-        if (classList.contains('fa-solid') || classList.contains('button-text')) {
-            buttonClicked = buttonClicked.parentElement
-            classList = buttonClicked.classList;
-        }
-
-        if (classList.contains('deposit')) {
-            $modalTitle.innerHTML = "Deposit"
-            $depositInfo.classList.add(activeClass)
-        }
-        else if (classList.contains("send")) {
-            $modalTitle.innerHTML = "Send"
-            $sendInfo.classList.add(activeClass)
-        }
-        else if (classList.contains("inventory")) {
-            //todo
-        }
-
-    })
-
-    // $depositButton.addEventListener('click', function(e) {
-    //     e.preventDefault();
-    //     $modalContainer.classList.add("blur")
-    //     document.getElementsByClassName("popup")[0].classList.add("active")
-    //     // window.location = '/wallets/deposit'
-    // })
-
-    document.getElementById("dismiss-popup-btn").addEventListener("click", function (e){
-
-        const activeInfo = document.querySelector(`.${activeClass}`)
-
-        document.getElementsByClassName("popup")[0].classList.remove("active")
-        $modalContainer.classList.remove("blur")
-        hideLoadingSpinner()
-
-        if (activeInfo !== null) {
-            activeInfo.classList.remove(activeClass)
-        }
-    });
-
-    var oldText;
-    const $loadingSpinner = document.querySelector(".circle-loader")
-
-    confirm = $('.confirm-button');
-
-    $(".confirm-button").click(function(e) {
-        e.preventDefault()
-        var b = $(this);
-        if (b.hasClass("confirm")) {
-            b.text("Thanks!");
-            b.removeClass("confirm");
-            b.addClass("done");
-            showLoadingSpinner();
-
-            setTimeout(function() {
-                b.removeClass("done");
-                b.text(oldText);
-                $completedLoadMessage.style.opacity = 1
-            }, 4000);
-
-        } else if (b.hasClass("done")) {
-            return;
-
-        } else {
-            oldText = b.text();
-            $(this).addClass("confirm");
-            $(this).text("Are you sure?")
-
-            setTimeout(function() {
-                if (!b.hasClass("done")) {
-                    b.removeClass("confirm");
-                    b.text(oldText);
-
-                    //TODO: Make modal reset and close after 8 seconds
-
-                }
-            }, 8000);
-        }
-    })
-
-
-    function showLoadingSpinner() {
-        $activeModalBody = $(".info-active")[0];
-        if ($activeModalBody !== null) {
-            $activeModalBody.classList.remove("info-active");
-        }
-
-        $loadingSpinner.classList.remove("hidden")
-
-        setTimeout(function () {
-            $('.circle-loader').toggleClass('load-complete');
-            $('.checkmark').toggle();
-        }, 3000)
-
-    }
-
-    function hideLoadingSpinner() {
-        $loadingSpinner.classList.add("hidden")
-        $('.circle-loader').toggleClass('load-complete')
-        $('.checkmark').toggle();
-    }
-</script>
-
-
-<script>
-
-
-
-</script>
-
-
-<!-- TODO TEST -->
-
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js' integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="../static/js/user-wallet.js" th:src="@{/js/user-wallet.js}"></script>
 </body>
 </html>

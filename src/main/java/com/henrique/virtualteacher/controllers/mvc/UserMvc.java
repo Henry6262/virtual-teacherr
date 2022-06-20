@@ -60,7 +60,7 @@ public class UserMvc {
         model.addAttribute("mostStudiedCourseTopic", userService.getMostStudiedCourseTopic(userToGet));
 
         //inventory
-        model.addAttribute("nftCourseInventory", userToGet.getNFTCourses());
+        model.addAttribute("nftCourseInventory", userToGet.getNFTCours());
     }
 
 }

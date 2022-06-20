@@ -37,7 +37,7 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "purchased_nft_course_id")
-    private NFTCourse purchasedCourse;
+    private NFT purchasedCourse;
 
     @Column(name = "amount")
     private BigDecimal amount;
@@ -59,7 +59,7 @@ public class Transaction {
      * @param offer
      * @param purchasedCourse
      */
-    public Transaction (Wallet senderWallet,Wallet recipientWallet , BigDecimal offer, NFTCourse purchasedCourse) {
+    public Transaction (Wallet senderWallet,Wallet recipientWallet , BigDecimal offer, NFT purchasedCourse) {
         this.senderWallet = senderWallet;
         this.recipientWallet = recipientWallet;
         this.amount = offer;
@@ -74,7 +74,7 @@ public class Transaction {
      * @param senderWallet
      * @param purchasedCourse
      */
-    public Transaction (Wallet senderWallet,Wallet recipientWallet , NFTCourse purchasedCourse) {
+    public Transaction (Wallet senderWallet,Wallet recipientWallet , NFT purchasedCourse) {
         this.senderWallet = senderWallet;
         this.recipientWallet = recipientWallet;
         this.amount = purchasedCourse.getCourse().getPrice();

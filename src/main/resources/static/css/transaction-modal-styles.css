@@ -73,27 +73,28 @@
 }
 
 .popup .title {
-    margin: 5px 0px;
-    font-size: 30px;
-    font-weight: 600
+    margin: 0px 0px 4px 0px;
+    font-size: 25px;
+    font-weight: 600;
 }
 
 .popup .dismiss-btn button {
-    padding: 10px 20px;
-    background: #111;
+    padding: 2px 11px;
+    /* background: #111; */
     color: #c91414;
-    border: 2px solid #111;
+    /* border: 2px solid #111; */
     font-size: 16px;
     font-weight: 600;
     outline: none;
-    border-radius: 8px;
+    /* border-radius: 8px; */
     cursor: pointer;
-    transition: all 200ms ease-in-out;
+    transition: all 50ms ease-in-out;
     position: absolute;
     top: 0%;
-    right: 1%;
+    right: 0%;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
-
 
 .popup .dismiss-btn button:hover {
     color:#100;
@@ -102,5 +103,43 @@
 
 .successful-transaction-req {
     opacity: 0;
+    transition: opacity 0.5ms ease-in-out;
 }
+
+ .activated {
+    opacity: 1;
+}
+ 
+ #deposit-amount {
+
+ }
+
+ .modal-input {
+     border: solid;
+     height: 29px;
+     outline: none;
+     transition: background-color 100ms ease-in-out;
+     margin-bottom: 9px;
+ }
+
+ .error-animation {
+     animation: shake 400ms;
+     border: solid 1.5px #ff1919;
+     background-color: #ebc5c5;
+ }
+ 
+ @keyframes shake {
+     25% {
+         transform: translateX(7px);
+     }
+     50% {
+         transform: translateX(-7px);
+     }
+     75%{
+         transform: translateX(4px);
+     }
+ }
+ 
+ 
+ 
 

@@ -1,6 +1,5 @@
 package com.henrique.virtualteacher.configurations;
 
-import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
@@ -100,7 +98,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .antMatchers(HttpMethod.GET,  "/api/wallets/my-wallet", "/wallets/my-wallet")
                 .authenticated()
-                .antMatchers(HttpMethod.POST, "/wallets/my-wallet/deposit")
+                .antMatchers(HttpMethod.POST, "/wallets/my-wallet/deposit", "/api/wallets/transfer")
                 .authenticated()
 
                 .antMatchers(HttpMethod.GET, "/api/ratings/{id}")

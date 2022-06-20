@@ -3,6 +3,7 @@ package com.henrique.virtualteacher.controllers.rest;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.entities.Wallet;
 import com.henrique.virtualteacher.exceptions.AuthenticationException;
+import com.henrique.virtualteacher.models.TransactionStatus;
 import com.henrique.virtualteacher.models.WalletModel;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import com.henrique.virtualteacher.services.interfaces.WalletService;
@@ -28,38 +29,38 @@ public class WalletRestController {
 
     @GetMapping("/my-wallet")
      public ResponseEntity<WalletModel> getLoggedUserWallet(Principal principal) {
-         if(principal == null) {
-                throw new AuthenticationException("User needs to login before accessing own wallet");
-            }
-            User loggedUser = userService.getByEmail(principal.getName());
-            Wallet userWallet = walletService.getLoggedUserWallet(loggedUser);
-
-            WalletModel walletModel = mapper.map(userWallet, new TypeToken<WalletModel>() {}.getType());
-            return new ResponseEntity<>(walletModel, HttpStatus.OK);
+        if (principal == null) {
+            throw new AuthenticationException("User needs to login before accessing own wallet");
         }
+        User loggedUser = userService.getByEmail(principal.getName());
+        Wallet userWallet = walletService.getLoggedUserWallet(loggedUser);
+
+        WalletModel walletModel = mapper.map(userWallet, new TypeToken<WalletModel>() {}.getType());
+        return new ResponseEntity<>(walletModel, HttpStatus.OK);
+    }
 
         @PostMapping("/deposit")
-        public ResponseEntity<HttpStatus> deposit(Principal principal,
-                                                  @RequestParam("amount") BigDecimal amount) {
+        public String deposit(Principal principal,
+                              @RequestParam("amount") BigDecimal amount) {
 
             User loggedUser = userService.getLoggedUser(principal);
             Wallet userWallet = walletService.getLoggedUserWallet(loggedUser);
 
-            walletService.deposit(loggedUser, amount);
-            return new ResponseEntity<>(HttpStatus.OK);
+            TransactionStatus status = walletService.deposit(loggedUser, amount);
+            return status.name();
         }
 
         @PostMapping("/transfer")
-        public ResponseEntity<HttpStatus> transfer(Principal principal,
-                                               @RequestParam("amount") BigDecimal amount,
-                                               @RequestParam("email") String recipientEmail,
+        public ResponseEntity<String> transfer(Principal principal,
+                                               @RequestParam("amount") int  amount,
+                                               @RequestParam("email") String email,
                                                Model model) {
 
             User loggedUser = userService.getLoggedUser(principal);
-            User recipient = userService.getByEmail(recipientEmail);
+            User recipient = userService.getByEmail(email);
 
-            walletService.send(loggedUser, recipient, amount);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            walletService.send(loggedUser, recipient, BigDecimal.valueOf(amount));
+            return new ResponseEntity<>("completed",HttpStatus.ACCEPTED);
         }
 
 }

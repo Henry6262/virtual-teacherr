@@ -80,6 +80,8 @@
 .info-active {
     visibility: visible;
     display: block;
+    position: relative;
+    top: 8%;
 }
 
 .wallet-balance {
@@ -92,9 +94,6 @@
     padding-bottom: 4rem;
     color: #000000de;
     padding-top: 4rem;
-    /* background-color: #423f3e; */
-    /* background-image: linear-gradient(120deg, #fda085 0%, #fda085 100%); */
-    /* border-radius: 25px; */
     background-image: linear-gradient(147deg, #fe8a39 0%, #fd3838 74%);
     box-shadow: 4px 13px 30px 1px rgb(252 56 56 / 20%);
     border-radius: 20px;
@@ -102,7 +101,6 @@
 
 .transactions {
     background-color: #49403e;
-
     transition-delay: 0s;
     transition-duration: 0.4s;
     transition-property: all;
@@ -116,7 +114,6 @@
     height: 7rem;
     border-radius: 10px;
     text-align: center;
-
     transition: transform, 2s;
     transition-duration: 0.2s;
     transition-timing-function: ease;
@@ -165,7 +162,7 @@
     .wallet-container {
         right: 12rem;
     }
-    }
+}
 
 @media only screen and (max-width: 960px) {
     .wallet-container {
@@ -213,4 +210,14 @@
 
 .status-rejected {
     color: #fd3838;
+}
+
+.error-input-msg {
+    color: red;
+    visibility: hidden;
+    font-size: 10px;
+}
+
+.error-input-msg.visible {
+    visibility: visible;
 }

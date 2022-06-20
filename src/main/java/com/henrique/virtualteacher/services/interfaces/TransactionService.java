@@ -26,7 +26,7 @@ public interface TransactionService {
 
     List<Transaction> getAllByWallet(Wallet wallet, User loggedUser);
 
-    void createExchangeTransaction(Wallet initiatorWallet, Wallet ownerWallet, BigDecimal offer, NFTCourse mintedCourse);
+    void createExchangeTransaction(Wallet initiatorWallet, Wallet ownerWallet, BigDecimal offer, NFT mintedCourse);
 
     void create(Transaction Transaction, User loggedUser);
 

@@ -213,16 +213,16 @@ public class CourseServiceImpl implements CourseService {
         }
 
         nftCourseService.checkCourseHasAvailableMints(loggedUser, courseToPurchase.getId());
-        NFTCourse mintedCourse = walletService.purchaseCourse(courseToPurchase, loggedUser);
+        NFT mintedCourse = walletService.purchaseCourse(courseToPurchase, loggedUser);
         createTransaction(loggedUser, mintedCourse);
     }
 
-    private void createTransaction(User loggedUser, NFTCourse nftCourse) {
+    private void createTransaction(User loggedUser, NFT nft) {
         Wallet senderWallet = walletService.getLoggedUserWallet(loggedUser);
-        Wallet recipientWallet = walletService.getLoggedUserWallet(nftCourse.getOwner());
-        Transaction transaction = new Transaction(senderWallet, recipientWallet, nftCourse);
+        Wallet recipientWallet = walletService.getLoggedUserWallet(nft.getOwner());
+        Transaction transaction = new Transaction(senderWallet, recipientWallet, nft);
 
-        nftCourseService.purchase(loggedUser, nftCourse.getCourse());
+        nftCourseService.purchase(loggedUser, nft.getCourse());
         transactionService.create(transaction, loggedUser);
     }
 

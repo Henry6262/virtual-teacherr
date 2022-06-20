@@ -80,7 +80,7 @@ public class Course {
     @JoinTable(name = "nft_courses",
     joinColumns = @JoinColumn(name =  "id"),
     inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private List<NFTCourse> nfts;
+    private List<NFT> nfts;
 
     @Cascade(value = DELETE)
     @OneToMany()

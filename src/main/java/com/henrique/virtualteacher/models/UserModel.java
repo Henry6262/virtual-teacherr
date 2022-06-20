@@ -34,7 +34,7 @@ public class UserModel {
     private Set<Lecture> completedLectures;
 
     @NotBlank
-    private List<NFTCourse> NFTCourses;
+    private List<NFT> NFTCours;
 
     @NotBlank
     private List<Assignment> assignments;

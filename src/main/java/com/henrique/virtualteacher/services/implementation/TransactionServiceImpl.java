@@ -113,7 +113,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void createExchangeTransaction(Wallet initiatorWallet, Wallet ownerWallet,BigDecimal offer, NFTCourse courseToMakeOffer) {
+    public void createExchangeTransaction(Wallet initiatorWallet, Wallet ownerWallet,BigDecimal offer, NFT courseToMakeOffer) {
 
         Transaction transaction = new Transaction(initiatorWallet, ownerWallet, offer, courseToMakeOffer);
         transaction.setTransactionType(TransactionType.EXCHANGE);

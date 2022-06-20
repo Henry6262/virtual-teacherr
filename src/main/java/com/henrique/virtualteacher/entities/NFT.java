@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Table(name = "nft_courses")
-public class NFTCourse {
+public class NFT {
 
     @Id
     @Column(name = "id")
@@ -37,13 +37,13 @@ public class NFTCourse {
     @Column(name = "drop_number")
     private int dropNumber;
 
-    public NFTCourse(User owner, Course courseToPurchase) {
+    public NFT(User owner, Course courseToPurchase) {
         this.owner = owner;
         this.course = courseToPurchase;
         this.completed = false;
     }
 
-    public NFTCourse(Course course, int dropNumber) {
+    public NFT(Course course, int dropNumber) {
         this.owner = null;
         this.course = course;
         this.completed = false;

@@ -28,6 +28,7 @@ body {
     max-width: 570px;
     margin: auto;
     width: 100%;
+    transform: scale(0.9);
 }
 @media screen and (max-width: 576px) {
     .card-form {
@@ -623,4 +624,14 @@ body {
         transform: scale(1.1);
         box-shadow: 0px 17px 20px -6px rgba(36, 52, 70, 0.36);
     }
+}
+
+
+
+/* CUSTOM CHANGES BELOW */
+
+
+.input-error {
+    border: solid 1px darkred;
+    background-color: #e5bbbb;
 }

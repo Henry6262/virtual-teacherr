@@ -1,6 +1,6 @@
 package com.henrique.virtualteacher.services.implementation;
 
-import com.henrique.virtualteacher.entities.NFTCourse;
+import com.henrique.virtualteacher.entities.NFT;
 import com.henrique.virtualteacher.entities.Role;
 import com.henrique.virtualteacher.entities.User;
 import com.henrique.virtualteacher.exceptions.*;
@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
         usermodel.setAssignments(user.getAssignments());
         usermodel.setCompletedLectures(user.getCompletedLectures());
         usermodel.setCompletedCourses(user.getCompletedCourses());
-        usermodel.setNFTCourses(user.getNftCourses());
+        usermodel.setNFTCours(user.getNftCours());
         usermodel.setProfilePicture(user.getProfilePicture());
         return usermodel;
     }
@@ -152,7 +152,7 @@ public class UserServiceImpl implements UserService {
         verifyUserIsAllowed(toDelete, loggedUser);
 
         toDelete.getCompletedLectures().clear();
-        toDelete.getNftCourses().clear();
+        toDelete.getNftCours().clear();
 
         //fixme -> will need to delete also the comments, ratings and assignments
         userRepository.delete(toDelete);
@@ -160,11 +160,11 @@ public class UserServiceImpl implements UserService {
 
     public String getMostStudiedCourseTopic(User loggedUser) {
 
-        if (loggedUser.getNftCourses().size() == 0){
+        if (loggedUser.getNftCours().size() == 0){
             return "";
         }
 
-        List<NFTCourse> sortedEnrolledCourses = loggedUser.getNftCourses().stream().
+        List<NFT> sortedEnrolledCourses = loggedUser.getNftCours().stream().
                 sorted(Comparator.comparing(object -> object.getCourse().getTopic().name())).collect(Collectors.toList());
 
         int maxSequence = 1;
