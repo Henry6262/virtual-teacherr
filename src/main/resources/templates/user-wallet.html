@@ -120,6 +120,10 @@
                     </div>
 
                     <div class="wallet-balance" th:text="${loggedUserWallet.getBalance()} + '$'"></div>
+                    <div class="transaction-button inventory" id="inventory-button">
+                        <i class="fa-solid fa-warehouse"></i>
+                        <div class="inventory-text">Inventory</div>
+                    </div>
                     <div class="buttons">
                         <div class="transaction-button deposit" id="deposit-button">
                             <i class="fa-solid fa-circle-arrow-up"></i>

@@ -221,3 +221,9 @@
 .error-input-msg.visible {
     visibility: visible;
 }
+
+.inventory {
+    position: relative;
+    top: -40%;
+    width: 100%;
+}
