@@ -34,6 +34,7 @@
 /* INPUT CHECK */
 
 .form {
+    z-index: 1000;
     position: relative;
     background: #0e121ad1;
     max-width: 400px;
@@ -48,7 +49,7 @@
     border-radius: 35px;
 }
 .form .thumbnail {
-    background: #EF3B3A;
+    background-image: linear-gradient(147deg, #fe8a39 0%, #fd3838 74%);
     width: 200px;
     height: 200px;
     margin: 0 auto 30px;
@@ -82,7 +83,7 @@
 }
 .form button {
     outline: 0;
-    background: #EF3B3A;
+    background-image: linear-gradient(147deg, #fe8a39 0%, #fd3838 74%);
     width: 100%;
     border: 0;
     padding: 15px;
