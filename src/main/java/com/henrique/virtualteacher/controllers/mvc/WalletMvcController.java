@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -28,6 +29,19 @@ public class WalletMvcController {
     private final UserService userService;
     private final ModelMapper mapper;
     private final TransactionService transactionService;
+
+    @ModelAttribute
+    public Model userIsAnonymous(Principal principal,
+                                 Model model) {
+
+        String attributeName = "userIsAnonymous";
+        if (principal == null) {
+
+        }
+        model.addAttribute(attributeName, false);
+        return model;
+    }
+
 
     @GetMapping("/my-wallet")
     public String showUserWalletPage(Principal principal,

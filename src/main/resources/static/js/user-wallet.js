@@ -139,9 +139,14 @@ const $completedLoadMessage = document.querySelector(".successful-transaction-re
 const $modalTitle = document.querySelector("#modal-header-title")
 const $errorMsg = document.querySelector(".error-input-msg")
 
+const $inventory = document.querySelector('.inventory')
 
 const activeClass = 'info-active'
 let operationType;
+
+$inventory.addEventListener('click',e => {
+    window.location.href = "/users/inventory"
+})
 
 $transactionButtons.addEventListener("click", e => {
     e.preventDefault();

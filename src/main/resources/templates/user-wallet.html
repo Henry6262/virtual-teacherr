@@ -35,11 +35,11 @@
                 <li><a class="li-icons" th:href="@{/}" href="#">
                     <div  class="svg-space icons"><i class="fa-solid fa-bag-shopping icon"></i></div>Browse</a>
                 </li>
-                <li class="active"><a class="li-icons" href="#" th:href="@{/courses/enrolled}">
+                <li><a class="li-icons" href="#" th:href="@{/courses/enrolled}">
                     <div  class="svg-space icons"><i class="fa-solid fa-book icon"></i></div>My Courses</a>
                 </li>
-                <li><a class="li-icons" th:href="@{/wallets/my-wallet}" href="#">
-                    <div class="svg-space icons"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 64 80" enable-background="new 0 0 64 64" xml:space="preserve"><g><g><g><path d="M57,51H7V21h50V51z M9,49h46V23H9V49z"/></g><g><path d="M29.7,23H7V13h19.7L29.7,23z M9,21h18.1l-1.8-6H9V21z"/></g></g></g></svg></div> Labs</a>
+                <li class="active"><a class="li-icons" href="#" th:href="@{/wallets/my-wallet}">
+                    <div class="svg-space icons"><i class="fa-solid fa-wallet"></i></div>Wallet</a>
                 </li>
                 <li><a class="li-icons" href="#" th:href="@{/users/profile}">
                     <div class="svg-space icons"><i class="fa-solid fa-user-graduate icon"></i></div>Profile</a>
@@ -120,15 +120,18 @@
                     </div>
 
                     <div class="wallet-balance" th:text="${loggedUserWallet.getBalance()} + '$'"></div>
+
                     <div class="transaction-button inventory" id="inventory-button">
                         <i class="fa-solid fa-warehouse"></i>
                         <div class="inventory-text">Inventory</div>
                     </div>
+
                     <div class="buttons">
                         <div class="transaction-button deposit" id="deposit-button">
                             <i class="fa-solid fa-circle-arrow-up"></i>
                             <div class="button-text">Deposit</div>
                         </div>
+
                         <div class="transaction-button send" id="send-button">
                             <i class="fa-solid fa-circle-arrow-down"></i>
                             <div class="button-text">Send</div>

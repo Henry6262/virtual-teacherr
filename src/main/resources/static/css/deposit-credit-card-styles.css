@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600,700|Source+Sans+Pro:400,600,700&display=swap");
 body {
-    background: #ddeefc;
     font-family: "Source Sans Pro", sans-serif;
     font-size: 16px;
 }
@@ -626,12 +625,20 @@ body {
     }
 }
 
-
-
 /* CUSTOM CHANGES BELOW */
 
 
 .input-error {
     border: solid 1px darkred;
     background-color: #e5bbbb;
+}
+
+.invalid-input-error {
+    color: red;
+    visibility: hidden;
+    font-size: 10px;
+}
+
+.invalid-input-error.visible {
+    visibility: visible;
 }

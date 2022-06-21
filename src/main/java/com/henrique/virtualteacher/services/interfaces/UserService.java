@@ -13,24 +13,6 @@ import java.util.List;
 
 public interface UserService extends UserDetailsService {
 
-    UserModel getModelByUsername(String username);
-
-    UserModel getModelById(int id);
-
-    boolean UserIsLogged(Principal principal);
-
-    List<User> getAll(User loggedUser);
-
-    User getById(int id, User loggedUser);
-
-    User getLoggedUser(Principal principal);
-
-    User getByEmail(String email);
-
-    List<User> getAllByVerification(boolean areVerified, User loggedUser);
-
-    User create(RegisterUserModel register);
-
     void enableUser(int userToVerifyId);
 
     void verifyLoginInfo(String email, String password);
@@ -39,9 +21,27 @@ public interface UserService extends UserDetailsService {
 
     void delete(User toDelete,User loggedUser );
 
+    boolean UserIsLogged(Principal principal);
+
+    UserModel getModelByUsername(String username);
+
+    UserModel getModelById(int id);
+
+    User getById(int id, User loggedUser);
+
+    User getLoggedUser(Principal principal);
+
+    User getByEmail(String email);
+
+    User create(RegisterUserModel register);
+
     String getMostStudiedCourseTopic(User loggedUser);
 
     String getMostStudiedCourseTopic(UserModel userModel);
+
+    List<User> getAll(User loggedUser);
+
+    List<User> getAllByVerification(boolean areVerified, User loggedUser);
 
     @Override
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;

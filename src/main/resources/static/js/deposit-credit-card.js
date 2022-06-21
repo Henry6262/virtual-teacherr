@@ -91,34 +91,45 @@ new Vue({
 
 // - Check for invalid inputs in credit card form
 
-const $cardNumber = $('#cardNumber')
-const $cardExpirationMonth = $('#cardMonth');
-const $cardExpirationYear = $('#cardYear')
-const $cardHolder = $('#cardName')
-const cardCVV = $('#cardCvv');
+const $cardNumber = document.querySelector('#cardNumber')
+const $cardExpirationMonth = document.querySelector('#cardMonth');
+const $cardExpirationYear = document.querySelector('#cardYear')
+const $cardHolder = document.querySelector('#cardName')
+const $cardCVV = document.querySelector('#cardCvv');
 
 const $submitButton = $('.card-form__button')
 
-$submitButton.addEventListener('click', checkCardInformation(e))
+const $errorMessage = document.querySelector('.invalid-input-error')
+
+const EMPTY_INPUT_MSG = 'Please fill all required fields'
+
+$submitButton.on('click',() => checkCardInformation())
 
 let hasInvalidInput;
-function checkCardInformation(e) {
-    e.preventDefault();
+function checkCardInformation() {
 
     checkInputIsNotEmpty($cardNumber);
+    checkInputIsNotEmpty($cardHolder)
     checkInputIsNotEmpty($cardExpirationMonth)
     checkInputIsNotEmpty($cardExpirationYear)
-    checkInputIsNotEmpty($cardHolder)
-    checkInputIsNotEmpty(cardCVV)
+    checkInputIsNotEmpty($cardCVV)
 
     if (hasInvalidInput) {
-        alert('Incorrect card information provided !')
         return
     }
 
+    check
 
 }
 
+function validateCardNumber(cardNumber) {
+    
+    if (cardNumber.length === 16) {
+        return
+    }
+    
+    showErrorMessage('Card Number must have exactly 16 digits')
+}
 
 function makeDeposit(amount) {
     $.ajax({
@@ -148,9 +159,22 @@ function makeDeposit(amount) {
 
 function checkInputIsNotEmpty($inputSelector) {
     if ($inputSelector.value === '') {
+        
         addErrorClassToInput($inputSelector)
         hasInvalidInput = true
+        
+        if ($errorMessage.classList.contains('visible')) {
+            return
+        }
+        showErrorMessage(EMPTY_INPUT_MSG)
     }
+}
+
+function showErrorMessage(message) {
+    if ( !showErrorMessage.classList.contains('visible')) {
+        $errorMessage.classList.add('visible')
+    }
+    $errorMessage.innerHTML = message;
 }
 
 function checkCardIsNotExpired() {
@@ -161,9 +185,8 @@ function checkCardIsNotExpired() {
     if (currentDate > cardDate) {
         addErrorClassToInput()
     }
-
 }
 
 function addErrorClassToInput($inputSelector) {
-    $inputSelector[0].classList.add('input-error')
+    $inputSelector.classList.add('input-error')
 }
