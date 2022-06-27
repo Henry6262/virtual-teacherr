@@ -42,14 +42,13 @@ public class TransactionsRestController {
 //    }
 
     @GetMapping("/my-wallet")
-    public Page<Transaction> getWalletTransactionsPage (@RequestParam("page") int page,
+    public Page<Transaction>    getWalletTransactionsPage (@RequestParam("page") int page,
                                                        @RequestParam("size") int size,
                                                        Principal principal) {
 
         User loggedUser = userService.getLoggedUser(principal);
         Wallet loggedUserWallet = walletService.getLoggedUserWallet(loggedUser);
-        int pageSize = 10;
-        Pageable pageable = PageRequest.of(page -1, pageSize);
+        Pageable pageable = PageRequest.of(page -1, size);
 
         Page<Transaction> transactionPage = transactionService.getWalletTransactionPage(pageable, loggedUserWallet.getId());
 

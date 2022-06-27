@@ -1,106 +1,102 @@
-'use strict'
+"use strict"
 
-//TODO -> remove parallax image for something simpler.
+const $profileButtons = $(".profile-button")
+const $editButtonsInnerText = $('.inner-button')
+const $editProfileButton = document.querySelector(".edit-profile-button")
+const $inventoryProfileButton = document.querySelector('.inventory-profile-button')
+const $profilePicWrapper = document.querySelector('#profile-pic')
+const profilePicWrapper = document.querySelector(".profile-picture")
+const $uploadImageIcon = document.querySelector('.fa-cloud-arrow-up')
+const $firstnameInput = document.querySelector("#firstname-input")
+const $lastnameInput = document.querySelector("#lastname-input")
+const $usernameInput = document.querySelector("#username-input")
+const $activeFirstName = document.querySelector("#firstname")
+const $activeLastName = document.querySelector("#lastname")
+const $personalEmail = document.querySelector('#username')
 
-loadUserImage()
 
-function loadUserImage() {
+const $profilePic = $("#profile-pic")
+const $profileInputs = $('.input')
+const $infoFields = $('.info-field')
+
+const EDIT_ACTIVE_CLASS = 'edit-active';
+const CLICKED_ACTIVE_BUTTON_CLASS = 'active'
+const HOVERED_BUTTON_CLASS = 'hovered'
+const UPLOAD_IMG_CLASS = "active";
+const EDIT_ACTIVE_PROFILE_PIC_CLASS = "edit-active"
+
+const EDIT_PROFILE_BUTTON_CLASS = 'edit-profile-button'
+const INVENTORY_PROFILE_BUTTON = 'inventory-profile-button'
 
 
-    let userImageUrl = document.querySelector('.user_image').getAttribute("src");
-    document.querySelector('.container').style.background.url = `url(${userImageUrl})`
-}
+$editProfileButton.addEventListener('click',e => activateDeactivateEditMode(e))
 
-class parallaxTiltEffect {
-
-    constructor({element, tiltEffect}) {
-
-        this.element = element;
-        this.container = this.element.querySelector(".container");
-        this.size = [300, 360];
-        [this.w, this.h] = this.size;
-
-        this.background = "url"
-
-        this.tiltEffect = tiltEffect;
-
-        this.mouseOnComponent = false;
-
-        this.handleMouseMove = this.handleMouseMove.bind(this);
-        this.handleMouseEnter = this.handleMouseEnter.bind(this);
-        this.handleMouseLeave = this.handleMouseLeave.bind(this);
-        this.defaultStates = this.defaultStates.bind(this);
-        this.setProperty = this.setProperty.bind(this);
-        this.init = this.init.bind(this);
-
-        this.init();
-    }
-
-    handleMouseMove(event) {
-        const {offsetX, offsetY} = event;
-
-        let X;
-        let Y;
-
-        if (this.tiltEffect === "reverse") {
-            X = ((offsetX - (this.w/2)) / 3) / 3;
-            Y = (-(offsetY - (this.h/2)) / 3) / 3;
-        }
-
-        else if (this.tiltEffect === "normal") {
-            X = (-(offsetX - (this.w/2)) / 3) / 3;
-            Y = ((offsetY - (this.h/2)) / 3) / 3;
-        }
-
-        this.setProperty('--rY', X.toFixed(2));
-        this.setProperty('--rX', Y.toFixed(2));
-
-        this.setProperty('--bY', (80 - (X/4).toFixed(2)) + '%');
-        this.setProperty('--bX', (50 - (Y/4).toFixed(2)) + '%');
-    }
-
-    handleMouseEnter() {
-        this.mouseOnComponent = true;
-        this.container.classList.add("container--active");
-    }
-
-    handleMouseLeave() {
-        this.mouseOnComponent = false;
-        this.defaultStates();
-    }
-
-    defaultStates() {
-        this.container.classList.remove("container--active");
-        this.setProperty('--rY', 0);
-        this.setProperty('--rX', 0);
-        this.setProperty('--bY', '80%');
-        this.setProperty('--bX', '50%');
-    }
-
-    setProperty(p, v) {
-        return this.container.style.setProperty(p, v);
-    }
-
-    init() {
-        this.element.addEventListener('mousemove', this.handleMouseMove);
-        this.element.addEventListener('mouseenter', this.handleMouseEnter);
-        this.element.addEventListener('mouseleave', this.handleMouseLeave);
+function activateDeactivateEditMode(e) {
+    if ($editProfileButton.classList.contains(CLICKED_ACTIVE_BUTTON_CLASS)) {
+        deactivateEditProfileMode(e)
+    } else {
+        activateEditProfileMode(e)
     }
 }
 
-const $ = e => document.querySelector(e);
+$editButtonsInnerText.on('click', e => activateDeactivateEditMode(e))
 
-const wrap1 = new parallaxTiltEffect({
-    element: $('.wrap--1'),
-    tiltEffect: 'reverse'
-});
+$profileButtons.mouseover(e => addProfileButtonHoverAnimation(e))
+$profileButtons.mouseout(e => removeProfileButtonAnimation(e))
+$editButtonsInnerText.mouseover(e => {
+    addProfileButtonHoverAnimation(e)
+})
 
-const wrap2 = new parallaxTiltEffect({
-    element: $('.wrap--2'),
-    tiltEffect: 'normal'
-});
+function  addProfileButtonHoverAnimation(e) {
+    let buttonHovered = e.currentTarget
+    if (buttonHovered.classList.contains('inner-button')) {
+        buttonHovered = buttonHovered.parentElement
+    }
 
-const wrap3 = new parallaxTiltEffect({
-    element: $('.wrap--3'),
-    tiltEffect: 'reverse'
-});
+    buttonHovered.classList.add(HOVERED_BUTTON_CLASS);
+}
+
+function removeProfileButtonAnimation(e) {
+    const buttonHovered = e.target
+    buttonHovered.classList.remove(HOVERED_BUTTON_CLASS);
+}
+
+function activateEditProfileMode(e) {
+    e.preventDefault()
+    $profilePicWrapper.classList.add(EDIT_ACTIVE_CLASS)
+    $editProfileButton.classList.add(CLICKED_ACTIVE_BUTTON_CLASS)
+    $uploadImageIcon.classList.add(UPLOAD_IMG_CLASS)
+    enableInputEditMode();
+}
+
+function deactivateEditProfileMode(e) {
+    e.preventDefault()
+    $profilePicWrapper.classList.remove(EDIT_ACTIVE_CLASS)
+    $editProfileButton.classList.remove(CLICKED_ACTIVE_BUTTON_CLASS)
+    $uploadImageIcon.classList.remove(UPLOAD_IMG_CLASS)
+    disableInputEditMode()
+}
+
+function enableInputEditMode() {
+    $infoFields.each((index, element) => {
+        element.classList.remove('visible')
+    })
+    $profileInputs.each((index, element) => {
+        element.classList.add(EDIT_ACTIVE_CLASS)
+    })
+    $firstnameInput.value = $activeFirstName.innerHtml
+    $lastnameInput.value = $activeLastName.innerHTML
+    $usernameInput.value = $personalEmail.innerHTML
+}
+
+function disableInputEditMode() {
+    $infoFields.each((index, element) => {
+        element.classList.add('visible')
+    })
+    $profileInputs.each((index, element) => {
+        element.classList.remove(EDIT_ACTIVE_CLASS)
+    })
+}
+
+
+

@@ -30,7 +30,9 @@ public class GlobalControllerAdvice {
             return ANONYMOUS_USER_PICTURE_URL;
         }
         User loggedUser = userService.getLoggedUser(principal);
-        return loggedUser.getEmail();
+
+        return loggedUser.getProfilePicture() == null ?
+                ANONYMOUS_USER_PICTURE_URL : loggedUser.getProfilePicture();
     }
 
 

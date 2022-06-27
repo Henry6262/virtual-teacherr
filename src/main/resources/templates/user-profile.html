@@ -12,13 +12,11 @@
 
     <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
     <script src="https://kit.fontawesome.com/4083de25cb.js" crossorigin="anonymous"></script>
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 </head>
 <body class="body">
-
-
 
 <header class="side-header">
 
@@ -80,15 +78,56 @@
         <div class="wrapper">
             <div class="content">
 
-                <section class="main">
-                    <div class="wrap wrap--1">
-                        <div  class="container container--1" >
+                <div class="user-information">
+
+                    <div class="profile-picture">
+                        <div class="icon-div">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        <img id="profile-pic" alt="profile-pic" src="#" th:src="${user_profile_picture}">
+                    </div>
+
+                    <div class="profile-details">
+
+                        <div class="wrapper">
+                            <div class="field first">
+                                <label for="firstname">firstname</label>
+                                <div class="hide-and-seek">
+                                    <span class="info-field visible" id="firstname">value</span>
+                                    <input id="firstname-input" class="input">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label for="lastname">lastname</label>
+                                <div class="hide-and-seek">
+                                    <span class="info-field visible" id="lastname">value</span>
+                                    <input id="lastname-input" class="input">
+                                </div>
+                            </div>
+
+                            <div class="field last">
+                                <label for="username">username</label>
+                                <div class="hide-and-seek">
+                                    <span class="info-field visible" id="username">value</span>
+                                    <input id="username-input" class="input" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="profile-buttons">
+                            <div class="edit-profile-button profile-button">
+                                <span class="inner-button">Edit</span>
+                            </div>
+
+                            <div class="inventory-profile-button profile-button">
+                                <a class="inner-button" href="#" th:href="@{/users/inventory}">Inventory</a>
+                            </div>
                         </div>
                     </div>
-                </section>
 
 
-
+                </div>
 
                 <div class="content-card">
                     <!-- card -->
@@ -105,7 +144,16 @@
 
                         <div class="icon-card"><i class="material-icons md-36">favorite_border</i></div>
                         <p class="title-card">Top Language</p>
-                        <p class="text-card" th:text="${mostStudiedCourseTopic}">Check all your favourites in one place.</p>
+                        <p class="text-card" th:text="${mostStudiedCourseTopic}"></p>
+
+                    </div>
+                    <!-- end card -->
+                    <!-- card -->
+                    <div class="card">
+
+                        <div class="icon-card"><span class="material-symbols-outlined">donut_small</span></div>
+                        <p class="title-card">NFT`s</p>
+                        <p class="text-card" th:text="${mostStudiedCourseTopic}"></p>
 
                     </div>
                     <!-- end card -->
@@ -114,7 +162,7 @@
 
                         <div class="icon-card"><i class="material-icons md-36">alternate_email</i></div>
                         <p class="title-card">Average Grade</p>
-                        <p class="text-card" th:text="${averageGradeForAllCourses}">Add or change your contacts and links.</p>
+                        <p class="text-card" th:text="${averageGradeForAllCourses}"></p>
 
                     </div>
                     <!-- end card -->

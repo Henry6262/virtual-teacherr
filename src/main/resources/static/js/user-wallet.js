@@ -2,7 +2,7 @@
 
 
 const loggedUserId = Number (document.querySelector("#user-id").textContent);
-const pageSize = 10;
+const pageSize = 11;
 let totalTransactionPages;
 
 getAndLoadContent(pageSize, 1).then(
@@ -116,7 +116,7 @@ function initializePaginationArrows() {
 
         document.querySelector( '.counter' ).innerHTML = ( index + 1 ) + ' / ' + total;
 
-        getAndLoadContent(10, index + 1);
+        getAndLoadContent(11, index + 1);
 
         pr.setAttribute( 'data-state', index === 0 ? 'disabled' : '' );
         pl.setAttribute( 'data-state', index === total - 1 ? 'disabled' : '' );

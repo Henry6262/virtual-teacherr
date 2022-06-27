@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
         usermodel.setAssignments(user.getAssignments());
         usermodel.setCompletedLectures(user.getCompletedLectures());
         usermodel.setCompletedCourses(user.getCompletedCourses());
-        usermodel.setNFTCours(user.getNftCours());
+        usermodel.setOwnedNftCourses(user.getNftCours());
         usermodel.setProfilePicture(user.getProfilePicture());
         return usermodel;
     }

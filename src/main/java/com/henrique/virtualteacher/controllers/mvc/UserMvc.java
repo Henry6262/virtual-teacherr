@@ -50,9 +50,18 @@ public class UserMvc {
 
         User loggedUser = userService.getLoggedUser(principal);
         UserModel userToGet = userService.getModelById(id);
-
         addUserInformationToModel(model, id);
         return "user-profile";
+    }
+
+    @GetMapping("/profile/edit")
+    public String getEditProfilePage(Principal principal,
+                                     Model model) {
+
+        User loggedUser = userService.getLoggedUser(principal);
+        UserModel userModel = userService.getModelByUsername(loggedUser.getEmail());
+        model.addAttribute("loggedUserInfo", userModel);
+        return "edit-user-profile-styles.css";
     }
 
     @GetMapping("/inventory")
@@ -61,7 +70,6 @@ public class UserMvc {
 
         User loggedUser = userService.getLoggedUser(principal);
         List<NFT> userInventory = nftCourseService.getAllForUser(loggedUser, loggedUser.getId());
-
         model.addAttribute("inventory", userInventory);
         return "user-personal-inventory";
     }
@@ -83,9 +91,9 @@ public class UserMvc {
         model.addAttribute("totalComments", userToGet.getComments());
         model.addAttribute("averageGradeForAllCourses", assignmentService.getStudentAverageGradeForAllCourses(id, userToGet));
         model.addAttribute("mostStudiedCourseTopic", userService.getMostStudiedCourseTopic(userToGet));
-
+        model.addAttribute("totalOwnedNftCourses", userToGet.getOwnedNftCourses().size());
         //inventory
-        model.addAttribute("nftCourseInventory", userToGet.getNFTCours());
+        model.addAttribute("nftCourseInventory", userToGet.getOwnedNftCourses());
     }
 
 }
