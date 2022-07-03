@@ -84,6 +84,17 @@ public class UserRestController {
         return true;
     }
 
+    @GetMapping("/verify/username/{username}/")
+    public boolean verifyNewUsernameIsUnique(@PathVariable("username") String newUsername,
+                                             Principal principal,
+                                             Model model) {
+
+        User loggedUser = userService.getLoggedUser(principal);
+        String currentUsername = loggedUser.getUsername();
+
+        return userService.checkUsernameIsUnique(loggedUser, newUsername);
+    }
+
     @GetMapping("/login")
     public ResponseEntity<String> verifyLoginInfo(@RequestParam("keyword")SearchDto email,
                                    @RequestParam("password") SearchDto password,
@@ -110,14 +121,21 @@ public class UserRestController {
         return new ResponseEntity<>(true,HttpStatus.CREATED);
     }
 
-    @PutMapping()
+    @PutMapping("/update")
     public void update(@RequestBody @Valid UserUpdateModel updateModel,
                        Principal principal) {
 
-        User loggedUser = userService.getByEmail(principal.getName());
+        userService.updateProfileInfo(principal, updateModel);
+        logger.info(String.format("api/users/update rest method was called by: %s", principal.getName()));
+    }
 
-        userService.update(updateModel, loggedUser);
-        logger.info(String.format("User with email: {%s}, has been updated",updateModel.getEmail()));
+    @PutMapping("/update/password")
+    public void updatePassword(@RequestParam("newPassword") String newPassword,
+                               @RequestParam("passwordConfirm") String passwordConfirm,
+                               Principal principal) {
+
+        userService.updatePassword(principal, newPassword, passwordConfirm);
+        logger.info(String.format("api/users/update/password rest method was called by: %s", principal.getName()));
     }
 
     @DeleteMapping()

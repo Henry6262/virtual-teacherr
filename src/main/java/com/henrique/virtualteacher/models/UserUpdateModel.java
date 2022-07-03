@@ -1,14 +1,10 @@
 package com.henrique.virtualteacher.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.Constraint;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -27,18 +23,15 @@ public class UserUpdateModel {
 
     //fixme: firstName, lastName and Email will not be permited to be changed, a user can only modify its passwords
 
-    @NotBlank
     @Email(message = INVALID_EMAIL_MSG)
     @Size(min = 6, max = 40, message = EMAIL_INVALID_SIZE_MSG)
-    private String email;
+    private String username;
 
-    @NotBlank
-    @Size(min = 5, max = 25, message =  PASSWORD_INVALID_SIZE_MSG)
-    private String password;
+    private String firstname;
 
-    @NotBlank
-    @Size(min = 5, max = 25, message = PASSWORD_CONFIRM_INVALID_SIZE_MSG)
-    private String passwordConfirm;
+    private String lastname;
+
+
 
 
 

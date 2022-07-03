@@ -13,6 +13,7 @@ create table users
         primary key,
     first_name      varchar(20)   not null,
     last_name       varchar(20)   not null,
+    username        varchar(25)   not null,
     email           varchar(40)   not null,
     password        varchar(100)  not null,
     profile_picture varchar(1024) null,
@@ -165,19 +166,19 @@ create table wallets
 
 create table transactions
 (
-    id                  int auto_increment
+    id                      int auto_increment
         primary key,
-    purchased_course_id int                                                  null,
-    recipient_wallet_id int                                                  null,
-    sender_wallet_id    int                                                  null,
-    amount              int                                                  not null,
-    type                enum ('EXCHANGE', 'DEPOSIT', 'PURCHASE', 'TRANSFER') not null,
-    pending             tinyint(1)                                           not null,
-    creation_time       datetime                                             not null,
+    recipient_wallet_id     int                                                   null,
+    sender_wallet_id        int                                                   null,
+    amount                  int                                                   not null,
+    type                    enum ('EXCHANGE', 'DEPOSIT', 'PURCHASE', 'TRANSFER')  not null,
+    status                  enum ('PENDING', 'COMPLETED', 'REJECTED', 'ACCEPTED') not null,
+    creation_time           datetime                                              not null,
+    purchased_nft_course_id int                                                   null,
     constraint transactions_id_uindex
         unique (id),
-    constraint transactions_courses_id_fk
-        foreign key (purchased_course_id) references courses (id),
+    constraint transactions_nft_courses_id_fk
+        foreign key (purchased_nft_course_id) references nft_courses (id),
     constraint transactions_wallets_id_fk
         foreign key (sender_wallet_id) references wallets (id),
     constraint transactions_wallets_id_fk_2

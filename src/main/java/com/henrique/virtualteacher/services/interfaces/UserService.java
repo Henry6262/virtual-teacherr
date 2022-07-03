@@ -17,15 +17,25 @@ public interface UserService extends UserDetailsService {
 
     void verifyLoginInfo(String email, String password);
 
-    void update(UserUpdateModel updateModel, User loggedUser);
+//    void update(UserUpdateModel updateModel, User loggedUser);
+
+    void updatePassword(Principal loggedUser, String newPassword, String passwordConfirmation);
+
+    void updateProfileInfo(Principal loggedUser, UserUpdateModel updateModel);
 
     void delete(User toDelete,User loggedUser );
 
     boolean UserIsLogged(Principal principal);
 
+    boolean checkUsernameIsUnique(User loggedUser, String username);
+
     UserModel getModelByUsername(String username);
 
     UserModel getModelById(int id);
+
+    String getMostStudiedCourseTopic(User loggedUser);
+
+    String getMostStudiedCourseTopic(UserModel userModel);
 
     User getById(int id, User loggedUser);
 
@@ -34,10 +44,6 @@ public interface UserService extends UserDetailsService {
     User getByEmail(String email);
 
     User create(RegisterUserModel register);
-
-    String getMostStudiedCourseTopic(User loggedUser);
-
-    String getMostStudiedCourseTopic(UserModel userModel);
 
     List<User> getAll(User loggedUser);
 

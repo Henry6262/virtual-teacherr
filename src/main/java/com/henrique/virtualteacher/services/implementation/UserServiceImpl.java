@@ -7,24 +7,26 @@ import com.henrique.virtualteacher.exceptions.*;
 import com.henrique.virtualteacher.models.*;
 import com.henrique.virtualteacher.repositories.UserRepository;
 import com.henrique.virtualteacher.services.interfaces.UserService;
+import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private static final String UNAUTHORIZED_MESSAGE = "Unauthorized operation";
@@ -32,16 +34,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ModelMapper mapper;
     private final PasswordEncoder encoder;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository,
-                           ModelMapper mapper,
-                           BCryptPasswordEncoder encoder) {
-
-        this.userRepository = userRepository;
-        this.mapper = mapper;
-        this.encoder = encoder;
-    }
+    private final Logger logger;
 
     @Override
     public List<User> getAll(User loggedUser) {
@@ -95,6 +88,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean checkUsernameIsUnique(User loggedUser, String newUsername) {
+        try {
+            Optional<User> existingUser = userRepository.findByUsername(newUsername);
+            return loggedUser.getUsername().equalsIgnoreCase(newUsername);
+        } catch (EntityNotFoundException e) {
+            return true;
+        }
+    }
+
+    @Override
     public User getByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User", "Email", email));
@@ -131,21 +134,49 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
+//    @Override
+//    public void update(UserUpdateModel updateModel, User loggedUser) {
+//
+//
+//        verifyUserIsAllowed(userBeingUpdated, loggedUser);
+//        checkUpdateEmailIsUnique(userBeingUpdated, loggedUser);
+//        checkPasswordMeetsRequirements(updateModel.getPassword());
+//        checkPasswordsAreEqual(updateModel.getPassword(), updateModel.getPasswordConfirm());
+//
+//        mapFromUserUpdateModel(updateModel, userBeingUpdated);
+//
+//        userRepository.save(userBeingUpdated);
+//    }
+
     @Override
-    public void update(UserUpdateModel updateModel, User loggedUser) {
+    public void updatePassword(Principal loggedUser, String newPassword, String passwordConfirmation) {
 
-        User userBeingUpdated = getByEmail(updateModel.getEmail());
+        User user = getLoggedUser(loggedUser);
+        checkPasswordsAreEqual(newPassword, passwordConfirmation);
+        checkPasswordMeetsRequirements(newPassword);
+        setNewUserPassword(newPassword, user);
 
-        verifyUserIsAllowed(userBeingUpdated, loggedUser);
-        checkUpdateEmailIsUnique(userBeingUpdated, loggedUser);
-        checkPasswordMeetsRequirements(updateModel.getPassword());
-        checkPasswordsAreEqual(updateModel.getPassword(), updateModel.getPasswordConfirm());
-
-        mapFromUserUpdateModel(updateModel, userBeingUpdated);
-
-        userRepository.save(userBeingUpdated);
+        userRepository.save(user);
+        logger.info(String.format("User: %s, has changed his password successfully",user.getUsername()));
+        //todo test
     }
 
+    @Override
+    public void updateProfileInfo(Principal loggedUser, UserUpdateModel updateModel) {
+
+        User user = getLoggedUser(loggedUser);
+
+        checkUsernameIsUnique(user, updateModel.getUsername());
+        checkStringDoesNotContainSpecialSymbols(updateModel.getUsername(), Optional.of("Username"));
+        checkStringContainsOnlyLetters(updateModel.getFirstname(), Optional.of("Firstname"));
+        checkStringContainsOnlyLetters(updateModel.getLastname(), Optional.of("Lastname"));
+        mapFromUserUpdateModel(updateModel, user);
+
+        userRepository.save(user);
+        logger.info(String.format("User with email: {%s}, has been updated", user.getEmail()));
+        //todo test
+    }
 
     @Override
     public void delete(User toDelete, User loggedUser) {
@@ -254,7 +285,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private void mapFromUserUpdateModel(UserUpdateModel updateModel, User user) {
-        user.setPassword(encoder.encode(updateModel.getPassword()));
+        user.setFirstName(updateModel.getFirstname());
+        user.setLastName(updateModel.getLastname());
+        user.setUsername(updateModel.getUsername());
+    }
+
+    private void setNewUserPassword(String password, User user) {
+        user.setPassword(encoder.encode(password));
     }
 
     @Override
@@ -280,4 +317,29 @@ public class UserServiceImpl implements UserService {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRole().name()))
                 .collect(Collectors.toList());
     }
+
+    private void checkStringContainsOnlyLetters(String value, Optional<String> valueType) {
+        for (char c : value.toCharArray()) {
+            if (!Character.isLetter(c)) {
+
+                if (valueType.isPresent()) {
+                    throw new ImpossibleOperationException(String.format("%s can only contain letters", valueType));
+                }
+                throw new ImpossibleOperationException("Value can only contain letters");
+            }
+        }
+    }
+
+    private void checkStringDoesNotContainSpecialSymbols(String value, Optional<String> valueType) {
+
+        for (char c : value.toCharArray()) {
+            if (!Character.isLetterOrDigit(c) && c == '_') {
+                if (valueType.isPresent()) {
+                    throw new ImpossibleOperationException(String.format("%s should only contain digits, letters and underscore",valueType));
+                }
+                throw new ImpossibleOperationException("Value should have only digits, letters and underscore");
+            }
+        }
+    }
+
 }

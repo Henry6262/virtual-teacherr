@@ -33,6 +33,9 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "username")
+    private String username;
+
     @Email
     @Column(name = "email")
     private String email;
