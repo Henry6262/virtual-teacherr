@@ -8,8 +8,8 @@ import com.henrique.virtualteacher.models.*;
 import com.henrique.virtualteacher.repositories.UserRepository;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
-import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -119,7 +119,6 @@ public class UserServiceImpl implements UserService {
         checkPasswordsAreEqual(register.getPassword(), register.getPasswordConfirm());
 
        User user = mapFromRegisterModel(register);
-
        return userRepository.save(user);
     }
 

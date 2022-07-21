@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="../static/css/page-skeleton-styles.css" th:href="@{/css/page-skeleton-styles.css}">
     <link rel="stylesheet" href="../static/css/image-parallax-effect-styles.css" th:href="@{/css/image-parallax-effect-styles.css}">
     <link rel="stylesheet" href="../static/css/hover-cards-styles.css" th:href="@{/css/hover-cards-styles.css}">
-
+    <link rel="stylesheet" href="../static/css/transaction-modal-styles.css" th:href="@{/css/transaction-modal-styles.css}">
 
     <title>My Profile</title>
 
@@ -70,17 +70,30 @@
         </form>
 
 
-
     </header>
 
     <section class="works smooth-in">
 
-        <div class="wrapper">
+        <div class="edit-confirm">
+            <span class="span-text">confirm</span>
+        </div>
+
+        <div id="profile-wrapper" class="wrapper">
             <div class="content">
 
                 <div class="user-information">
 
                     <div class="profile-picture">
+
+                        <form id="picture-form" enctype="multipart/form-data" method="post">
+
+                            <div class="file-div">
+                                <label for="file">Upload</label>
+                                <input id="file" name="file" class="file-input" type="file" multiple>
+                                <input id="input-button" type="submit"/>
+                            </div>
+                        </form>
+
                         <div class="icon-div">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
                         </div>
@@ -110,7 +123,12 @@
                                 <label for="username">username</label>
                                 <div class="hide-and-seek">
                                     <span class="info-field visible" id="username">value</span>
-                                    <input id="username-input" class="input" readonly>
+                                    <div class="username-row">
+                                        <input id="username-input" class="input" readonly>
+                                        <div class="check-username-button">
+                                            <span class="span-text"></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

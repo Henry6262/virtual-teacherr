@@ -80,81 +80,80 @@ document.cookie = 'SameSite'
 
     $('#work').on('click', function (e) {
 
-    e.preventDefault()
-    formHasErrors.length = 0
+        e.preventDefault()
+        formHasErrors.length = 0
 
-    if (pictureWasChanged){
-    uploadImage()
-}
+        if (pictureWasChanged){
+            uploadImage()
+        }
 
-    checkFieldIsNotEmpty(titleSelector, titleSelector.value)
-    checkFieldIsNotEmpty(startingDateSelector, startingDateSelector.value)
+        checkFieldIsNotEmpty(titleSelector, titleSelector.value)
+        checkFieldIsNotEmpty(startingDateSelector, startingDateSelector.value)
 
-    if (formHasErrors.length > 0) {
-    alert('Please fill all required fields')
-    return
-}
+        if (formHasErrors.length > 0) {
+            alert('Please fill all required fields')
+            return
+        }
 
-    createCourse()
-})
+        createCourse()
+    })
 
-    function createCourse() {
-    const courseModel = {
-    title: titleSelector.value,
-    topic: topicSelector.value,
-    description: descriptionSelector.value,
-    difficulty: difficultySelector.value,
-    startingDate: startingDateSelector.value,
-    picture: uploadedPictureUrl,
+function createCourse() {
+        const courseModel = {
+            title: titleSelector.value,
+            topic: topicSelector.value,
+            description: descriptionSelector.value,
+            difficulty: difficultySelector.value,
+            startingDate: startingDateSelector.value,
+            picture: uploadedPictureUrl,
 
-    skill1: skill1.value,
-    skill2: skill2.value,
-    skill3: skill3.value
-}
+            skill1: skill1.value,
+            skill2: skill2.value,
+            skill3: skill3.value
+        }
 
-    $.ajax({
-    type: "POST",
-    url: "/api/courses",
-    dataType: "json",
-    contentType: 'application/json',
-    data: JSON.stringify(courseModel),
+         $.ajax({
+            type: "POST",
+            url: "/api/courses",
+            dataType: "json",
+            contentType: 'application/json',
+            data: JSON.stringify(courseModel),
 
-    success: function(data) {
-    alert('course created')
-},
+            success: function(data) {
+                alert('course created')
+            },
 
-    error: function (data) {
+            error: function (data) {
 
-}
+            }
 
-})
-}
+        })
+    }
 
     function uploadImage() {
-    if (uploadImageSelector.value === '') {
-    alert("Please select a valid image")
-    return
-}
+        if (uploadImageSelector.value === '') {
+            alert("Please select a valid image")
+            return
+        }
 
-    var formData = new FormData(pictureFormSelector)
-    $.ajax({
-    type: "POST",
-    url: "/api/images/upload",
-    data: formData,
-    processData: false,
-    contentType: false,
+        var formData = new FormData(pictureFormSelector)
+        $.ajax({
+            type: "POST",
+            url: "/api/images/upload",
+            data: formData,
+            processData: false,
+            contentType: false,
 
-    success: function(imageUrl) {
+            success: function(imageUrl) {
 
-    uploadedPictureUrl = imageUrl.body;
-},
+                uploadedPictureUrl = imageUrl.body;
+                },
 
-    error: function(data) {
-    alert("login-dumbass")
-}
+            error: function(data) {
 
-})
-}
+            }
+        })
+    }
 
     pictureFormSelector.onchange = evt => {
     const [file] = uploadImageSelector.files

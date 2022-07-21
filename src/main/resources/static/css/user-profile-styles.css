@@ -55,6 +55,8 @@
     margin: 18px 20px 18px 20px;
 }
 
+
+
 .profile-picture.edit-active {
     opacity: 0.6;
 }
@@ -65,7 +67,15 @@
 
 #profile-pic.edit-active {
     filter: blur(3px);
+    cursor: pointer;
+}
 
+#picture-form {
+    display: none;
+}
+
+#profile-wrapper {
+    padding-top: 28px;
 }
 
 .user-information {
@@ -74,11 +84,11 @@
     margin: 5px;
     width: 93.9%;
     border-bottom: solid 1px;
-    height: 20%;
+    height: 21%;
     background-color: #1c1d27;
     position: absolute;
     top: initial;
-    top: 112px;
+    top: 136px;
     left: 27px;
     /* right: 52px; */
     border-top-left-radius: 37px;
@@ -129,16 +139,15 @@
     display: flex;
     gap: 6px;
     position: relative;
-    top: 8%;
+    top: 11%;
     margin-right: 7px;
 }
 
 .profile-button.hovered {
     background-color: #1b2735;
-    padding-bottom: 4px;
-    transform: translateY(-6px);
     height: 2.2pc;
     cursor: pointer;
+    transform: translateY(-7px);
 }
 
 
@@ -148,20 +157,25 @@
 }
 
 .fa-cloud-arrow-up {
-
     position: absolute;
     left: 7%;
-    top: 56%;
+    top: 47%;
     font-size: 60px;
-    transition: visibility 0.1s ease-in-out;
-     visibility: hidden;
+    transition: visibility 0.1s ease-in-out, transform 0.3s ease-in-out;
+    visibility: hidden;
     color: black;
-
 }
 
 .fa-cloud-arrow-up.active {
     visibility: visible;
     z-index: 2;
+    cursor: pointer;
+    color: black;
+    opacity: 0.5;
+}
+
+.fa-cloud-arrow-up.active.hovered {
+    transform: translateY(-10px);
 }
 
 .input {
@@ -189,6 +203,96 @@
     position: relative;
 }
 
+.edit-confirm {
+    background-color: forestgreen;
+    transition: all 0.4s ease-in-out;
+    position: absolute;
+    z-index: -1;
+    top: 11.7%;
+    left: 25%;
+    max-width: 62px;
+    text-align: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: solid 1px;
+    border-bottom: none;
+
+}
+
+.edit-confirm.active {
+    visibility: visible;
+    cursor: pointer;
+    transform: translateY(-17px);
+}
+
+.edit-confirm.active:hover {
+    max-width: 84px;
+}
+
+.username-row {
+display: flex;
+gap: 3px;
+}
+
+.check-username-button {
+padding: 10px 20px;
+background-color: seagreen;
+visibility: hidden;
+opacity: 0;
+transition: all 0.4s ease-in;
+position: relative;
+z-index: 10;
+}
+
+.check-username-button.active {
+visibility: visible;
+border: solid 1px;
+border-bottom: none;
+}
+
+.check-username-button .span-text {
+
+}
+
+.input.error-active {
+
+}
+
+#firstname-input {
+
+}
+
+#lastname-input {
+
+}
+
+#username-input {
+
+}
+
+.hide-and-seek {
+display: flex;
+gap: 4px;
+max-height: 25px;
+height: 25px;
+}
+
+
+
 @media only screen and(max-width: 1334.22px) {
-    
+
+}
+
+@media only screen and (max-width: 1280px) {
+.user-information {
+    width: 93.3%;
+}
+.profile-button {
+    height: 1.86pc;  }
+.profile-button.hovered {
+    height: 2.31pc;
+}
+.fa-cloud-arrow-up {
+    left: 8%;
+}
 }

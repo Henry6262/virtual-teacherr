@@ -43,9 +43,9 @@ public class Helpers {
 
     public static UserUpdateModel mapUserToUpdateModel(User user) {
         UserUpdateModel updateModel = new UserUpdateModel();
-        updateModel.setEmail(user.getEmail());
-        updateModel.setPassword(user.getPassword());
-        updateModel.setPasswordConfirm(user.getPassword());
+        updateModel.setUsername(user.getEmail());
+        updateModel.setFirstname(user.getFirstName());
+        updateModel.setLastname(user.getLastName());
         return updateModel;
     }
 
