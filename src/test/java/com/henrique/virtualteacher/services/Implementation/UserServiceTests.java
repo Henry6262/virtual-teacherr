@@ -321,7 +321,7 @@ public class UserServiceTests {
     @Test
     public void getMostStudiedTopic_shouldReturn_emptyString_whenUserHasNoEnrolledCourses() {
         User mockUser = Helpers.createMockUser();
-        mockUser.setNftCours(new ArrayList<>());
+        mockUser.setNftCourses(new ArrayList<>());
 
         String result = userService.getMostStudiedCourseTopic(mockUser);
 
@@ -338,7 +338,7 @@ public class UserServiceTests {
         NFT three = Helpers.createMockCourseEnrollment(javaScriptCourse);
         NFT four = Helpers.createMockCourseEnrollment(javaScriptCourse);
         NFT five = Helpers.createMockCourseEnrollment(javaScriptCourse);
-        mockUser.setNftCours(List.of(one, two, three, four, five));
+        mockUser.setNftCourses(List.of(one, two, three, four, five));
 
         String result = userService.getMostStudiedCourseTopic(mockUser);
         Assertions.assertEquals(result, "JAVASCRIPT");

@@ -25,7 +25,6 @@ public class WalletRestController {
 
     private final WalletService walletService;
     private final UserService userService;
-    private final ModelMapper mapper;
 
     @GetMapping("/my-wallet")
      public ResponseEntity<WalletModel> getLoggedUserWallet(Principal principal) {
@@ -35,7 +34,7 @@ public class WalletRestController {
         User loggedUser = userService.getByEmail(principal.getName());
         Wallet userWallet = walletService.getLoggedUserWallet(loggedUser);
 
-        WalletModel walletModel = mapper.map(userWallet, new TypeToken<WalletModel>() {}.getType());
+        WalletModel walletModel = new WalletModel(userWallet);
         return new ResponseEntity<>(walletModel, HttpStatus.OK);
     }
 

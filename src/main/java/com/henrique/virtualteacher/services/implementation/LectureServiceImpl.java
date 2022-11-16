@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,7 +26,15 @@ public class LectureServiceImpl implements LectureService {
 
     private final LectureRepository lectureRepository;
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
+
+    @Override
+    public List<LectureModel> mapAllToModel(List<Lecture> lectures) {
+        List<LectureModel> lectureModels = new ArrayList<>();
+        for (Lecture current : lectures) {
+            lectureModels.add(new LectureModel(current));
+        }
+        return lectureModels;
+    }
 
     @Override
     public Lecture getById(int id) {
@@ -116,7 +125,10 @@ public class LectureServiceImpl implements LectureService {
             checkIfTitleIsUnique(lectureModel.getTitle());
         }
 
-        modelMapper.map(lectureModel, lecture);
+        lecture.setTitle(lectureModel.getTitle());
+        lecture.setDescription(lectureModel.getDescription());
+        lecture.setVideoLink(lectureModel.getVideoLink());
+        lecture.setAssignmentText(lectureModel.getAssignmentText());
         lectureRepository.save(lecture);
     }
 

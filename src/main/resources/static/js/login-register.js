@@ -47,7 +47,8 @@ const loginButton = loginForm.querySelector("button")
 const registerButton = registerForm.querySelector("button")
 
 const firstNameSelector = document.querySelector("#firstName")
-const lastNameSelector = document.querySelector("#lastName")
+const lastNameSelector = document.querySelector("#lastname")
+const usernameRegisterSelector = document.querySelector("#username")
 const passwordRegisterSelector = document.querySelector(".password-register")
 const passwordConfirmRegisterSelector = document.querySelector(".password-confirm-register")
 const emailSelector = document.querySelector(".emailAddress")
@@ -58,54 +59,15 @@ const passwordSelector = document.querySelector(".password-login")
 const modal = document.querySelector('#open-modal')
 const closeModal = document.querySelector('.modal-close')
 
-function clickRegisterOnKeyPress (event) {
-
-    if (event.code === "Enter") {
-        event.preventDefault()
-        registerButton.click()
-    }
-}
-
-firstNameSelector.addEventListener('keyup', evt => {
-    clickRegisterOnKeyPress()
-})
-lastNameSelector.addEventListener("keyup", evt => {
-    clickRegisterOnKeyPress(evt)
-})
-passwordRegisterSelector.addEventListener("keyup", evt => {
-    clickRegisterOnKeyPress(evt)
-})
-passwordConfirmRegisterSelector.addEventListener('keyup', evt => {
-    clickRegisterOnKeyPress(evt)
-})
-emailSelector.addEventListener("keyup",function (event) {
-    clickRegisterOnKeyPress(event)
-})
-
-function clickLoginOnKeyPress(evt) {
-
-    if (evt.code === 'Enter') {
-        evt.preventDefault();
-        loginButton.click();
-    }
-}
-
-usernameSelector.addEventListener('keyup', evt =>  {
-    clickLoginOnKeyPress(evt)
-})
-passwordSelector.addEventListener('keyup', evt => {
-    clickLoginOnKeyPress(evt)
-})
-
-
 let inputInvalidEntries = []
 
 registerButton.addEventListener("click", evt => {
 
     inputInvalidEntries.length = 0;
 
-    checkForEmptyInput(firstNameSelector,firstNameSelector.value, 'first name')
-    checkForEmptyInput(lastNameSelector,lastNameSelector.value, 'last name')
+    checkForEmptyInput(firstNameSelector, firstNameSelector.value, 'first name')
+    checkForEmptyInput(lastNameSelector, lastNameSelector.value, 'last name')
+    checkForEmptyInput(usernameRegisterSelector, usernameRegisterSelector.value , 'username')
     checkPassword(passwordRegisterSelector.value)
     checkPasswordConfirm(passwordConfirmRegisterSelector.value, passwordRegisterSelector.value);
     checkEmail(emailSelector.value, 'register')
@@ -114,6 +76,7 @@ registerButton.addEventListener("click", evt => {
 
         const registerUserModel = {
             firstName: firstNameSelector.value,
+            username: usernameRegisterSelector.value,
             lastName: lastNameSelector.value,
             password: passwordRegisterSelector.value,
             passwordConfirm: passwordConfirmRegisterSelector.value,

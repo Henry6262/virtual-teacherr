@@ -532,7 +532,7 @@ public class Helpers {
     private static User createUser() {
         User user = new User();
         addBasicInfo(user);
-        user.setNftCours(new ArrayList<>());
+        user.setNftCourses(new ArrayList<>());
         user.setAssignments(new ArrayList<>());
         user.setCompletedLectures(new HashSet<>());
         user.setRoles(List.of(new Role(1,EnumRoles.STUDENT)));

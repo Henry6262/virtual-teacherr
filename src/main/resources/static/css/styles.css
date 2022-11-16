@@ -10,6 +10,12 @@
     float: left;
 }
 
+.form-control.names {
+    display: flex;
+    margin-bottom: 12px;
+    gap: 14px;
+}
+
 .form-control input {
     border: none;
 }

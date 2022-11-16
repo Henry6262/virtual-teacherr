@@ -1,5 +1,6 @@
 package com.henrique.virtualteacher.models;
 
+import com.henrique.virtualteacher.entities.Course;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,33 +16,44 @@ import java.util.Set;
 @NoArgsConstructor
 public class CourseModel {
 
+    public CourseModel(Course course) {
+        this.id = course.getId();
+        this.title = course.getTitle();
+        this.topic = course.getTopic();
+        this.description = course.getDescription();
+        this.difficulty = course.getDifficulty();
+        this.startingDate = course.getStartingDate();
+        this.picture = course.getPicture();
+        this.creatorEmail = course.getCreator().getEmail();
+        this.price = course.getPrice();
+        this.skill1 = course.getSkill1();
+        this.skill2 = course.getSkill2();
+        this.skill3 = course.getSkill3();
+    }
+
     private int id;
 
-    @NotBlank
+
     private String title;
 
-    @NotBlank
     private EnumTopic topic;
 
-    @NotBlank
     private String description;
 
     private EnumDifficulty difficulty;
 
-    @NotBlank
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate startingDate;
 
     private String picture;
 
-    @NotBlank
     private String creatorEmail;
 
-    @NotBlank
     private double averageRating;
 
-    @NotBlank
     private BigDecimal price;
+
+    private int availableMints;
 
     private int courseCompletionPercentage;
 

@@ -47,6 +47,8 @@ public interface UserService extends UserDetailsService {
 
     List<User> getAll(User loggedUser);
 
+    List<UserModel> getAllUserModels(User loggedUser);
+
     List<User> getAllByVerification(boolean areVerified, User loggedUser);
 
     @Override

@@ -15,7 +15,7 @@
 #description-input {
     width: 65%;
     font-size: medium;
-    font-family: 'Inter', serif;
+    font-family: sans-serif;
     border: 2px solid;
     border-radius: 5px;
     resize: none;
@@ -92,7 +92,7 @@
 .heading {
 text-align: center;
 font-family: Inter;
-font-size: x-large;
+font-size: large;
 }
 
 .dropdowns {
@@ -108,7 +108,7 @@ font-size: x-large;
 display: flex;
 gap: 45px;
 place-content: center;
-padding: 15px 0px;
+padding: 8px 0px;
 border-radius: 4px;
 font-size: medium;
 text-align: -webkit-center;
@@ -123,18 +123,19 @@ margin: 0;
 }
 
 .date-field h1 {
-font-size: x-large;
+    font-size: larger;
+    margin-bottom: 9px;
 }
 
 #starting-date-input {
-width: 139px;
-text-align-last: center;
-font-size: larger;
-padding: 0px 0px 0px;
-padding: 10px;
-border: 1px solid;
-border-radius: 6px;
-padding-bottom: 17px;
+    width: 139px;
+    text-align: -webkit-center;
+    font-size: larger;
+    border: 1px solid;
+    border-radius: 6px;
+    padding-bottom: 6px;
+    padding-top: 6px;
+    font-family: sans-serif;
 }
 
 .mega-div {
@@ -241,7 +242,7 @@ align-self: center;
 .inputs {
     display: grid;
     text-align: left;
-    gap: 30px;
+    gap: 10px;
 }
 
 .skill-label {
@@ -252,9 +253,42 @@ align-self: center;
     font-size: large;
 }
 
+#course-price-div {
+    display: grid;
+}
+
+#course-price {
+    width: 25%;
+    padding: 8px;
+    place-self: center;
+    margin-top: 10px;
+}
+
+#total-mints {
+    width: 25%;
+    padding: 8px;
+    place-self: center;
+    margin-top: 10px;
+}
+
+#course-available-mints {
+    display: grid;
+}
+
+.price_mints_div {
+    display: flex;
+    justify-content: center;
+}
+
+.price-label {
+    font-size: medium;
+    margin-top: 20px;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
 .skill-input {
     width: 100%;
-    height: 80%;
     border-radius: 5px;
     position: static;
     outline: none;

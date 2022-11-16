@@ -21,7 +21,7 @@ public class RatingRestController {
 
     private final RatingService ratingService;
     private final UserService userService;
-    private final ModelMapper modelMapper;
+
     private final Logger logger;
 
 

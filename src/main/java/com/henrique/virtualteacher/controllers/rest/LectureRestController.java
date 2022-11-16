@@ -32,14 +32,12 @@ public class LectureRestController {
 
     private final LectureService lectureService;
     private final UserService userService;
-    private final ModelMapper mapper;
 
     @GetMapping()
     public ResponseEntity<Model> getAll(Principal principal, Model model){
 
         User loggedUser = userService.getByEmail(principal.getName());
-        List<LectureModel> dtoList = mapper.map(lectureService.getAll(), new TypeToken<List<LectureModel>>() {}.getType());
-
+        List<LectureModel> dtoList = lectureService.mapAllToModel(lectureService.getAll());
         model.addAttribute("allLectures", dtoList);
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
     }
@@ -54,22 +52,17 @@ public class LectureRestController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "user is not authorized");
         }
 
-        List<LectureModel> dtoList = mapper.map(lectureService.getAllByCourseId(id), new TypeToken<List<LectureModel>>() {}.getType());
-        return dtoList;
+         return lectureService.mapAllToModel(lectureService.getAllByCourseId(id));
     }
 
 
     @GetMapping("/{id}")
     public LectureModel getById(@PathVariable int id,
-                           Principal principal) {
+                                Principal principal) {
 
         User loggedUser = userService.getByEmail(principal.getName());
         Lecture lecture = lectureService.getById(id);
-        LectureModel lectureModel = new LectureModel();
-
-        mapper.map(lecture, lectureModel);
-
-        return lectureModel;
+        return new LectureModel(lecture);
     }
 
     @PutMapping("/{id}/update")

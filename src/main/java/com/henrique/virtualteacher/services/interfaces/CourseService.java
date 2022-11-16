@@ -21,6 +21,8 @@ public interface CourseService {
 
     List<CourseModel> getTopTheeCoursesByRating();
 
+    CourseModel mapToModel(Course course);
+
     Course getById(int id);
 
     Course getByTitle(String title);

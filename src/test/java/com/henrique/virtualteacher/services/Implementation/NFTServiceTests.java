@@ -218,6 +218,9 @@ public class NFTServiceTests {
         courseEnrollmentService.leave(mockUser, mockCourse);
 
         Mockito.verify(NFTCourseRepository, Mockito.times(1)).delete(NFT);
+
+        System.out.println("who defook");
+
     }
 
 

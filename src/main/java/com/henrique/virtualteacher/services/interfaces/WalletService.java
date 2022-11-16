@@ -20,7 +20,7 @@ public interface WalletService {
 
     void send(User sender, User recipient, BigDecimal amount);
 
-    NFT purchaseCourse(Course course, User loggedUser);
+    NFT mintNFT(Course course, User loggedUser);
 
     void createExchangeRequest(User initiator, BigDecimal offer, NFT nftToBuy); //todo: this can be course for course or money for course;
 

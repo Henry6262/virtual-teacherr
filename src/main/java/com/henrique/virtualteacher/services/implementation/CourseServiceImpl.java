@@ -13,7 +13,6 @@ import com.henrique.virtualteacher.repositories.CourseRepository;
 import com.henrique.virtualteacher.repositories.UserRepository;
 import com.henrique.virtualteacher.services.interfaces.*;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +35,6 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final UserService userService;
     private final UserRepository userRepository;
-    private final ModelMapper mapper;
     private final Logger logger;
     private final LectureService lectureService;
     private final CloudinaryConfig cloudinaryConfig;
@@ -210,10 +208,11 @@ public class CourseServiceImpl implements CourseService {
 
         if (loggedUser.hasPurchasedCourse(courseToPurchase)) {
             throw new DuplicateEntityException(String.format("User with id: %d, is already enrolled to course with id: %d", loggedUser.getId(), courseToPurchase.getId()));
+            //todo : add max mint per person field in courses, and check if user has minted the max amount.
         }
 
         nftCourseService.checkCourseHasAvailableMints(loggedUser, courseToPurchase.getId());
-        NFT mintedCourse = walletService.purchaseCourse(courseToPurchase, loggedUser);
+        NFT mintedCourse = walletService.mintNFT(courseToPurchase, loggedUser);
         createTransaction(loggedUser, mintedCourse);
     }
 
@@ -267,6 +266,11 @@ public class CourseServiceImpl implements CourseService {
     public List<CourseModel> getTopTheeCoursesByRating() {
         List<Course> topThree = courseRepository.getThreeRandomCourses();
         return mapAllToModel(topThree);
+    }
+
+    @Override
+    public CourseModel mapToModel(Course course) {
+        return new CourseModel(course);
     }
 
     @Override

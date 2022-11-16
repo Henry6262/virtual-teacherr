@@ -8,7 +8,6 @@ import com.henrique.virtualteacher.models.*;
 import com.henrique.virtualteacher.repositories.UserRepository;
 import com.henrique.virtualteacher.services.interfaces.UserService;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +32,6 @@ public class UserServiceImpl implements UserService {
     private static final String UNAUTHORIZED_MESSAGE = "Unauthorized operation";
 
     private final UserRepository userRepository;
-    private final ModelMapper mapper;
     private final PasswordEncoder encoder;
     private final Logger logger;
 
@@ -43,6 +42,15 @@ public class UserServiceImpl implements UserService {
             throw new UnauthorizedOperationException(String.format("User with id: {%d} does not have permissions to get all Users", loggedUser.getId()));
         }
         return userRepository.findAll();
+    }
+
+    public List<UserModel> getAllUserModels(User loggedUser) {
+        List<UserModel> modelList = new ArrayList<>();
+
+        for (User current : getAll(loggedUser)) {
+            modelList.add(new UserModel(loggedUser));
+        }
+        return modelList;
     }
 
     public void enableUser(int userToVerifyId) {
@@ -82,7 +90,7 @@ public class UserServiceImpl implements UserService {
         usermodel.setAssignments(user.getAssignments());
         usermodel.setCompletedLectures(user.getCompletedLectures());
         usermodel.setCompletedCourses(user.getCompletedCourses());
-        usermodel.setOwnedNftCourses(user.getNftCours());
+        usermodel.setOwnedNftCourses(user.getNftCourses());
         usermodel.setProfilePicture(user.getProfilePicture());
         return usermodel;
     }
@@ -182,7 +190,7 @@ public class UserServiceImpl implements UserService {
         verifyUserIsAllowed(toDelete, loggedUser);
 
         toDelete.getCompletedLectures().clear();
-        toDelete.getNftCours().clear();
+        toDelete.getNftCourses().clear();
 
         //fixme -> will need to delete also the comments, ratings and assignments
         userRepository.delete(toDelete);
@@ -190,11 +198,11 @@ public class UserServiceImpl implements UserService {
 
     public String getMostStudiedCourseTopic(User loggedUser) {
 
-        if (loggedUser.getNftCours().size() == 0){
+        if (loggedUser.getNftCourses().size() == 0){
             return "";
         }
 
-        List<NFT> sortedEnrolledCourses = loggedUser.getNftCours().stream().
+        List<NFT> sortedEnrolledCourses = loggedUser.getNftCourses().stream().
                 sorted(Comparator.comparing(object -> object.getCourse().getTopic().name())).collect(Collectors.toList());
 
         int maxSequence = 1;
@@ -229,8 +237,12 @@ public class UserServiceImpl implements UserService {
 
     private User mapFromRegisterModel(RegisterUserModel register) {
         User newUser = new User();
-        mapper.map(register, newUser);
-        newUser.setPassword(encoder.encode(newUser.getPassword()));
+
+        newUser.setFirstName(register.getFirstName());
+        newUser.setLastName(register.getLastName());
+        newUser.setEmail(register.getEmail());
+        newUser.setUsername(register.getUsername());
+        newUser.setPassword(encoder.encode(register.getPassword()));
         newUser.setRoles(List.of(new Role(1, EnumRoles.STUDENT)));
         newUser.setEnabled(false);
 

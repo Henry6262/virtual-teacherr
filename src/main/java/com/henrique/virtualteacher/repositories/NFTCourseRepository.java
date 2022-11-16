@@ -15,6 +15,9 @@ public interface NFTCourseRepository extends JpaRepository<NFT, Integer> {
 
     Optional<NFT> getByOwnerIdAndCourseId(int userId, int courseId);
 
+    Optional<NFT>  findTopByOrderByIdDesc();
+
+
     List<NFT> getAllByOwnerId(int userId);
 
     List<NFT> getAllByCourseId(int id);

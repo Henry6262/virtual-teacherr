@@ -29,7 +29,6 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final CourseService courseService;
-    private final ModelMapper modelMapper;
     private final Logger logger;
     private final RatingService ratingService;
 

@@ -111,7 +111,7 @@ public class WalletServiceImpl implements WalletService{
     }
 
     @Override
-    public NFT purchaseCourse(Course course, User loggedUser) {
+    public NFT mintNFT(Course course, User loggedUser) {
 
         Wallet userWallet = getLoggedUserWallet(loggedUser);
 

@@ -119,6 +119,7 @@
           </div>
           <div class="blog-slider__content">
             <span class="blog-slider__code" th:text="${course.difficulty}"></span>
+            <div class="blog-slider__id" style="visibility: hidden" th:text="${course.id}"></div>
             <div class="blog-slider__title" th:text="${course.title}"></div>
             <div class="blog-slider__text" th:text="${course.description}"></div>
             <div class="invisible-info" style="display: none">
@@ -128,7 +129,7 @@
               <div class="skill3" th:text="${course.skill3}"></div>
               <div class="starting-date" th:text="${course.startingDate}"></div>
             </div>
-            <a onclick="openModal(this)" data-toggle="modal" href="#costumModal9" role="button" class="blog-slider__button course-modal-link" >Enroll</a>
+            <a onclick="openModal(this)" data-toggle="modal" href="#costumModal9" role="button" class="blog-slider__button course-modal-link" >MINT</a>
           </div>
         </div>
 
@@ -159,6 +160,7 @@
                 <img class="course-image" src="#" th:src="${course.picture}">
               </div>
               <div class="course-text-content">
+                <div class="id-course" style="visibility: hidden" th:text="${course.id}"></div>
                 <div class="name-course" th:text="${course.title}"></div>
                 <div class="topic-course" th:text="${course.topic}"></div>
                 <div class="difficulty-course" th:text="${course.difficulty}"></div>
@@ -244,6 +246,7 @@
             <div class="modal-top" style="display: flex;gap: 40px;">
               <img class="modal-image" src="#">
               <h3 class="modal-title">Such Modal, Much Animate!</h3>
+              <small id="courseId" style="visibility: hidden"></small>
             </div>
 
 

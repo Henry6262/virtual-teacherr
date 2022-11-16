@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface LectureService {
 
+
+    List<LectureModel> mapAllToModel(List<Lecture> lectures);
     Lecture getById(int id);
 
     Lecture getByEntryIdAndCourseId(int entryId, int courseId);

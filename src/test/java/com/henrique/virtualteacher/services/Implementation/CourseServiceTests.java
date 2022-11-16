@@ -365,12 +365,12 @@ public class CourseServiceTests {
         User mockUser = Helpers.createMockUser(21);
         Course mockCourse = Helpers.createMockCourse();
 
-        Mockito.doNothing().when(walletService).purchaseCourse(mockCourse, mockUser);
+        Mockito.doNothing().when(walletService).mintNFT(mockCourse, mockUser);
         Mockito.doNothing().when(transactionService).create(Mockito.any(Transaction.class), Mockito.any());
         Mockito.doNothing().when(enrollmentService).purchase(mockUser, mockCourse);
         courseService.mint(mockUser, mockCourse);
 
-        Mockito.verify(walletService, Mockito.times(1)).purchaseCourse(mockCourse, mockUser);
+        Mockito.verify(walletService, Mockito.times(1)).mintNFT(mockCourse, mockUser);
         Mockito.verify(transactionService, Mockito.times(1)).create(Mockito.any(), Mockito.any());
         Mockito.verify(enrollmentService, Mockito.times(1)).purchase(mockUser, mockCourse);
     }

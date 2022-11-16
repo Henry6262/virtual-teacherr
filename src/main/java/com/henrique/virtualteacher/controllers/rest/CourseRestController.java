@@ -1,10 +1,7 @@
 package com.henrique.virtualteacher.controllers.rest;
 
 import com.henrique.virtualteacher.configurations.CloudinaryConfig;
-import com.henrique.virtualteacher.entities.Assignment;
-import com.henrique.virtualteacher.entities.Course;
-import com.henrique.virtualteacher.entities.Lecture;
-import com.henrique.virtualteacher.entities.User;
+import com.henrique.virtualteacher.entities.*;
 import com.henrique.virtualteacher.exceptions.UnauthorizedOperationException;
 import com.henrique.virtualteacher.models.*;
 import com.henrique.virtualteacher.services.interfaces.*;
@@ -42,7 +39,6 @@ private final RatingService ratingService;
 private final CommentService commentService;
 private final CloudinaryConfig cloudinaryConfig;
 private final Logger logger;
-private final ModelMapper mapper;
 
 
     @GetMapping("/enrolled")
@@ -74,8 +70,7 @@ private final ModelMapper mapper;
                                          ModelAndView model) {
 
         Course course = courseService.getById(id);
-        CourseModel courseModel = new CourseModel();
-        mapper.map(course, courseModel);
+        CourseModel courseModel = courseService.mapToModel(course);
 
         model.addObject("course", course);
         model.addObject("courseComments", commentService.getAllForCourse(id));
@@ -171,14 +166,14 @@ private final ModelMapper mapper;
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = "application/json")
-    public ResponseEntity<String> create(@RequestBody CourseModel courseModel,
-                                          Principal principal) {
+    @PostMapping(value = "/create", consumes = "application/json")
+    public String create(@RequestBody(required = false) CourseModel courseModel,
+                                          Principal principal,
+                                            Model model) {
 
         User loggedUser = userService.getByEmail(principal.getName());
         courseService.create(courseModel, loggedUser);
-
-        return new ResponseEntity<>("success", HttpStatus.OK);
+        return "donete";
     }
 
     @PutMapping("/{id}/update")
@@ -219,7 +214,7 @@ private final ModelMapper mapper;
         User loggedUser = userService.getByEmail(principal.getName());
 
         Lecture lecture = lectureService.getByEntryIdAndCourseId(entryId, id);
-        LectureModel lectureModel = mapper.map(lecture, new TypeToken<LectureModel>() {}.getType());
+        LectureModel lectureModel = new LectureModel(lecture);
 
         model.addAttribute("courseLecture", lectureModel);
         return new ResponseEntity<>(model, HttpStatus.OK);
@@ -290,8 +285,8 @@ private final ModelMapper mapper;
 
 
     @PostMapping("/{id}/purchase")
-    public ResponseEntity<Boolean> enroll(@PathVariable int id,
-                                          Principal principal) {
+    public ResponseEntity<HttpStatus> enroll(@PathVariable int id,
+                       Principal principal) {
 
         User loggedUser = userService.getByEmail(principal.getName());
         Course course  = courseService.getById(id);
@@ -299,7 +294,7 @@ private final ModelMapper mapper;
         courseService.mint(loggedUser, course);
 
         logger.info(String.format("User with id: %d, has purchased Course with id: %d", loggedUser.getId(), course.getId()));
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
 
@@ -339,7 +334,7 @@ private final ModelMapper mapper;
 
         courseService.upload(multipartFile, id, loggedUser);
 
-        CourseModel courseModel = mapper.map(courseService.getById(id), new TypeToken<CourseModel>() {}.getType());
+        CourseModel courseModel = new CourseModel(courseService.getById(id));
         return new ResponseEntity<>(courseModel, HttpStatus.ACCEPTED);
     }
 

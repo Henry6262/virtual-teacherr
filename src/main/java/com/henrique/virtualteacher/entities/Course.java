@@ -48,7 +48,7 @@ public class Course {
     @Column(name = "price")
     private BigDecimal price;
 
-    @Column(name = "starting_date")
+    @Column(name = "mint_date")
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate startingDate;
 

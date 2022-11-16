@@ -31,7 +31,6 @@ public class UserRestController {
     private final UserService userService;
     private final WalletService walletService;
     private final VerificationTokenService tokenService;
-    private final ModelMapper mapper;
     private final Logger logger;
 
     @ApiResponses(value = {
@@ -44,7 +43,7 @@ public class UserRestController {
                                             Model model) {
 
         User loggedUser = userService.getByEmail(principal.getName());
-        List<UserModel> dtoList = mapper.map(userService.getAll(loggedUser), new TypeToken<List<UserModel>>() {}.getType());
+        List<UserModel> dtoList = userService.getAllUserModels(loggedUser);
 
         model.addAttribute("allUsers", dtoList);
         return new ResponseEntity<>(model, HttpStatus.OK);
@@ -56,13 +55,8 @@ public class UserRestController {
                           Model model) {
 
         User loggedUser = userService.getByEmail(principal.getName());
-
         User userToGet = userService.getById(id, loggedUser);
-
-        UserModel userModel = new UserModel();
-        mapper.map(userToGet, userModel);
-
-        return userModel;
+        return new UserModel(userToGet);
     }
 
 
@@ -71,16 +65,11 @@ public class UserRestController {
                                       Model model){
 
         model.addAttribute("name",searchDto);
-
-        User toFind;
         try {
-            toFind = userService.getByEmail(searchDto.getKeyword());
+            userService.getByEmail(searchDto.getKeyword());
         } catch (EntityNotFoundException e) {
             return false;
         }
-
-        UserModel usermodel = new UserModel();
-        mapper.map(toFind, usermodel);
         return true;
     }
 

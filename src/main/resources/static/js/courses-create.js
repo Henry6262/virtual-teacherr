@@ -59,6 +59,9 @@ document.cookie = 'SameSite'
     const skill2 = document.querySelector('.skill-input-2')
     const skill3 = document.querySelector('.skill-input-3')
 
+    const priceSelector = document.querySelector('#course-price');
+    const mintsAvailableSelector = document.querySelector('#total-mints')
+
     const formPicture = document.querySelector('#picture-form')
 
     let pictureWasChanged = false;
@@ -109,24 +112,19 @@ function createCourse() {
 
             skill1: skill1.value,
             skill2: skill2.value,
-            skill3: skill3.value
+            skill3: skill3.value,
+
+            price: priceSelector.value,
+            availableMints: mintsAvailableSelector.value
         }
 
-         $.ajax({
-            type: "POST",
-            url: "/api/courses",
-            dataType: "json",
-            contentType: 'application/json',
-            data: JSON.stringify(courseModel),
-
-            success: function(data) {
-                alert('course created')
-            },
-
-            error: function (data) {
-
-            }
-
+         $.ajax(
+             {
+                 type: 'POST',
+                 url: '/api/courses/create',
+                 dataType: 'json',
+                 contentType: 'application/json',
+                 data: JSON.stringify(courseModel),
         })
     }
 

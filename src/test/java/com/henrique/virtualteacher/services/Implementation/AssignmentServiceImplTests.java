@@ -300,7 +300,7 @@ public class AssignmentServiceImplTests {
         List<Assignment> assignments3 = Helpers.createGradedAssignmentList(enrollments.get(2).getCourse(), initiator);
 
         initiator.setAssignments(assignments);
-        initiator.setNftCours(enrollments);
+        initiator.setNftCourses(enrollments);
 
         Mockito.when(userService.getById(initiator.getId(), initiator)).thenReturn(initiator);
         Mockito.when(assignmentRepository.getAllByUserIdAndLectureCourseIdAndStatus(initiator.getId(), enrollments.get(0).getId(), Status.GRADED)).thenReturn(assignments);

@@ -22,8 +22,6 @@ public class RatingServiceImpl implements RatingService {
 
     private final RatingRepository ratingRepository;
     private final UserService userService;
-    private final ModelMapper modelMapper;
-
 
     @Override
     public Rating getById(int id) {

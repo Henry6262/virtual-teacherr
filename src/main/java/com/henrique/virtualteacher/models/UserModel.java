@@ -14,6 +14,19 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserModel {
 
+    public UserModel(User user) {
+        setEmail(user.getEmail()) ;
+        setFirstname(user.getFirstName());
+        setLastname(user.getLastName());
+        setProfilePicture(user.getProfilePicture());
+        setRolesList(user.getRoles());
+        setCompletedLectures(user.getCompletedLectures());
+        setCompletedCourses(user.getCompletedCourses());
+        setOwnedNftCourses(user.getNftCourses());
+        setAssignments(user.getAssignments());
+        setComments(user.getComments());
+    }
+
     @NotBlank
     private String email;
 

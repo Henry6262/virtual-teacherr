@@ -155,7 +155,7 @@ public class WalletServiceImplTests {
 
         Mockito.when(walletRepository.getByOwnerEmail(mockUser.getEmail())).thenReturn(Optional.of(mockWallet));
 
-        Assertions.assertThrows(ImpossibleOperationException.class, () -> walletService.purchaseCourse(course, mockUser));
+        Assertions.assertThrows(ImpossibleOperationException.class, () -> walletService.mintNFT(course, mockUser));
     }
 
     @Test
@@ -168,7 +168,7 @@ public class WalletServiceImplTests {
 
         Mockito.when(walletRepository.getByOwnerEmail(mockUser.getEmail())).thenReturn(Optional.of(userWallet));
 
-        walletService.purchaseCourse(mockCourse, mockUser);
+        walletService.mintNFT(mockCourse, mockUser);
 
         Assertions.assertEquals(250.0, userWallet.getBalance().doubleValue());
     }

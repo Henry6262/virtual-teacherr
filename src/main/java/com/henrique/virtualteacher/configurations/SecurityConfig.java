@@ -55,9 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/api/courses/topics")
                 .permitAll()
-                .antMatchers(HttpMethod.POST, "/api/courses", "/api/courses/{id}")
+                .antMatchers(HttpMethod.POST, "/api/courses", "/api/courses/create", "/api/courses/{id}")
                 .hasAnyAuthority("ADMIN", "TEACHER")
-                .antMatchers(HttpMethod.POST, "/api/courses/{id}/rate", "/api/courses/{id}/complete", "/api/courses/purchase", "/api/courses/{id}/purchase",
+                .antMatchers(HttpMethod.POST, "/api/courses/{id}/rate", "/api/courses/{id}/complete", "/api/courses/{id}/purchase", "/api/courses/{id}/purchase",
                             "/api/courses/{id}/lecture/{entryId}", "/api/courses/{id}/lecture/{entryId}/submit")
                 .hasAuthority("STUDENT")
                 .antMatchers(HttpMethod.GET,  "/api/courses/enabled", "/api/courses/test")

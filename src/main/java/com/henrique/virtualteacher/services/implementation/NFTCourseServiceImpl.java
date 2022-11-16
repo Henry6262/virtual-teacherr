@@ -27,6 +27,7 @@ public class NFTCourseServiceImpl implements NFTCourseService {
                 .orElseThrow(() -> new EntityNotFoundException("Course Enrollment", "ID", String.valueOf(id)));
     }
 
+
     @Override
     public List<NFT> getAllForUser(User loggedUser, int userToGetId) {
         checkUserIsAllowed(loggedUser, userToGetId);
@@ -74,9 +75,6 @@ public class NFTCourseServiceImpl implements NFTCourseService {
 
     @Override
     public NFT purchase(User purchaser, Course courseToPurchaseNft) {
-        if (purchaser.hasPurchasedCourse(courseToPurchaseNft)){
-            throw new ImpossibleOperationException(String.format("User with id: {%d}, has already purchased course with id: {%d}", purchaser.getId(), courseToPurchaseNft.getId()));
-        }
 
         List<NFT> availableNFTs = nftCourseRepository.getAllByCourseIdAndMinted(courseToPurchaseNft.getId(), false);
         if (availableNFTs.isEmpty()) {
@@ -87,7 +85,7 @@ public class NFTCourseServiceImpl implements NFTCourseService {
         changeNftOwnership(purchaser, newNFT);
 
         NFT created = nftCourseRepository.save(newNFT);
-        logger.info(String.format("User with id: %d, has purchased course NFT with drop id %d of course with id %d", purchaser.getId(), newNFT.getDropNumber(), newNFT.getCourse().getId()));
+        logger.info(String.format("User with id: %d, has MINTED course NFT with drop id %d of course with id %d", purchaser.getId(), newNFT.getDropNumber(), newNFT.getCourse().getId()));
         return created;
     }
 

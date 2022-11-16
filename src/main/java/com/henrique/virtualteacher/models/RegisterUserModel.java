@@ -15,6 +15,9 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class RegisterUserModel extends LoginModel {
 
+    @Size(min = 3, max = 15, message = "Username should be between 3 and 15 characters")
+    private String username;
+
     @Size(min = 2, max = 15, message = UserUpdateModel.FIRSTNAME_INVALID_SIZE_MSG)
     private String firstName;
 

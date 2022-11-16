@@ -24,12 +24,12 @@ var swiper = new Swiper('.blog-slider', {
 function enrollToCourse(e) {
 
     const courseTitle = e.parentElement.querySelector(".modal-title").innerHTML
+    const courseId = e.parentElement.querySelector('#courseId').innerHTML;
 
     $.ajax({
         type: "POST",
-        url: "/api/courses/enroll",
-        dataType: 'json',
-        data: {"courseTitle":courseTitle},
+        url:  '/api/courses/' + courseId + "/purchase",
+
 
         success: function (data) {
             alert(`you have enrolled to course: ${courseTitle}`)
@@ -71,8 +71,8 @@ btnCloseBar.addEventListener('click', () => {
 //this is code for the modal that shows course information when a course is clicked
 
 
- const $modal = $('.modal-frame');
-const $overlay = $('.modal-overlay');
+ let $modal = $('.modal-frame');
+let $overlay = $('.modal-overlay');
 
 /* Need this to clear out the keyframe classes so they dont clash with each other between ener/leave. Cheers. */
 $modal.bind('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(e){
@@ -106,6 +106,7 @@ const modalSelector = document.querySelector('.modal-frame')
 const modalContentSelector = document.querySelector('.modal-content')
 const bodySelector = document.querySelector('.body')
 const modalTitleSelector = document.querySelector('.modal-title')
+const modalCourseIdSelector = document.querySelector("#courseId");
 const modalDescriptionSelector = document.querySelector('.modal-description')
 const modalImage = document.querySelector('.modal-image')
 const courseStartingDateSelector = document.querySelector('.modal-date')
@@ -134,6 +135,7 @@ modalSelector.addEventListener('click', function (e) {
 //open course modal
 function openModal(e) {
 
+    let courseId;
     let courseTitle;
     let courseDescription;
     let courseImage;
@@ -149,6 +151,7 @@ function openModal(e) {
 
         const elementContainer = e.offsetParent
 
+        courseId = elementContainer.querySelector('.blog-slider__id')
         courseTitle = elementContainer.querySelector('.blog-slider__title')
         courseImage = elementContainer.querySelector('#slider-img')
         courseDescription = elementContainer.querySelector(".blog-slider__text")
@@ -161,6 +164,7 @@ function openModal(e) {
 
     } else {
 
+        courseId = e.querySelector('.id-course');
         courseTitle = e.querySelector('.name-course')
         courseDescription = e.querySelector('.description-course')
         courseImage = e.querySelector('.course-image')
@@ -182,6 +186,7 @@ function openModal(e) {
     modalAvg.innerHTML = courseAverageRating.innerHTML
     courseStartingDateSelector.innerHTML = courseStartingDate.innerHTML;
     modalTitleSelector.innerHTML = courseTitle.innerHTML
+    modalCourseIdSelector.innerHTML = courseId.innerHTML;
     modalDescriptionSelector.innerHTML = courseDescription.innerHTML
     modalImage.src = courseImage.src
     console.log('hello')

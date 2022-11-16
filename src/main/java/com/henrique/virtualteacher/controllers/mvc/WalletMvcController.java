@@ -27,7 +27,6 @@ public class WalletMvcController {
 
     private final WalletService walletService;
     private final UserService userService;
-    private final ModelMapper mapper;
     private final TransactionService transactionService;
 
     @ModelAttribute
@@ -54,7 +53,9 @@ public class WalletMvcController {
         Wallet loggedUserWallet = walletService.getLoggedUserWallet(loggedUser);
 
         WalletModel walletModel = new WalletModel();
-        mapper.map(loggedUserWallet, walletModel);
+        walletModel.setUserId(loggedUserWallet.getOwner().getId());
+        walletModel.setId(loggedUserWallet.getId());
+        walletModel.setBalance(loggedUserWallet.getBalance());
 
         List<Transaction> walletTransactions = transactionService.getAllByWallet(loggedUserWallet, loggedUser);
 

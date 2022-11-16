@@ -25,19 +25,16 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
     private final VerificationTokenRepository tokenRepository;
     private final UserService userService;
     private final Logger logger;
-    private final ModelMapper mapper;
     private final MailSender mailSender;
 
     @Autowired
     public VerificationTokenServiceImpl(VerificationTokenRepository tokenRepository,
                                         UserService userService,
                                         Logger logger,
-                                        ModelMapper modelMapper,
                                         MailSender mailSender) {
         this.tokenRepository  = tokenRepository;
         this.userService = userService;
         this.logger = logger;
-        this.mapper = modelMapper;
         this.mailSender = mailSender;
     }
 

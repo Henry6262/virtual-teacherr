@@ -84,7 +84,7 @@ public class User {
     @JoinTable(name = "nft_courses",
     joinColumns = @JoinColumn(name = "owner_id"),
     inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private List<NFT> nftCours;
+    private List<NFT> NftCourses;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.REMOVE)
@@ -97,21 +97,21 @@ public class User {
     @JoinTable(name = "comments",
             joinColumns = @JoinColumn(name = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<Comment> comments;
+    private List<Comment> comments;
 
     public void addComment(Comment comment) {
         comments.add(comment);
     }
 
     public List<Course> getCompletedCourses() {
-        return nftCours.stream()
+        return NftCourses.stream()
                 .filter(NFT::isCompleted)
                 .map(NFT::getCourse)
                 .collect(Collectors.toList());
     }
 
     public List<Course> getPurchasedCourses() {
-        return nftCours.stream()
+        return NftCourses.stream()
                 .map(NFT::getCourse)
                 .collect(Collectors.toList());
     }
@@ -123,7 +123,7 @@ public class User {
             throw new ImpossibleOperationException(String.format("User with id {%d}, has already completed Course with id {%d}", this.getId(), course.getId()));
         }
         NFT newNFT = new NFT(this, course);
-        nftCours.add(newNFT);  //fixme: change made here
+        NftCourses.add(newNFT);  //fixme: change made here
     }
 
     public void completeLecture(Lecture lecture) {
@@ -147,7 +147,7 @@ public class User {
         }
 
 //        completedCourses.add(course); //fixme change made here
-        NFT toComplete = nftCours.stream()
+        NFT toComplete = NftCourses.stream()
                 .filter(c -> c.getCourse().getId() == course.getId())
                 .collect(Collectors.toList()).get(0);
 
@@ -171,7 +171,7 @@ public class User {
     }
 
     public boolean hasCompletedCourse(Course course) {
-        return this.getNftCours().stream()
+        return this.getNftCourses().stream()
                 .filter(NFT::isCompleted)
                 .anyMatch(courseEnrollment -> courseEnrollment.getCourse().getId() == course.getId());
     }
@@ -182,7 +182,7 @@ public class User {
     }
 
     public boolean hasPurchasedCourse(Course course) {
-        return this.getNftCours().stream()
+        return this.getNftCourses().stream()
                 .anyMatch(c -> c.getCourse().getId() == course.getId());
     }
 

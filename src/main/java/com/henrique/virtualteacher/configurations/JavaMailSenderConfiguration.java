@@ -19,7 +19,7 @@ public class JavaMailSenderConfiguration {
         mailSender.setPort(25);
 
         mailSender.setUsername("noreply.virtualwallet@gmail.com");
-        mailSender.setPassword("12345@Ab");
+        mailSender.setPassword("gjnamsmnofrrrhjf");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

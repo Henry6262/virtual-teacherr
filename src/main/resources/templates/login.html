@@ -44,12 +44,13 @@
         <div class="thumbnail"><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/169963/hat.svg"/></div>
 
         <form class="form register-form" > <!-- th:action="@{/auth/register}" th:object="${registerObject}" method="post" -->
-            <div class="form-control">
+            <div class="form-control names">
                 <input id="firstName"  placeholder="name" autocomplete="chrome-off"/>
+                <input id="lastname" placeholder="last name" autocomplete="chrome-off">
                 <small></small>
             </div>
             <div class="form-control">
-                <input id="lastName"  placeholder="lastname" autocomplete="chrome-off">
+                <input id="username"  placeholder="username" autocomplete="chrome-off">
                 <small></small>
             </div>
             <div class="form-control">
@@ -72,20 +73,7 @@
             <p class="message">Already registered? <a href="#">Sign In</a></p>
         </form>
 
-        <form class="form login-form active-form" > <!-- th:action="@{/auth/login}" method="post" -->
-            <div class="form-control">
-                <input name="username" class="username-login" type="text" placeholder="username" autocomplete="chrome-off"/> <!-- id="username"-->
-                <small></small>
-            </div>
 
-            <div class="form-control">
-                <input name="password" class="password-login"  type="password" placeholder="password" autocomplete="chrome-off off"/> <!-- id="password" -->
-                <small></small>
-            </div>
-
-            <button type="button">login</button>
-            <p class="message">Not registered? <a href="#">Create an account</a></p>
-        </form>
 
     </div>
 
