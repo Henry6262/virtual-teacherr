@@ -190,6 +190,7 @@
     justify-content: center;
     text-align: center;
     letter-spacing: 1px;
+    left: 35%;
 }
 @media screen and (max-width: 576px) {
     .blog-slider__button {

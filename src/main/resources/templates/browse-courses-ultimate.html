@@ -7,7 +7,8 @@
   <link href="../static/css/courses-browse-ultimate-styles.css" th:href="@{/css/courses-browse-ultimate-styles.css}" rel="stylesheet">
   <link rel="stylesheet" href="../static/css/modal-browse-courses-styles.css" th:href="@{/css/modal-browse-courses-styles.css}">
   <link rel="stylesheet" href="../static/css/hover-button-styles.css" th:href="@{/css/hover-button-styles.css}">
-  <link rel="stylesheet" href="../static/css/page-skeleton-styles.css" th:href="@{/css/page-skeleton-styles.css}">
+  <link rel="stylesheet" href="../static/css/page-skeleton-styles.css" th:href="@{/css/page-skeleton-styles.css}">\
+  <link rel="stylesheet" href="../static/css/progress-bar-styles.css" th:href="@{/css/progress-bar-styles.css}">
 
   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.3.5/css/swiper.min.css'>
   <link rel="stylesheet" href="../static/css/image-slider-styles.css" th:href="@{/css/image-slider-styles.css}">
@@ -122,6 +123,21 @@
             <div class="blog-slider__id" style="visibility: hidden" th:text="${course.id}"></div>
             <div class="blog-slider__title" th:text="${course.title}"></div>
             <div class="blog-slider__text" th:text="${course.description}"></div>
+
+            <div class="mint-info">
+              <small class="mint-percentage" th:text="${course.getMintPercentage()} + '%'"></small>
+              <small class="mint-small" th:text="'(' + ${course.getTotalMintedCourses()} + '/'"></small>
+              <small class="mint-small" th:text="${course.getAvailableMints()} + ')' "></small>
+            </div>
+
+            <div class="mint-bar">
+              <div class="health">
+                <span class="progress-bar">
+                  <span class="shade warm"></span>
+                </span>
+              </div>
+            </div>
+
             <div class="invisible-info" style="display: none">
               <div class="average-rating" th:text="${course.averageRating}"></div>
               <div class="skill1" th:text="${course.skill1}"></div>
@@ -195,7 +211,6 @@
 
       <a href="#" class="arrow java-arrow left"></a>
 
-
       <h2 class="heading java">Recommended Courses</h2>
       <div class="browse-courses browse-java">
 
@@ -207,13 +222,14 @@
                 <img class="course-image" src="#" th:src="${course.picture}">
               </div>
               <div class="course-text-content">
+                <div class="id-course" style="visibility: hidden" th:text="${course.id}"></div>
                 <div class="name-course" th:text="${course.title}"></div>
                 <div class="topic-course" th:text="${course.topic}"></div>
                 <div class="difficulty-course" th:text="${course.difficulty}"></div>
                 <div style="visibility: hidden; display:none" class="hidden-fields">
                   <div class="description-course" th:text="${course.description}"></div>
                   <div class="starting-date-course" th:text="${course.startingDate}"></div>
-                  <div class="skill-1" th:xt="${course.getSkill1()}"></div>
+                  <div class="skill-1" th:text="${course.getSkill1()}"></div>
                   <div class="skill-2" th:text="${course.getSkill2()}"></div>
                   <div class="skill-3" th:text="${course.getSkill3()}"></div>
                 </div>
@@ -331,8 +347,13 @@
 <!-- partial -->
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.3.5/js/swiper.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
 <script src="../static/js/browse-courses-ultimate.js" th:src="@{/js/browse-courses-ultimate.js}"></script>
+
+<script>
+
+   let $barWidth = document.querySelector(".mint-percentage").innerHTML;
+  $(".progress-bar").css('width', $barWidth);
+</script>
 
 
 </body>

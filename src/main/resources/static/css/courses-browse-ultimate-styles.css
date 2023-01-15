@@ -11,6 +11,22 @@
     margin-top: 14rem;
 }
 
+.mint-info {
+    display: flex;
+    position: relative;
+    justify-content: right;
+    margin-right: 33px;
+}
+
+.mint-percentage {
+    color: dimgray;
+    font-weight: bold;
+}
+
+.mint-small {
+    color: black;
+}
+
 
 .random {
     background-color: black;

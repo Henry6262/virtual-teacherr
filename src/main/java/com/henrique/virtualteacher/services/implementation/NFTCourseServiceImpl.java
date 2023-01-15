@@ -63,56 +63,47 @@ public class NFTCourseServiceImpl implements NFTCourseService {
     }
 
     @Override
-    public List<NFT> getAllForCourseByMinted(User loggedUser, int courseToGet, boolean minted) {
-        return nftCourseRepository.getAllNonMintedFromCourse(courseToGet, minted);
-    }
-
-    @Override
     public NFT getUserOwnedNFTCourse(User loggedUser, Course enrolledCourse) {
         return nftCourseRepository.getByOwnerIdAndCourseId(loggedUser.getId(), enrolledCourse.getId())
                 .orElseThrow(() -> new EntityNotFoundException(String.format("User with id: %d, is not enrolled to course with id: %d", loggedUser.getId(), enrolledCourse.getId())));
     }
 
-    @Override
-    public NFT purchase(User purchaser, Course courseToPurchaseNft) {
+//    @Override
+//    public NFT purchase(User purchaser, Course courseToPurchaseNft) {
+//
+//        List<NFT> availableNFTs = nftCourseRepository.getAllByCourseIdAndMinted(courseToPurchaseNft.getId(), false);
+//        if (availableNFTs.isEmpty()) {
+//            throw new ImpossibleOperationException(String.format("There are no available mints for the course with id %d",courseToPurchaseNft.getId()));
+//        }
+//
+//        NFT newNFT = availableNFTs.get(0);
+//        changeNftOwnership(purchaser, newNFT);
+//
+//        NFT created = nftCourseRepository.save(newNFT);
+//        logger.info(String.format("User with id: %d, has MINTED course NFT with drop id %d of course with id %d", purchaser.getId(), newNFT.getDropNumber(), newNFT.getCourse().getId()));
+//        return created;
+//    }
 
-        List<NFT> availableNFTs = nftCourseRepository.getAllByCourseIdAndMinted(courseToPurchaseNft.getId(), false);
-        if (availableNFTs.isEmpty()) {
-            throw new ImpossibleOperationException(String.format("There are no available mints for the course with id %d",courseToPurchaseNft.getId()));
-        }
+    public NFT mintNFT(User purchaser, Course courseToPurchaseNft) {
 
-        NFT newNFT = availableNFTs.get(0);
-        changeNftOwnership(purchaser, newNFT);
-
-        NFT created = nftCourseRepository.save(newNFT);
-        logger.info(String.format("User with id: %d, has MINTED course NFT with drop id %d of course with id %d", purchaser.getId(), newNFT.getDropNumber(), newNFT.getCourse().getId()));
-        return created;
+        checkCourseHasAvailableMints(courseToPurchaseNft);
+        NFT newMint = new NFT(purchaser, courseToPurchaseNft);
+        return nftCourseRepository.save(newMint);
     }
 
-    public void checkCourseHasAvailableMints(User loggedUser, int courseId) {
-        List<NFT> availableNFTs = nftCourseRepository.getAllByCourseIdAndMinted(courseId, false);
-        if (availableNFTs.isEmpty()) {
-            throw new ImpossibleOperationException(String.format("There are no available mints for the course with id %d", courseId));
+    public void checkCourseHasAvailableMints(Course course) {
+        if (course.getNfts().size() >= course.getAvailableMints()) {
+            throw new ImpossibleOperationException(String.format("Course with id: %d, does not have available mints", course.getId()));
         }
     }
+
 
     private void changeNftOwnership(User newOwner, NFT nft) {
         nft.setOwner(newOwner);
-        nft.setMinted(true);
     }
 
     @Override
-    public void createCourseNFTItems(Course course, User loggedUser) {
-        checkUserIsAllowed(loggedUser, course.getCreator().getId());
-
-        for(int index = 0; index < course.getAvailableMints(); index++) {
-            NFT nft = new NFT(course, index);
-            nftCourseRepository.save(nft);
-        }
-    }
-
-    @Override
-    public void leave(User leavingUser, Course courseToLeave) {
+    public void burnNFT(User leavingUser, Course courseToLeave) {
         if (!leavingUser.hasPurchasedCourse(courseToLeave)){
             throw new ImpossibleOperationException(String.format("User with id: %d cannot leave course with id: %d, as the user is not enrolled",leavingUser.getId(), courseToLeave.getId()));
         }

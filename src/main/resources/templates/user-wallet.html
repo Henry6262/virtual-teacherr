@@ -119,7 +119,9 @@
                         </div>
                     </div>
 
-                    <div class="wallet-balance" th:text="${loggedUserWallet.getBalance()} + '$'"></div>
+                    <div class="wallet-balance" >
+                        <small th:text="${loggedUserWallet.getBalance()} + '$'"></small>
+                    </div>
 
                     <div class="transaction-button inventory" id="inventory-button">
                         <i class="fa-solid fa-warehouse"></i>

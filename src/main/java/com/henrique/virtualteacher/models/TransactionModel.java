@@ -39,7 +39,7 @@ public class TransactionModel {
     public TransactionModel(Wallet senderWallet, Wallet recipientWallet, NFT purchasedCourse) {
         this.senderWallet = senderWallet;
         this.recipientWallet = recipientWallet;
-        this.amount = purchasedCourse.getCourse().getPrice();
+        this.amount = purchasedCourse.getCourse().getMintPrice();
         this.purchasedCourse = purchasedCourse;
         this.creationTime = LocalDate.now();
     }

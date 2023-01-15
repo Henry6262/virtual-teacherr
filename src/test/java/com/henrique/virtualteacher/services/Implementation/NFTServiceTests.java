@@ -203,7 +203,7 @@ public class NFTServiceTests {
         User mockUser = Helpers.createMockUser();
         Course mockCourse = Helpers.createMockCourse();
 
-        Assertions.assertThrows(ImpossibleOperationException.class, () -> courseEnrollmentService.leave(mockUser, mockCourse));
+        Assertions.assertThrows(ImpossibleOperationException.class, () -> courseEnrollmentService.burnNFT(mockUser, mockCourse));
     }
 
     @Test
@@ -215,7 +215,7 @@ public class NFTServiceTests {
 
         Mockito.when(NFTCourseRepository.getByOwnerIdAndCourseId(mockUser.getId(), mockCourse.getId())).thenReturn(Optional.of(NFT));
 
-        courseEnrollmentService.leave(mockUser, mockCourse);
+        courseEnrollmentService.burnNFT(mockUser, mockCourse);
 
         Mockito.verify(NFTCourseRepository, Mockito.times(1)).delete(NFT);
 

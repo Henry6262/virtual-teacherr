@@ -29,6 +29,8 @@ public interface CourseService {
 
     List<Course> getAll ();
 
+    List<CourseModel> getCreatedCourses(User creator);
+
     List<CourseModel> getAllByTopic(EnumTopic topic);
 
     List<CourseModel> getAllByEnabled(boolean isEnabled, Optional<User> loggedUser);

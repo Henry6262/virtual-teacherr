@@ -27,8 +27,8 @@ function enrollToCourse(e) {
     const courseId = e.parentElement.querySelector('#courseId').innerHTML;
 
     $.ajax({
-        type: "POST",
-        url:  '/api/courses/' + courseId + "/purchase",
+        type: "GET",
+        url: `/api/courses/${courseId}/purchase`,
 
 
         success: function (data) {

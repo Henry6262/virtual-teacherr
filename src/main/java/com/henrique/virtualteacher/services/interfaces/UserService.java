@@ -19,6 +19,8 @@ public interface UserService extends UserDetailsService {
 
 //    void update(UserUpdateModel updateModel, User loggedUser);
 
+    void grantTeacherRole(Principal initiator, User affectedUser);
+
     void updatePassword(Principal loggedUser, String newPassword, String passwordConfirmation);
 
     void updateProfileInfo(Principal loggedUser, UserUpdateModel updateModel);
@@ -42,6 +44,8 @@ public interface UserService extends UserDetailsService {
     User getLoggedUser(Principal principal);
 
     User getByEmail(String email);
+
+    User getByUsername(String username);
 
     User create(RegisterUserModel register);
 

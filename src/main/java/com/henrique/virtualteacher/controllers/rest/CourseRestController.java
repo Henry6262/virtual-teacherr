@@ -166,14 +166,13 @@ private final Logger logger;
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/create", consumes = "application/json")
-    public String create(@RequestBody(required = false) CourseModel courseModel,
-                                          Principal principal,
-                                            Model model) {
+    @PostMapping(value = "/create", consumes = "application/x-www-form-urlencoded")
+    public boolean create(CourseModel courseModel,
+                         Principal principal) {
 
-        User loggedUser = userService.getByEmail(principal.getName());
-        courseService.create(courseModel, loggedUser);
-        return "donete";
+       courseModel.setCreatorEmail(principal.getName());
+        courseService.create(courseModel, userService.getByEmail(principal.getName()));
+        return true;
     }
 
     @PutMapping("/{id}/update")
@@ -242,6 +241,8 @@ private final Logger logger;
         return new ResponseEntity<>(model, HttpStatus.ACCEPTED);
     }
 
+
+
     @PostMapping("/{id}/lecture/{entryId}")
     public ResponseEntity<Boolean> completeCourseLecture(@PathVariable int id,
                                                          @PathVariable int entryId,
@@ -253,7 +254,7 @@ private final Logger logger;
         Lecture lecture = lectureService.getByEntryIdAndCourseId(entryId, id);
 
         courseService.verifyUserIsEnrolledToCourse(loggedUser, course);
-        //Todo: check if user has submitted assignment before completing the lecture
+        // Todo: check if user has submitted assignment before completing the lecture
         // dont do now as this makes testing way slower
         lectureService.completeLectureForUser(loggedUser, lecture);
 
@@ -268,12 +269,13 @@ private final Logger logger;
                                                 Principal principal) {
 
         User loggedUser = userService.getByEmail(principal.getName());
+        Course course = courseService.getById(id);
 
-        if (loggedUser.isNotTeacherOrAdmin()) {
+        if (loggedUser.getId() != course.getCreator().getId()) {
             throw new UnauthorizedOperationException("User", "id", String.valueOf(loggedUser.getId()), "add lecture", "Course", "id", String.valueOf(id));
         }
 
-        Course course = courseService.getById(id);
+
         Lecture lecture = lectureService.mapModelToEntity(lectureModel, course);
 
         lecture = lectureService.create(lecture, loggedUser);
@@ -284,8 +286,8 @@ private final Logger logger;
     }
 
 
-    @PostMapping("/{id}/purchase")
-    public ResponseEntity<HttpStatus> enroll(@PathVariable int id,
+    @GetMapping("/{id}/purchase")
+    public boolean enroll(@PathVariable("id") int id,
                        Principal principal) {
 
         User loggedUser = userService.getByEmail(principal.getName());
@@ -294,7 +296,7 @@ private final Logger logger;
         courseService.mint(loggedUser, course);
 
         logger.info(String.format("User with id: %d, has purchased Course with id: %d", loggedUser.getId(), course.getId()));
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return true;
     }
 
 

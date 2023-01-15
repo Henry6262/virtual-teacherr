@@ -67,10 +67,15 @@ public class CourseServiceImpl implements CourseService {
 
         for (Course current : courses) {
             CourseModel courseModel = mapCourseModel(current);
-            courseModel.setAverageRating(Math.round(ratingService.getAverageRatingForCourse(current) * 100.0) / 100.0);
             dtoList.add(courseModel);
         }
         return dtoList;
+    }
+
+    private int getCourseMintPercentage(Course course) {
+        int totalMints = course.getAvailableMints();
+        int minted = course.getTotalMinted();
+        return minted * 100 / totalMints;
     }
 
     @Override
@@ -87,7 +92,6 @@ public class CourseServiceImpl implements CourseService {
 
             Course newCourse = mapCourse(course);
             newCourse = courseRepository.save(newCourse);
-            nftCourseService.createCourseNFTItems(newCourse, loggedUser);
         }
     }
 
@@ -103,7 +107,7 @@ public class CourseServiceImpl implements CourseService {
         course.setTitle(dto.getTitle());
         User creator = userService.getByEmail(dto.getCreatorEmail());
         course.setCreator(creator);
-        course.setPrice(dto.getPrice());
+        course.setMintPrice(dto.getPrice());
         course.setDescription(dto.getDescription());
         course.setDifficulty(dto.getDifficulty());
         course.setPicture(dto.getPicture());
@@ -111,7 +115,8 @@ public class CourseServiceImpl implements CourseService {
         course.setSkill1(dto.getSkill1());
         course.setSkill2(dto.getSkill2());
         course.setSkill3(dto.getSkill3());
-        course.setEnabled(false);
+        course.setEnabled(true);           //todo: make creator chose weather course should be enabled or not
+        course.setAvailableMints(dto.getAvailableMints());
         return course;
     }
 
@@ -124,7 +129,7 @@ public class CourseServiceImpl implements CourseService {
         courseModel.setId(course.getId());
         courseModel.setTitle(course.getTitle());
         courseModel.setCreatorEmail(course.getCreator().getEmail());
-        courseModel.setPrice(course.getPrice());
+        courseModel.setPrice(course.getMintPrice());
         courseModel.setTopic(course.getTopic());
         courseModel.setDifficulty(course.getDifficulty());
         courseModel.setPicture(course.getPicture());
@@ -133,6 +138,10 @@ public class CourseServiceImpl implements CourseService {
         courseModel.setSkill2(course.getSkill2());
         courseModel.setSkill3(course.getSkill3());
         courseModel.setDescription(course.getDescription());
+        courseModel.setTotalMintedCourses(course.getTotalMinted());
+        courseModel.setAvailableMints(course.getAvailableMints());
+        courseModel.setAverageRating(Math.round(ratingService.getAverageRatingForCourse(course) * 100.0) / 100.0);
+        courseModel.setMintPercentage(Math.round(getCourseMintPercentage(course)));
         return courseModel;
     }
 
@@ -207,21 +216,18 @@ public class CourseServiceImpl implements CourseService {
     public void mint(User loggedUser, Course courseToPurchase) {
 
         if (loggedUser.hasPurchasedCourse(courseToPurchase)) {
-            throw new DuplicateEntityException(String.format("User with id: %d, is already enrolled to course with id: %d", loggedUser.getId(), courseToPurchase.getId()));
-            //todo : add max mint per person field in courses, and check if user has minted the max amount.
+            throw new DuplicateEntityException(String.format("User with id: %d, already owns 1 nft of the course with id: %d", loggedUser.getId(), courseToPurchase.getId()));
         }
-
-        nftCourseService.checkCourseHasAvailableMints(loggedUser, courseToPurchase.getId());
-        NFT mintedCourse = walletService.mintNFT(courseToPurchase, loggedUser);
-        createTransaction(loggedUser, mintedCourse);
+        walletService.checkUserWalletHasEnoughFunds(courseToPurchase.getMintPrice(), walletService.getLoggedUserWallet(loggedUser));
+        createTransaction(loggedUser, courseToPurchase);
     }
 
-    private void createTransaction(User loggedUser, NFT nft) {
-        Wallet senderWallet = walletService.getLoggedUserWallet(loggedUser);
-        Wallet recipientWallet = walletService.getLoggedUserWallet(nft.getOwner());
-        Transaction transaction = new Transaction(senderWallet, recipientWallet, nft);
+    private void createTransaction(User loggedUser, Course course) {
+        Wallet senderWallet = walletService.getLoggedUserWallet(course.getCreator());
+        Wallet recipientWallet = walletService.getLoggedUserWallet(loggedUser);
 
-        nftCourseService.purchase(loggedUser, nft.getCourse());
+        NFT mintedCourse = walletService.mintNFT(course, loggedUser);
+        Transaction transaction = new Transaction(senderWallet, recipientWallet, mintedCourse);
         transactionService.create(transaction, loggedUser);
     }
 
@@ -321,6 +327,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> getAll() {
         return courseRepository.findAll();
+    }
+
+    @Override
+    public List<CourseModel> getCreatedCourses(User creator) {
+        return mapAllToModel(courseRepository.getCoursesByCreatorId(creator.getId()));
     }
 
     @Override

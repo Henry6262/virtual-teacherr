@@ -478,7 +478,7 @@ public class Helpers {
         course.setCreator(createTeacher());
         course.setDescription("description");
         course.setDifficulty(EnumDifficulty.INTERMEDIATE);
-        course.setPrice(BigDecimal.valueOf(15.99));
+        course.setMintPrice(BigDecimal.valueOf(15.99));
         course.setNfts(new ArrayList<>());
         course.setRatings(new ArrayList<>());
         course.setTopic(EnumTopic.JAVA);

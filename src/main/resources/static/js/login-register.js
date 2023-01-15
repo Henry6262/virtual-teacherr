@@ -15,7 +15,7 @@ function changeActiveForm() {
     const loginForm = document.querySelector(".login-form")
     const registerForm = document.querySelector(".register-form")
 
-    const loginIsActive = function (){
+    const loginIsActive = function () {
         return loginForm.classList.contains("active-form")
     }
 

@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @Table(name = "transactions")
 public class Transaction {
 
-    private static final int PENDING_STATUS_THRESHOLD = 150;
+    private static final int PENDING_STATUS_THRESHOLD = 1500;
 
     @Id
     @Column(name = "id")
@@ -66,7 +66,7 @@ public class Transaction {
         this.purchasedCourse = purchasedCourse;
         this.creationTime = LocalDate.now();
         this.status = TransactionStatus.PENDING;
-        initializeType(TransactionType.EXCHANGE);
+        initializeTransactionType(TransactionType.EXCHANGE);
     }
 
     /**
@@ -77,11 +77,11 @@ public class Transaction {
     public Transaction (Wallet senderWallet,Wallet recipientWallet , NFT purchasedCourse) {
         this.senderWallet = senderWallet;
         this.recipientWallet = recipientWallet;
-        this.amount = purchasedCourse.getCourse().getPrice();
+        this.amount = purchasedCourse.getCourse().getMintPrice();
         this.purchasedCourse = purchasedCourse;
         this.creationTime = LocalDate.now();
-        setStatus();
-        initializeType(TransactionType.PURCHASE);
+        this.status = TransactionStatus.COMPLETED;
+        initializeTransactionType(TransactionType.PURCHASE);
     }
 
     /**
@@ -98,7 +98,7 @@ public class Transaction {
         this.purchasedCourse = null;
         this.creationTime = LocalDate.now();
         setStatus();
-        initializeType(TransactionType.TRANSFER);
+        initializeTransactionType(TransactionType.TRANSFER);
     }
 
     /**
@@ -113,11 +113,11 @@ public class Transaction {
         this.purchasedCourse = null;
         this.creationTime = LocalDate.now();
         setStatus();
-        initializeType(TransactionType.DEPOSIT);
+        initializeTransactionType(TransactionType.DEPOSIT);
     }
 
     private void setStatus() {
-        if (amount != null) {
+        if (this.amount != null) {
             checkAmountIsAboveThreshold();
         }
     }
@@ -150,7 +150,7 @@ public class Transaction {
         return getTransactionType() == TransactionType.PURCHASE;
     }
 
-    private void initializeType(TransactionType type) {
+    private void initializeTransactionType(TransactionType type) {
         this.transactionType = type;
     }
 

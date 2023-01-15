@@ -39,9 +39,17 @@ function getAndLoadContent(size, page) {
                 let transactionStatus = lowercaseWord(transaction.status);
 
                 if (transaction.senderWallet.owner.id === loggedUserId) {
-                    senderName = 'me'
-                    recipientName = transaction.recipientWallet.owner.firstName;
-                    transactionDirection =  'outgoing'
+
+                    if (transactionType === 'deposit') {
+                        senderName = '-'
+                        recipientName = 'Me'
+                        transactionType = 'incoming'
+                    } else {
+                        senderName = 'me'
+                        recipientName = transaction.recipientWallet.owner.firstName;
+                        transactionDirection =  'outgoing'
+                    }
+
                 } else {
                     senderName = transaction.senderWallet.owner.firstName;
                     recipientName = "me"
@@ -96,6 +104,7 @@ function getAndLoadContent(size, page) {
         }
     })
 }
+
 
 function lowercaseWord(string) {
     return string.toLowerCase()

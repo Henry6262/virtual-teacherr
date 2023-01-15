@@ -22,6 +22,8 @@ public interface WalletService {
 
     NFT mintNFT(Course course, User loggedUser);
 
+    void checkUserWalletHasEnoughFunds(BigDecimal amount, Wallet userWallet);
+
     void createExchangeRequest(User initiator, BigDecimal offer, NFT nftToBuy); //todo: this can be course for course or money for course;
 
     void createExchangeRequest(User initiator, NFT courseOffered, NFT courseWanted);

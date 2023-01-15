@@ -1,9 +1,22 @@
 
-insert into roles {
+insert into roles
+values(1,'STUDENT'),
+      (2,'TEACHER'),
+      (3,'ADMIN');
 
 insert into courses
-values (1,'REACH WUDAN MASTERY', 2, 'CALISTHENICS', 'INTERMEDIATE', 'This course is aimed for people that would like make an extreme change in the aim to transform their body to unthinkable limits, the exercises inside the course all bodyweight and elastic bands. This is all the equipment needed in order to become a full roman warrior in modern times',
-        '2024/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 20),
+values (5,
+'REACH WUDAN MASTERY',
+3,
+'CALISTHENICS',
+'INTERMEDIATE',
+'150',
+'This course is aimed for people that would like make an extreme change in the aim to transform their body to unthinkable limits, the exercises inside the course all bodyweight and elastic bands. This is all the equipment needed in order to become a full roman warrior in modern times',
+'2024/12/12',
+1,
+https://res.cloudinary.com/henrique-mk/image/upload/v1670882363/mengistu-etim-tateshinkai-spread-ep1_aapqid.jpg,
+'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.',
+ 20),
 
        (2, '101 React Native', 'REACT', 'INTERMEDIATE', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec turpis faucibus, vestibulum augue at, imperdiet nisi. Quisque id massa eu diam dictum bibendum. Sed fringilla sem dolor, nec venenatis neque efficitur at. Nam elementum, orci vel porta posuere, arcu.',
         '2023/12/12', 1, null, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vel tellus vel urna placerat condimentum ac id lectus. Duis ultricies.'),

@@ -96,14 +96,15 @@ const $cardExpirationMonth = document.querySelector('#cardMonth');
 const $cardExpirationYear = document.querySelector('#cardYear')
 const $cardHolder = document.querySelector('#cardName')
 const $cardCVV = document.querySelector('#cardCvv');
-
 const $submitButton = $('.card-form__button')
-
 const $errorMessage = document.querySelector('.invalid-input-error')
-
 const EMPTY_INPUT_MSG = 'Please fill all required fields'
 
 $submitButton.on('click',() => checkCardInformation())
+
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const depositAmount = urlParams.get('amount');
 
 let hasInvalidInput;
 function checkCardInformation() {
@@ -118,8 +119,7 @@ function checkCardInformation() {
         return
     }
 
-    check
-
+    makeDeposit(depositAmount)
 }
 
 function validateCardNumber(cardNumber) {
@@ -136,6 +136,7 @@ function makeDeposit(amount) {
         type: 'POST',
         url: '/api/wallets/deposit',
         dataType: 'application/json',
+        contentType: 'json',
         data: {amount: amount},
 
         success: function(response) {
@@ -150,7 +151,7 @@ function makeDeposit(amount) {
         },
 
         error: function(error) {
-
+            console.log('transaction has failed')
         }
 
     })

@@ -46,7 +46,7 @@ public class Course {
     private EnumDifficulty difficulty;
 
     @Column(name = "price")
-    private BigDecimal price;
+    private BigDecimal mintPrice;
 
     @Column(name = "mint_date")
     @DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -112,6 +112,10 @@ public class Course {
             throw new DuplicateEntityException(String.format("User with id: {%d}, has already left a rating to the course with id: {%d}", rating.getUser().getId(), rating.getId()));
         }
 
+    }
+
+    public int getTotalMinted() {
+        return this.getNfts().size();
     }
 
     public void addLecture(Lecture lecture) {

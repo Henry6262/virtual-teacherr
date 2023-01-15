@@ -102,12 +102,17 @@ document.cookie = 'SameSite'
     })
 
 function createCourse() {
-        const courseModel = {
+
+    let parts =startingDateSelector.value.split('-');
+    let date = new Date(parts[0], parts[1] - 1, parts[2]);
+    date = date.toLocaleDateString();
+
+    const courseModel = {
             title: titleSelector.value,
             topic: topicSelector.value,
             description: descriptionSelector.value,
             difficulty: difficultySelector.value,
-            startingDate: startingDateSelector.value,
+            startingDate: date,
             picture: uploadedPictureUrl,
 
             skill1: skill1.value,
@@ -118,13 +123,19 @@ function createCourse() {
             availableMints: mintsAvailableSelector.value
         }
 
-         $.ajax(
-             {
-                 type: 'POST',
-                 url: '/api/courses/create',
-                 dataType: 'json',
-                 contentType: 'application/json',
-                 data: JSON.stringify(courseModel),
+         $.ajax({
+             type: 'POST',
+             url: '/api/courses/create',
+             data: courseModel,
+
+             success: function(response) {
+                 console.log('course created !')
+                 window.location.href = '/'
+             },
+
+             error: function(error) {
+                 console.log('Error creating course G')
+             }
         })
     }
 
@@ -175,21 +186,18 @@ function createCourse() {
 
 
     $.ajax({
-    type: "GET",
-    url: "/api/courses/topics",
-    dataType: "json",
+        type: "GET",
+        url: "/api/courses/topics",
+        dataType: "json",
 
-    success: function (response) {
-    let topicsSelector = $(".topic-dropdown")
+         success: function (response) {
+        let topicsSelector = $(".topic-dropdown")
 
-    $.each(response, function (index, value) {
-    topicsSelector.append(
-    "<option>" + value + "</option>"
-    )
-    })
-},
+         $.each(response, function (index, value) {
+        topicsSelector.append(
+        "<option>" + value + "</option>"
+        )})},
 
-    error: function (response) {
-    prompt("error m8")
-}
-})
+        error: function (response) {
+            prompt("error m8")
+        }})

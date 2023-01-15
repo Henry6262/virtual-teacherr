@@ -105,8 +105,8 @@ public class WalletServiceImpl implements WalletService{
         Transaction transaction = prepareTransactionBetweenUsers(senderWallet, recipientWallet, amount);
 
         if (transaction.getStatus().equals(TransactionStatus.PENDING)) {
-            return; }                                       //for verification verifyPendingSendTransaction method will be used
-
+            return;
+        }                                       //for verification verifyPendingSendTransaction method will be used
         retrieveFromWallets(transaction);
     }
 
@@ -114,13 +114,21 @@ public class WalletServiceImpl implements WalletService{
     public NFT mintNFT(Course course, User loggedUser) {
 
         Wallet userWallet = getLoggedUserWallet(loggedUser);
+        Wallet creatorWallet = getLoggedUserWallet(course.getCreator());
+        transferFunds(userWallet, creatorWallet, course.getMintPrice());
+        NFT nft = nftCourseService.mintNFT(loggedUser, course);
 
-        checkUserWalletHasEnoughFunds(course.getPrice(), userWallet);
-        userWallet.retrieveFromWallet(course.getPrice());
-        NFT nft = nftCourseService.purchase(loggedUser, course);
-
-        logger.info(String.format("User with id: %d, has successfully purchased course with id %d",loggedUser.getId(), course.getId()));
+        logger.info(String.format("User with username: %s, has successfully MINTED course with id %d",loggedUser.getUsername(), course.getId()));
         return nft;
+    }
+
+    private void transferFunds(Wallet userWallet, Wallet creatorWallet, BigDecimal value) {
+        checkUserWalletHasEnoughFunds(value, userWallet);
+        userWallet.retrieveFromWallet(value);
+        creatorWallet.addToWallet(value);
+        updateWallet(userWallet);
+        updateWallet(creatorWallet);
+        logger.info(String.format("User %s has transferred %f to User: %s", userWallet.getOwner().getUsername(), value.doubleValue(), creatorWallet.getOwner().getUsername()));
     }
 
     @Override
@@ -226,7 +234,7 @@ public class WalletServiceImpl implements WalletService{
         return transaction.getStatus();
     }
 
-    private void checkUserWalletHasEnoughFunds(BigDecimal amount, Wallet userWallet) {
+    public void checkUserWalletHasEnoughFunds(BigDecimal amount, Wallet userWallet) {
 
         BigDecimal walletBalance = userWallet.getBalance();
 

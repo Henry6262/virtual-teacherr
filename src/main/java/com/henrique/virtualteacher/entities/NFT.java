@@ -31,8 +31,8 @@ public class NFT {
     @Column(name = "completed")
     private boolean completed;
 
-    @Column(name = "minted")
-    private boolean minted;
+//    @Column(name = "minted")
+//    private boolean minted;
 
     @Column(name = "drop_number")
     private int dropNumber;
@@ -41,14 +41,16 @@ public class NFT {
         this.owner = owner;
         this.course = courseToPurchase;
         this.completed = false;
+        this.dropNumber = setDropNumber(course);
     }
 
-    public NFT(Course course, int dropNumber) {
-        this.owner = null;
-        this.course = course;
-        this.completed = false;
-        this.minted = false;
-        this.dropNumber = dropNumber;
+    private int setDropNumber(Course course) {
+        if (course.getNfts().size() == 0) {
+            return 1;
+        } else {
+            return course.getNfts().get(course.getNfts().size() -1).getDropNumber()
+                    + 1;
+        }
     }
 
 }

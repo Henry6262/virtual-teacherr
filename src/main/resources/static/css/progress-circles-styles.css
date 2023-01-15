@@ -53,9 +53,9 @@
     left: 0.4em;
     line-height: 2.8em;
     position: absolute;
-    right: 0.4em;
+    right: 0.5em;
     text-align: center;
-    top: 0.4em;
+    top: 0.7em;
 }
 .pie-wrapper .label .smaller {
     color: #bdc3c7;

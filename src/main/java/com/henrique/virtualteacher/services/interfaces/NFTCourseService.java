@@ -18,16 +18,13 @@ public interface NFTCourseService {
 
     List<NFT> getAllForCourse(User loggedUser, int courseToGet, boolean completed);
 
-    List<NFT> getAllForCourseByMinted(User loggedUser, int courseToGet, boolean minted);
 
     NFT getUserOwnedNFTCourse(User loggedUser, Course enrolledCourse);
 
-    void checkCourseHasAvailableMints(User loggedUser, int courseId);
+    void checkCourseHasAvailableMints(Course course);
 
-    void createCourseNFTItems(Course course, User loggedUser);
+    NFT mintNFT(User purchaser, Course toMint);
 
-    NFT purchase(User purchaser, Course toMint);
-
-    void leave(User leavingUser, Course courseToLeave);
+    void burnNFT(User leavingUser, Course courseToLeave);
 
 }

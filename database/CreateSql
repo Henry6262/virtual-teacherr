@@ -121,7 +121,6 @@ create table nft_courses
         primary key,
     owner_id    int        null,
     course_id   int        null,
-    minted      tinyint(1) not null,
     drop_number int        not null,
     completed   tinyint(1) not null,
     constraint course_enrollments_id_uindex

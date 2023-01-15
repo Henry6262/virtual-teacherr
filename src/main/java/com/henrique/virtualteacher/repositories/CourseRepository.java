@@ -14,6 +14,8 @@ import java.util.Optional;
 
 public interface CourseRepository extends JpaRepository<Course, Integer> {
 
+    List<Course> getCoursesByCreatorId(int creatorId);
+
     Optional<Course> findById(int id);
 
     Optional<Course> findByTitle(String title);

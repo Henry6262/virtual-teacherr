@@ -3,6 +3,33 @@
 
 }
 
+#teacher-div {
+    background-color: darkorange;
+    width: 9%;
+    /* height: 19.2%; */
+    padding: 5px 5px 5px 5px;
+    transition: all 0.4s ease-in-out;
+    position: absolute;
+    /* z-index: -1; */
+    top: -19%;
+    width: 100%;
+    left: 87%;
+    max-width: 75px;
+    text-align: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: solid 1px;
+    border-bottom: none;
+    line-height: 15px;
+    display: block;
+    cursor: pointer;
+}
+
+#teacher-btn {
+    font-size: 12px;
+    font-weight: bolder;
+}
+
 .works {
     -webkit-column-count: unset;
     column-count: unset;
@@ -88,7 +115,7 @@
     background-color: #1c1d27;
     position: absolute;
     top: initial;
-    top: 136px;
+    top: 140px;
     left: 27px;
     /* right: 52px; */
     border-top-left-radius: 37px;
@@ -208,9 +235,10 @@
     transition: all 0.4s ease-in-out;
     position: absolute;
     z-index: -1;
-    top: 11.7%;
+    top: 13%;
+    width: 100%;
     left: 25%;
-    max-width: 62px;
+    max-width: 75px;
     text-align: center;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -222,7 +250,7 @@
 .edit-confirm.active {
     visibility: visible;
     cursor: pointer;
-    transform: translateY(-17px);
+    transform: translateY(-30px);
 }
 
 .edit-confirm.active:hover {

@@ -16,6 +16,8 @@ const $profilePicContent = document.querySelector(".profile-picture")
 const $uploadImageIcon = document.querySelector('.fa-cloud-arrow-up')
 const $uploadImageIconJq = $('.fa-cloud-arrow-up')
 const $pictureFormSelector = document.querySelector("#picture-form")
+const uploadImageSelector = document.querySelector('.file-input')
+
 //PROFILE PIC RELATED
 
 // INPUT RELATED VALUES
@@ -49,13 +51,31 @@ let userProfilePictureURL = $profilePic.src
 let pictureWasChanged = false;
 
 
+$("#teacher-btn").on('click', e => addTeacherRoleToUser(e));
+
+function addTeacherRoleToUser(e) {
+    e.preventDefault();
+    $.ajax({
+        type: 'POST',
+        url: '/api/users/apply/teacher',
+
+        success: function(response) {
+            console.log("role has been grated successfully")
+        },
+
+        error: function(error) {
+            console.log("chusta bro, chusta...")
+        }
+    })
+}
+
 $editProfileButton.addEventListener('click',e => activateDeactivateEditMode(e))
 $editConfirmButton.addEventListener("click",e => confirmProfileChanges(e))
 $checkUsernameButton.addEventListener('click', e => checkNewUsernameExists(e))
 $profilePicContent.addEventListener('click', e => {
 
     if ($profilePicWrapper.classList.contains(EDIT_ACTIVE_PROFILE_PIC_CLASS)) {
-        $uploadImageSelector.click()
+        uploadImageSelector.click()
     }
 })
 
@@ -74,10 +94,9 @@ function checkNewUsernameExists() {
             if (response) {
 
             } else {
-
+                // TODO : FINISH IMPLEMENTATION;
             }
-
-            },
+        },
 
         error: function(response) {
 
@@ -95,6 +114,8 @@ function saveNewUserInformation() {
         type: 'PUT',
         url: "/api/users/update"
     })
+
+    //TODO: FINISH IMPLEMENTATION !!!!
 }
 
 function activateDeactivateEditMode(e) {

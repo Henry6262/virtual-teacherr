@@ -164,7 +164,7 @@ public class WalletServiceImplTests {
         Wallet userWallet = Helpers.createMockWallet(mockUser, BigDecimal.valueOf(300));
         Course mockCourse = Helpers.createMockCourse();
 
-        mockCourse.setPrice(BigDecimal.valueOf(50));
+        mockCourse.setMintPrice(BigDecimal.valueOf(50));
 
         Mockito.when(walletRepository.getByOwnerEmail(mockUser.getEmail())).thenReturn(Optional.of(userWallet));
 

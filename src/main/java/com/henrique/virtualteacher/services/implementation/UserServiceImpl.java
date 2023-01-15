@@ -87,6 +87,7 @@ public class UserServiceImpl implements UserService {
         usermodel.setLastname(user.getLastName());
         usermodel.setFirstname(user.getFirstName());
         usermodel.setEmail(user.getEmail());
+        usermodel.setUsername(user.getUsername());
         usermodel.setAssignments(user.getAssignments());
         usermodel.setCompletedLectures(user.getCompletedLectures());
         usermodel.setCompletedCourses(user.getCompletedCourses());
@@ -109,6 +110,13 @@ public class UserServiceImpl implements UserService {
     public User getByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User", "Email", email));
+    }
+
+
+    @Override
+    public User getByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User", "Username", username));
     }
 
     @Override
@@ -139,6 +147,21 @@ public class UserServiceImpl implements UserService {
         else if (!existingUser.isEnabled()) {
             throw new AuthenticationException(String.format("User with id: %d, is not email verified", existingUser.getId()));
         }
+    }
+
+    @Override
+    public void grantTeacherRole(Principal initiator, User affectedUser) {
+        if (affectedUser.isTeacher()) {
+            throw new ImpossibleOperationException(String.format("User %s already contains the teacher role", affectedUser.getUsername()));
+        }
+        verifyUserIsAllowed(affectedUser, getLoggedUser(initiator));
+        addTeacherRoleToUser(affectedUser);
+        userRepository.save(affectedUser);
+        logger.info(String.format("TEACHER ROLE has been granted to user with id %d", affectedUser.getId()));
+    }
+
+    private void addTeacherRoleToUser(User roleReceiver) {
+        roleReceiver.getRoles().add(new Role(2, EnumRoles.TEACHER));
     }
 
 

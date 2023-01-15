@@ -31,6 +31,16 @@ public class CourseMvc {
         return "courses-create";
     }
 
+    @GetMapping("/created")
+    public String showCreatedCoursesPage(Principal principal,
+                                         Model model) {
+
+        List<CourseModel> createdCourses = courseService.getCreatedCourses(userService.getLoggedUser(principal));
+
+        model.addAttribute("created_courses", createdCourses);
+        return "created-courses-page";
+    }
+
 
     @GetMapping("/enrolled")
     public String showLoggedUserCourses(Principal principal,

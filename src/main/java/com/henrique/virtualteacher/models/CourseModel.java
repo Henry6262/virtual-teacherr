@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
@@ -25,7 +24,7 @@ public class CourseModel {
         this.startingDate = course.getStartingDate();
         this.picture = course.getPicture();
         this.creatorEmail = course.getCreator().getEmail();
-        this.price = course.getPrice();
+        this.price = course.getMintPrice();
         this.skill1 = course.getSkill1();
         this.skill2 = course.getSkill2();
         this.skill3 = course.getSkill3();
@@ -54,8 +53,9 @@ public class CourseModel {
     private BigDecimal price;
 
     private int availableMints;
-
     private int courseCompletionPercentage;
+    private int totalMintedCourses;
+    private int mintPercentage;
 
     private String skill1;
     private String skill2;

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -47,6 +48,19 @@ public class UserRestController {
 
         model.addAttribute("allUsers", dtoList);
         return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    @PostMapping("/apply/teacher")
+    public boolean applyForTeacherRole(Principal principal, Optional<String> username) {
+
+        User affectedUser;
+        if (username.isPresent()) {
+            affectedUser = userService.getByUsername(username.get());
+        } else {
+            affectedUser = userService.getLoggedUser(principal);
+        }
+        userService.grantTeacherRole(principal, affectedUser);
+        return true;
     }
 
     @GetMapping("/{id}")

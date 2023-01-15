@@ -36,6 +36,8 @@ public class UserModel {
     @NotBlank
     private String lastname;
 
+    private String username;
+
     private String profilePicture;
 
     private int walledId;

@@ -26,8 +26,6 @@ public class UserMvc {
     private final NFTCourseService nftCourseService;
 
 
-
-
     @GetMapping("/profile")
     public String showProfilePage(Principal principal,
                                   Model model) {
@@ -74,7 +72,7 @@ public class UserMvc {
         return "user-personal-inventory";
     }
 
-
+    
     @GetMapping("/{id}/inventory")
     public String showUserInventory(@PathVariable int id,
                                          Principal principal,
@@ -85,6 +83,9 @@ public class UserMvc {
 
     private void addUserInformationToModel(Model model, int id) {
         UserModel userToGet = userService.getModelById(id);
+        model.addAttribute("firstName", userToGet.getFirstname());
+        model.addAttribute("lastName", userToGet.getLastname());
+        model.addAttribute("username", userToGet.getUsername());
         model.addAttribute("profilePicture", userToGet.getProfilePicture());
         model.addAttribute("totalCompletedCourses", userToGet.getCompletedCourses().size());
         model.addAttribute("totalCompletedLectures", userToGet.getCompletedLectures().size());
